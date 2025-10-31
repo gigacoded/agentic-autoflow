@@ -1,0 +1,29 @@
+{
+  "example-skill": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "Example skill showing structure (replace with your skills)",
+    "promptTriggers": {
+      "keywords": [
+        "example",
+        "demo",
+        "template"
+      ],
+      "intentPatterns": [
+        "(how to|best practice).*?example",
+        "(create|implement).*?demo"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "examples/**/*.ts",
+        "src/example/**/*"
+      ],
+      "contentPatterns": [
+        "import.*example",
+        "Example\\("
+      ]
+    }
+  }
+}

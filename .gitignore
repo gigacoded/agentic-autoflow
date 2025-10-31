@@ -1,0 +1,31 @@
+# Dev docs (active work)
+dev/active/*
+!dev/active/.gitkeep
+
+# Task workflow (if using)
+docs/delivery/**/[0-9]*-*.md
+!docs/delivery/**/*.template.md
+
+# Node modules (if present)
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/*
+!.vscode/settings.json.template
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/

@@ -1,0 +1,9 @@
+{
+  "name": "example-skill",
+  "type": "domain",
+  "priority": "high",
+  "description": "Example skill showing recommended structure and patterns",
+  "resourceFiles": [
+    "resources/examples.md"
+  ]
+}
