@@ -584,14 +584,14 @@ Treat skills like code:
 
 ## Examples from Production
 
-See the CargoBuddy skills for reference:
+Example production skills for reference:
 
 - **e2e-testing-framework**: 4-pillar test structure with Chrome MCP
-- **convex-backend-dev**: Backend patterns with Convex
-- **frontend-dev-guidelines**: React 19 + MUI v7 patterns
+- **backend-dev**: Backend API patterns and best practices
+- **frontend-dev-guidelines**: Modern React component patterns
 - **task-management-dev**: PBI/task workflow
 
-Study these for structure and content ideas.
+Study skill structure and content organization for ideas when creating your own.
 
 ---
 

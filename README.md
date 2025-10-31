@@ -2,7 +2,7 @@
 
 **Production-grade Claude Code infrastructure for professional software development**
 
-This template provides a comprehensive workflow system for Claude Code, extracted from 6+ months of hardcore production use on the CargoBuddy project. It transforms Claude from a passive assistant into an active development partner through auto-activating skills, quality automation hooks, and structured task management.
+This template provides a comprehensive workflow system for Claude Code, extracted from 6+ months of hardcore production use. It transforms Claude from a passive assistant into an active development partner through auto-activating skills, quality automation hooks, and structured task management.
 
 ## What You Get
 
@@ -44,7 +44,7 @@ This template provides a comprehensive workflow system for Claude Code, extracte
 
 ```bash
 # Clone this template
-git clone https://github.com/yourusername/claude-code-workflow-template.git
+git clone https://github.com/gigacoded/agentic-autoflow.git
 cd your-project
 
 # Or copy into existing project
@@ -302,13 +302,13 @@ If you have a large CLAUDE.md (500+ lines):
 
 ## Examples from Production
 
-This template is based on CargoBuddy's infrastructure:
+This template is based on production infrastructure from a real-world project:
 
 - **4 production skills**: E2E testing, backend dev, frontend dev, task management
-- **11 tasks to build it**: PBI 260 (Infrastructure Evolution)
+- **11 tasks to build it**: Complete infrastructure evolution
 - **74% CLAUDE.md reduction**: 916 lines → 239 lines
 - **6+ months in production**: Battle-tested on real product
-- **Integration with MCPs**: Chrome DevTools, Convex backend
+- **Integration with MCPs**: Chrome DevTools and backend testing
 
 ## Contributing
 
@@ -325,7 +325,6 @@ Found a bug or have a suggestion? Please open an issue or PR!
 ## Credits
 
 **Created**: 2025-10-31
-**Source Project**: CargoBuddy
 **Based On**:
 - [Claude Code Best Practices Thread](https://www.reddit.com/r/ClaudeAI/comments/1ik26sk/claude_code_is_a_beast_tips_from_6_months_of/)
 - [Anthropic Skills Documentation](https://docs.anthropic.com/claude/docs/skills)

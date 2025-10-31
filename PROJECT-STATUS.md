@@ -6,7 +6,7 @@
 
 ## What Was Built
 
-A complete, production-ready template for Claude Code workflows, extracted from 6+ months of production use on the CargoBuddy project.
+A complete, production-ready template for Claude Code workflows, extracted from 6+ months of production use on a real-world full-stack application.
 
 ### Core Components
 
@@ -85,9 +85,9 @@ claude-code-workflow-template/
 
 ### 2. Production-Tested
 - Based on 6+ months real-world use
-- 11 tasks to build original (PBI 260)
+- 11 tasks to build original infrastructure
 - 74% CLAUDE.md reduction in source project
-- Battle-tested on complex full-stack app
+- Battle-tested on complex full-stack application
 
 ### 3. Tech Stack Agnostic
 - Works with any language/framework
@@ -117,7 +117,7 @@ claude-code-workflow-template/
 
 ## Source Material
 
-Extracted from CargoBuddy's infrastructure:
+Extracted from production infrastructure:
 
 **Original Files**:
 - `CLAUDE.md` (239 lines, down from 916)
@@ -209,7 +209,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
 ## Credits
 
-**Created by**: Extracted from CargoBuddy project
+**Created by**: Extracted from production project infrastructure
 **Based on**:
 - [Claude Code Best Practices Thread](https://www.reddit.com/r/ClaudeAI/comments/1ik26sk/claude_code_is_a_beast_tips_from_6_months_of/)
 - [Anthropic Skills Documentation](https://docs.anthropic.com/claude/docs/skills)
@@ -221,7 +221,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
 ### v1.0 (2025-10-31)
 - Initial release
-- Complete infrastructure extracted from CargoBuddy
+- Complete infrastructure extracted from production project
 - Comprehensive documentation (6 guides)
 - Example skill with resources
 - 2 production-tested hooks
