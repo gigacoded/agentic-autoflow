@@ -1,28 +1,172 @@
 {
-  "example-skill": {
+  "convex-backend-dev": {
     "type": "domain",
     "enforcement": "suggest",
-    "priority": "medium",
-    "description": "Example skill showing structure (replace with your skills)",
+    "priority": "high",
+    "description": "Convex backend development - queries, mutations, actions, auth",
     "promptTriggers": {
       "keywords": [
-        "example",
-        "demo",
-        "template"
+        "backend",
+        "convex",
+        "query",
+        "mutation",
+        "action",
+        "database",
+        "auth",
+        "authentication",
+        "authorization",
+        "schema",
+        "test convex",
+        "debug convex",
+        "convex mcp"
       ],
       "intentPatterns": [
-        "(how to|best practice).*?example",
-        "(create|implement).*?demo"
+        "(create|add|implement|write).*?(query|mutation|action)",
+        "(how to|best practice).*?(convex|backend|query|mutation)",
+        "authenticate.*?(user|request)",
+        "(check|verify).*?(auth|authorization|permission|role)",
+        "database.*?(operation|query|insert|update|delete)",
+        "(test|debug|run).*?(query|mutation|action)",
+        "verify.*?convex.*?function",
+        "check.*?backend.*?(works|behavior)",
+        "convex.*?(error|issue|problem)"
       ]
     },
     "fileTriggers": {
       "pathPatterns": [
-        "examples/**/*.ts",
-        "src/example/**/*"
+        "convex/**/*.ts",
+        "convex/**/*.js"
       ],
       "contentPatterns": [
-        "import.*example",
-        "Example\\("
+        "import.*convex",
+        "query\\(",
+        "mutation\\(",
+        "action\\(",
+        "internalQuery\\(",
+        "internalMutation\\(",
+        "internalAction\\(",
+        "ctx\\.auth\\.getUserIdentity",
+        "ctx\\.db\\.",
+        "defineSchema",
+        "defineTable"
+      ]
+    }
+  },
+
+  "nextjs-frontend-dev": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "Next.js App Router, React, Tailwind, shadcn/ui, Convex integration",
+    "promptTriggers": {
+      "keywords": [
+        "frontend",
+        "react",
+        "component",
+        "next.js",
+        "nextjs",
+        "app router",
+        "server component",
+        "client component",
+        "tailwind",
+        "shadcn",
+        "ui",
+        "form",
+        "button",
+        "layout",
+        "page",
+        "useQuery",
+        "useMutation",
+        "useAction"
+      ],
+      "intentPatterns": [
+        "(create|add|implement|build).*?(component|ui|form|button|layout|page)",
+        "(how to|best practice).*?(react|component|next\\.?js|frontend)",
+        "(use|implement).*?(useQuery|useMutation|useAction)",
+        "server.*?component",
+        "client.*?component",
+        "style.*?(component|button|card)",
+        "(mobile|responsive).*?(design|layout|ui)",
+        "tailwind.*?(class|style)",
+        "shadcn.*?(component|ui)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "app/**/*.tsx",
+        "app/**/*.jsx",
+        "components/**/*.tsx",
+        "components/**/*.jsx",
+        "hooks/**/*.ts",
+        "hooks/**/*.tsx"
+      ],
+      "contentPatterns": [
+        "use client",
+        "import.*react",
+        "import.*@/components/ui",
+        "import.*convex/react",
+        "useQuery\\(",
+        "useMutation\\(",
+        "useAction\\(",
+        "useState\\(",
+        "useEffect\\(",
+        "export default function",
+        "className="
+      ]
+    }
+  },
+
+  "e2e-testing-framework": {
+    "type": "testing",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "E2E testing with Chrome DevTools MCP - 4-pillar structure",
+    "promptTriggers": {
+      "keywords": [
+        "e2e",
+        "end-to-end",
+        "end to end",
+        "browser",
+        "chrome",
+        "mcp",
+        "test",
+        "testing",
+        "chrome devtools",
+        "browser automation",
+        "step 0",
+        "verify authentication"
+      ],
+      "intentPatterns": [
+        "(create|write|implement|add).*?(e2e|end.?to.?end).*?(test|testing)",
+        "(test|testing).*?(using|with).*?(chrome|browser|mcp)",
+        "(how to|best practice).*?(e2e|end.?to.?end|browser).*?test",
+        "verify.*?(workflow|flow|journey)",
+        "(step.?by.?step|step 0).*?test",
+        "test.*?(user|workflow|interaction)",
+        "browser.*?(automation|test|testing)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "docs/delivery/**/tasks.md",
+        "docs/delivery/**/*E2E*.md",
+        "docs/delivery/**/*-e2e-*.md",
+        "test/e2e/**/*.ts",
+        "test/e2e/**/*.js",
+        "**/*e2e*.md"
+      ],
+      "contentPatterns": [
+        "E2E",
+        "end-to-end",
+        "Chrome DevTools MCP",
+        "mcp__chrome-devtools",
+        "take_snapshot",
+        "browser automation",
+        "Step 0.*Authentication",
+        "Pillar 1",
+        "Pillar 2",
+        "Pillar 3",
+        "Pillar 4"
       ]
     }
   }

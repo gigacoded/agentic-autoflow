@@ -1,0 +1,9 @@
+{
+  "name": "e2e-testing-framework",
+  "type": "testing",
+  "priority": "high",
+  "description": "E2E testing with Chrome DevTools MCP - 4-pillar structure",
+  "resourceFiles": [
+    "resources/chrome-mcp-tools.md"
+  ]
+}

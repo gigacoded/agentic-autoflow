@@ -1,0 +1,7 @@
+{
+  "name": "convex-backend-dev",
+  "type": "domain",
+  "priority": "high",
+  "description": "Convex backend development - queries, mutations, actions, auth",
+  "resourceFiles": []
+}

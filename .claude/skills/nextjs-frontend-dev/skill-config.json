@@ -1,0 +1,7 @@
+{
+  "name": "nextjs-frontend-dev",
+  "type": "domain",
+  "priority": "high",
+  "description": "Next.js App Router, React, Tailwind, shadcn/ui, Convex integration",
+  "resourceFiles": []
+}
