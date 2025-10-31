@@ -219,6 +219,133 @@ Target: **200-300 lines** for CLAUDE.md
 }
 ```
 
+#### E2E Testing with Chrome DevTools MCP
+
+**Important**: The source project this template was extracted from uses Chrome DevTools MCP as a **critical component** for E2E browser automation testing.
+
+**Setup**:
+
+1. **Install Chrome DevTools MCP**:
+```bash
+claude mcp add chrome-devtools "npx chrome-devtools-mcp"
+```
+
+2. **Create E2E Testing Skill**:
+
+Create `.claude/skills/e2e-testing-framework/SKILL.md`:
+
+```markdown
+# E2E Testing Framework
+
+**Auto-activates when**: Writing E2E tests, browser automation, testing user workflows
+
+## Mandatory 4-Pillar Structure
+
+### Pillar 1: Step 0 - Authentication Context Verification
+ALWAYS verify authentication state before testing features.
+
+### Pillar 2: Step-by-Step Execution
+Each action is a numbered step with:
+- Action taken
+- Expected outcome
+- Actual outcome
+- Pass/Fail status
+
+### Pillar 3: Fail-Fast Behavior
+Stop immediately on first failure, report clearly.
+
+### Pillar 4: Rich Completion Reports
+Complete summary with:
+- All steps executed
+- Pass/fail counts
+- Screenshots/snapshots
+- Next actions
+
+## Chrome MCP Tools
+
+**Navigation**:
+- `mcp__chrome-devtools__navigate_page(url)`
+- `mcp__chrome-devtools__wait_for(text)`
+
+**Interaction**:
+- `mcp__chrome-devtools__click(uid)`
+- `mcp__chrome-devtools__fill(uid, value)`
+
+**Verification**:
+- `mcp__chrome-devtools__take_snapshot()`
+- `mcp__chrome-devtools__list_console_messages()`
+
+## Example Test Pattern
+
+\`\`\`markdown
+### Step 0: Verify Authentication
+- Navigate to /app
+- Check for user avatar
+- Verify no redirect to login
+
+### Step 1: Navigate to Feature
+- Click "Feature" nav item
+- Wait for page load
+- Take snapshot
+
+### Step 2: Perform Action
+- Fill form field
+- Click submit
+- Verify success message
+\`\`\`
+```
+
+3. **Add Triggers**:
+
+```json
+{
+  "e2e-testing-framework": {
+    "type": "testing",
+    "priority": "high",
+    "description": "E2E testing with Chrome DevTools MCP",
+    "promptTriggers": {
+      "keywords": ["e2e", "end-to-end", "browser", "chrome", "test", "testing"],
+      "intentPatterns": [
+        "(create|write|implement).*?(e2e|end.?to.?end).*?test",
+        "test.*?(workflow|flow|journey)",
+        "verify.*?(browser|ui|interface)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": ["test/e2e/**/*", "**/*e2e*.md"],
+      "contentPatterns": ["mcp__chrome-devtools", "Step 0.*Authentication"]
+    }
+  }
+}
+```
+
+4. **Key Principles**:
+
+- **Step 0 is mandatory**: Always verify auth context first
+- **Fail-fast**: Stop on first error, don't continue
+- **Rich reporting**: Complete summary at end
+- **Screenshots**: Capture state at each step
+- **Console monitoring**: Check for errors throughout
+
+**Why Chrome MCP?**
+
+The source project chose Chrome DevTools MCP because:
+- Real browser automation (not mocks)
+- Visual verification with snapshots
+- Console error detection
+- Interactive debugging capability
+- Full user workflow simulation
+
+**Alternative Approaches**:
+
+If you don't want to use Chrome MCP, you can:
+- Use Playwright directly (without MCP)
+- Use Cypress
+- Use Selenium
+- Create your own testing skill with your preferred tool
+
+But the 4-pillar structure (Step 0, step-by-step, fail-fast, rich reports) is recommended regardless of tooling.
+
 ---
 
 ## Customizing Hooks

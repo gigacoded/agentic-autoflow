@@ -308,7 +308,31 @@ This template is based on production infrastructure from a real-world project:
 - **11 tasks to build it**: Complete infrastructure evolution
 - **74% CLAUDE.md reduction**: 916 lines → 239 lines
 - **6+ months in production**: Battle-tested on real product
-- **Integration with MCPs**: Chrome DevTools and backend testing
+
+### Testing Philosophy from Source Project
+
+The source project uses a comprehensive testing approach with **Chrome DevTools MCP** for E2E testing:
+
+**E2E Testing (Browser Automation)**:
+- Uses Chrome DevTools MCP for browser automation
+- Mandatory 4-part structure: Step 0 auth verification, step-by-step execution, fail-fast behavior, rich reports
+- Critical for user-facing features
+- See source project's `e2e-testing-framework` skill for complete patterns
+
+**Backend Testing**:
+- Interactive testing with backend MCP integration
+- Unit tests for business logic
+- Integration tests for API endpoints
+
+**Frontend Testing**:
+- Component testing
+- Integration tests
+- Visual regression testing
+
+**Note**: The template itself doesn't require MCPs, but if you want to replicate the E2E testing workflow from the source project, you'll want to:
+1. Install Chrome DevTools MCP: `claude mcp add chrome-devtools "npx chrome-devtools-mcp"`
+2. Create an E2E testing skill based on the 4-pillar structure
+3. See CUSTOMIZATION.md for examples
 
 ## Contributing
 
