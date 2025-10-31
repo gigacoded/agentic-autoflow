@@ -43,12 +43,16 @@ This template provides a comprehensive workflow system for Claude Code, extracte
 **Step 1: Clone Template**
 
 ```bash
-# Clone this template
+# Clone main template (customizable for any stack)
 git clone https://github.com/gigacoded/agentic-autoflow.git
-cd your-project
+cd agentic-autoflow
 
-# Or copy into existing project
-cp -r /path/to/claude-code-workflow-template/.claude .claude/
+# OR: Clone example branch (Convex + Next.js + Tailwind + shadcn/ui ready)
+git clone -b example/convex-nextjs-stack https://github.com/gigacoded/agentic-autoflow.git
+cd agentic-autoflow
+
+# OR: Copy into existing project
+cp -r /path/to/agentic-autoflow/.claude .claude/
 ```
 
 **Step 2: Install Global Hooks**
@@ -105,6 +109,27 @@ claude
 # Make an edit, introduce a type error
 # Should see error message after Edit/Write
 ```
+
+## Example Branch: Convex + Next.js Stack
+
+**Want a ready-to-use setup?** Check out the `example/convex-nextjs-stack` branch:
+
+```bash
+git clone -b example/convex-nextjs-stack https://github.com/gigacoded/agentic-autoflow.git
+```
+
+**Includes**:
+- ✅ `convex-backend-dev` skill - Complete Convex patterns (queries, mutations, actions, auth)
+- ✅ `nextjs-frontend-dev` skill - Next.js App Router, React, Tailwind, shadcn/ui
+- ✅ `e2e-testing-framework` skill - 4-pillar testing with Chrome MCP
+- ✅ Stack-specific CLAUDE.md - Ready-to-use quick reference
+- ✅ Production patterns - Real code examples from 6+ months use
+
+**Perfect for**: Convex + Next.js + Tailwind + shadcn/ui + Clerk projects
+
+See [BRANCH-README.md](https://github.com/gigacoded/agentic-autoflow/blob/example/convex-nextjs-stack/BRANCH-README.md) in that branch for complete details.
+
+---
 
 ## What's Included
 
