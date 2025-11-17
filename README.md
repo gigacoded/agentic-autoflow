@@ -1,21 +1,23 @@
-# Claude Code Workflow Template
+# Agentic AutoFlow - Gemini CLI Edition
 
-**Production-grade Claude Code infrastructure for professional software development**
+> **Note**: This is the Gemini CLI adaptation branch. For the original Claude Code version, see the [`main` branch](https://github.com/gigacoded/agentic-autoflow/tree/main).
 
-This template provides a comprehensive workflow system for Claude Code, extracted from 6+ months of hardcore production use. It transforms Claude from a passive assistant into an active development partner through auto-activating skills, quality automation hooks, and structured task management.
+**Production-grade Gemini CLI infrastructure for professional software development**
+
+This template provides a comprehensive workflow system for Google Gemini CLI, adapted from the original Claude Code template. It enhances Gemini CLI with auto-activating skills, custom MCP servers, and structured task management, transforming it from a passive assistant into an active development partner.
 
 ## What You Get
 
 ### 🎯 Auto-Activating Skills System
-- Skills automatically inject based on keywords, file paths, and code patterns
-- No manual reminders needed - Claude knows when to apply best practices
-- Reduces CLAUDE.md size by 74% while improving consistency
+- Skills automatically available based on keywords, file paths, and code patterns
+- No manual reminders needed - Gemini CLI references best practices automatically
+- Reduces GEMINI.md size by 74% while improving consistency
 - Extensible framework for your own domain-specific patterns
 
-### ⚡ Quality Automation Hooks
-- **TypeScript Error Checking**: Automatically runs after Edit/Write operations
-- **Skill Activation**: Analyzes prompts before execution to activate relevant skills
-- **Global Registration**: Works across all your projects
+### ⚡ Custom MCP Servers
+- **Quality Check MCP**: Automatically checks for TypeScript errors after code operations
+- **Skill Activation MCP**: Recommends relevant skills based on context
+- **Configurable**: Easy setup in `~/.gemini/settings.json`
 - Fail-fast philosophy prevents cascading errors
 
 ### 📋 Dev Docs Workflow
@@ -34,8 +36,8 @@ This template provides a comprehensive workflow system for Claude Code, extracte
 
 ### Prerequisites
 
-- Claude Code CLI installed
-- Node.js and npm (for TypeScript hook)
+- [Gemini CLI](https://github.com/google-gemini/gemini-cli) installed
+- Node.js and npm (for MCP servers)
 - Git (optional, for workflow features)
 
 ### 🚀 Automated Setup (Recommended - 2 Minutes)

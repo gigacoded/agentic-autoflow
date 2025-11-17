@@ -1,6 +1,6 @@
 # [Your Project Name] Development Infrastructure
 
-Quick reference for [project name] development. See `.claude/skills/` for detailed patterns and best practices.
+Quick reference for [project name] development. See `.gemini/skills/` for detailed patterns and best practices.
 
 ## Quick Start
 
@@ -32,7 +32,7 @@ Auto-activating skills provide consistent patterns without manual reminders:
 3. **`[skill-name-3]`** - [Brief description]
    - Auto-activates: [triggers]
 
-**Skills activate automatically** based on keywords, file paths, and intent patterns defined in `.claude/skills/skill-rules.json`.
+**Skills activate automatically** based on keywords, file paths, and intent patterns defined in `.gemini/skills/skill-rules.json`.
 
 ---
 
@@ -79,17 +79,19 @@ See `task-management` skill for complete workflow (if applicable).
 
 ---
 
-## Build & Quality Hooks
+## Build & Quality MCP Servers
 
-Hooks automatically verify quality after code changes:
+MCP servers extend Gemini CLI with custom tools and automation:
 
-**`user-prompt-submit.ts`** (Pre-execution):
+**Skill Activation MCP** (Available):
 - Analyzes prompts for skill triggers
-- Injects skill activation reminders
+- Provides skill recommendations based on context
 
-**`stop.ts`** (Post-execution):
+**Quality Check MCP** (Available):
 - Checks [TypeScript/your language] errors after edits
 - Fail-fast prevents cascading errors
+
+Configure in `~/.gemini/settings.json` to enable these extensions.
 
 ---
 
@@ -102,11 +104,11 @@ Hooks automatically verify quality after code changes:
 ├── docs/
 │   └── delivery/           # (Optional) Task-driven development
 ├── dev/active/             # Active dev docs (for long tasks)
-├── .claude/
+├── .gemini/
 │   ├── skills/             # Auto-activating skills
-│   ├── hooks/              # (Symlink to ~/.claude/hooks/)
-│   └── commands/           # Slash commands
-└── CLAUDE.md              # This file
+│   ├── mcp-servers/        # Custom MCP servers
+│   └── commands/           # Custom commands
+└── GEMINI.md              # This file
 ```
 
 ---
@@ -146,7 +148,7 @@ try {
 ## Important Links
 
 - **[Link Name]**: [`path/to/file.md`](./path/to/file.md)
-- **Skills**: [`.claude/skills/`](./.claude/skills/)
+- **Skills**: [`.gemini/skills/`](./.gemini/skills/)
 - **Active Dev Docs**: `dev/active/` (if exists)
 
 ---
@@ -187,4 +189,4 @@ Skills activate automatically - no need to invoke manually!
 ---
 
 **Version**: 1.0 (Initial Setup - [DATE])
-**Based On**: [Claude Code Workflow Template](https://github.com/yourusername/agentic-autoflow)
+**Based On**: [Agentic AutoFlow - Gemini CLI Edition](https://github.com/yourusername/agentic-autoflow/tree/gemini-cli)
