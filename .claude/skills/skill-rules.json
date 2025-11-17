@@ -1,8 +1,89 @@
 {
+  "convex-backend-dev": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "Convex backend development with MCP integration",
+    "promptTriggers": {
+      "keywords": [
+        "convex",
+        "backend",
+        "query",
+        "mutation",
+        "action",
+        "database",
+        "schema",
+        "server"
+      ],
+      "intentPatterns": [
+        "(create|write|add|implement).*?(query|mutation|action|function)",
+        "(update|modify|change).*?(schema|database|table)",
+        "(backend|server).*?(logic|function|api)",
+        "convex.*?(function|query|mutation)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "convex/**/*.ts",
+        "convex/schema.ts",
+        "convex/_generated/**/*"
+      ],
+      "contentPatterns": [
+        "import.*convex/server",
+        "query\\(",
+        "mutation\\(",
+        "action\\(",
+        "defineSchema",
+        "defineTable"
+      ]
+    }
+  },
+  "frontend-dev": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "React, Next.js, and Tailwind CSS frontend development",
+    "promptTriggers": {
+      "keywords": [
+        "component",
+        "frontend",
+        "ui",
+        "page",
+        "layout",
+        "react",
+        "nextjs",
+        "tailwind",
+        "style",
+        "form"
+      ],
+      "intentPatterns": [
+        "(create|build|add|implement).*?(component|page|ui|layout)",
+        "(style|design).*?(component|page|ui)",
+        "(frontend|client|ui).*?(component|feature|page)",
+        "(form|input|button|modal)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "app/**/*.tsx",
+        "components/**/*.tsx",
+        "app/**/page.tsx",
+        "app/**/layout.tsx"
+      ],
+      "contentPatterns": [
+        "use client",
+        "import.*react",
+        "className=",
+        "tailwind",
+        "useQuery.*convex",
+        "useMutation.*convex"
+      ]
+    }
+  },
   "example-skill": {
     "type": "domain",
     "enforcement": "suggest",
-    "priority": "medium",
+    "priority": "low",
     "description": "Example skill showing structure (replace with your skills)",
     "promptTriggers": {
       "keywords": [

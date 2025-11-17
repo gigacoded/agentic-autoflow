@@ -1,0 +1,8 @@
+{
+  "name": "frontend-dev",
+  "version": "1.0.0",
+  "description": "React, Next.js, and Tailwind CSS frontend development patterns",
+  "resources": [
+    "resources/components.md"
+  ]
+}
