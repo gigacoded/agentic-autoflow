@@ -1,256 +1,484 @@
-# Common Component Patterns
+# shadcn/ui Component Patterns
 
-## Layout Components
+## Core UI Components
 
-### Container
+### Button Patterns
 
 ```typescript
-interface ContainerProps {
-  children: React.ReactNode;
-  className?: string;
-}
+import { Button } from "@/components/ui/button";
+import { Loader2, Mail, Download } from "lucide-react";
 
-export function Container({ children, className = "" }: ContainerProps) {
+export function ButtonExamples() {
   return (
-    <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>
-      {children}
+    <div className="flex flex-wrap gap-4">
+      {/* Basic variants */}
+      <Button>Default</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="destructive">Destructive</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="link">Link</Button>
+
+      {/* With icons */}
+      <Button>
+        <Mail className="mr-2 h-4 w-4" />
+        Login with Email
+      </Button>
+
+      {/* Loading state */}
+      <Button disabled>
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        Please wait
+      </Button>
+
+      {/* Icon only */}
+      <Button size="icon">
+        <Download className="h-4 w-4" />
+      </Button>
+
+      {/* As child (custom element) */}
+      <Button asChild>
+        <a href="/dashboard">Go to Dashboard</a>
+      </Button>
     </div>
   );
 }
 ```
 
-### Section
+### Card Patterns
 
 ```typescript
-interface SectionProps {
-  children: React.ReactNode;
-  className?: string;
-}
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
-export function Section({ children, className = "" }: SectionProps) {
+export function PostCard({ post }: { post: Post }) {
   return (
-    <section className={`py-12 md:py-16 lg:py-20 ${className}`}>
-      {children}
-    </section>
+    <Card>
+      <CardHeader>
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle>{post.title}</CardTitle>
+            <CardDescription>
+              Posted by {post.author} • {formatDate(post.createdAt)}
+            </CardDescription>
+          </div>
+          <Badge variant={post.published ? "default" : "secondary"}>
+            {post.published ? "Published" : "Draft"}
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">{post.excerpt}</p>
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <Button variant="ghost" size="sm">View</Button>
+        <div className="space-x-2">
+          <Button variant="outline" size="sm">Edit</Button>
+          <Button variant="destructive" size="sm">Delete</Button>
+        </div>
+      </CardFooter>
+    </Card>
   );
 }
 ```
 
-## UI Components
-
-### Card
+### Dialog Patterns
 
 ```typescript
-interface CardProps {
-  children: React.ReactNode;
-  hover?: boolean;
-  className?: string;
-}
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
-export function Card({ children, hover = false, className = "" }: CardProps) {
+export function CreateItemDialog() {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("");
+  const createItem = useMutation(api.items.create);
+
+  const handleSubmit = async () => {
+    await createItem({ name });
+    setName("");
+    setOpen(false);
+  };
+
   return (
-    <div
-      className={`
-        bg-white rounded-lg shadow-md p-6
-        ${hover ? "transition-shadow hover:shadow-lg" : ""}
-        ${className}
-      `}
-    >
-      {children}
-    </div>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>Create New Item</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create Item</DialogTitle>
+          <DialogDescription>
+            Add a new item to your collection.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid gap-2">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter item name"
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit}>Create</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 ```
 
-### Input
+### Sheet (Sidebar) Pattern
 
 ```typescript
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  error?: string;
-}
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, className = "", ...props }, ref) => {
-    return (
-      <div className="space-y-1">
-        {label && (
-          <label htmlFor={props.id} className="block text-sm font-medium text-gray-700">
-            {label}
-          </label>
-        )}
-        <input
-          ref={ref}
-          className={`
-            w-full px-3 py-2 border rounded-md
-            focus:outline-none focus:ring-2 focus:ring-blue-500
-            ${error ? "border-red-500" : "border-gray-300"}
-            ${className}
-          `}
-          {...props}
-        />
-        {error && <p className="text-sm text-red-600">{error}</p>}
-      </div>
-    );
-  }
-);
-
-Input.displayName = "Input";
-```
-
-### Modal
-
-```typescript
-"use client";
-
-import { useEffect } from "react";
-
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title?: string;
-  children: React.ReactNode;
-}
-
-export function Modal({ isOpen, onClose, title, children }: ModalProps) {
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
-      document.body.style.overflow = "hidden";
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
+export function MobileNav() {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black bg-opacity-50"
-        onClick={onClose}
-      />
-
-      {/* Modal */}
-      <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
-        {title && (
-          <h2 className="text-xl font-semibold mb-4">{title}</h2>
-        )}
-        {children}
-      </div>
-    </div>
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon">
+          <Menu className="h-6 w-6" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left">
+        <SheetHeader>
+          <SheetTitle>Navigation</SheetTitle>
+          <SheetDescription>
+            Browse through the app
+          </SheetDescription>
+        </SheetHeader>
+        <nav className="flex flex-col gap-4 mt-4">
+          <a href="/dashboard" className="text-lg">Dashboard</a>
+          <a href="/posts" className="text-lg">Posts</a>
+          <a href="/settings" className="text-lg">Settings</a>
+        </nav>
+      </SheetContent>
+    </Sheet>
   );
 }
 ```
 
 ## Data Display Components
 
-### Loading Spinner
+### Table Pattern
 
 ```typescript
-export function LoadingSpinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
-  const sizeClasses = {
-    sm: "h-4 w-4",
-    md: "h-8 w-8",
-    lg: "h-12 w-12",
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+export function UsersTable({ users }: { users: User[] }) {
+  return (
+    <Table>
+      <TableCaption>A list of all users</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead>Role</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {users.map((user) => (
+          <TableRow key={user._id}>
+            <TableCell className="font-medium">{user.name}</TableCell>
+            <TableCell>{user.email}</TableCell>
+            <TableCell>
+              <Badge variant="outline">{user.role}</Badge>
+            </TableCell>
+            <TableCell>
+              <Badge variant={user.active ? "default" : "secondary"}>
+                {user.active ? "Active" : "Inactive"}
+              </Badge>
+            </TableCell>
+            <TableCell className="text-right">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem>View Details</DropdownMenuItem>
+                  <DropdownMenuItem className="text-destructive">
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+```
+
+### Tabs Pattern
+
+```typescript
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+export function ProfileTabs() {
+  return (
+    <Tabs defaultValue="overview" className="w-full">
+      <TabsList className="grid w-full grid-cols-3">
+        <TabsTrigger value="overview">Overview</TabsTrigger>
+        <TabsTrigger value="activity">Activity</TabsTrigger>
+        <TabsTrigger value="settings">Settings</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="overview">
+        <Card>
+          <CardHeader>
+            <CardTitle>Overview</CardTitle>
+            <CardDescription>Your account overview</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* Overview content */}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="activity">
+        <Card>
+          <CardHeader>
+            <CardTitle>Activity</CardTitle>
+            <CardDescription>Recent activity on your account</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* Activity content */}
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="settings">
+        <Card>
+          <CardHeader>
+            <CardTitle>Settings</CardTitle>
+            <CardDescription>Manage your account settings</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* Settings content */}
+          </CardContent>
+        </Card>
+      </TabsContent>
+    </Tabs>
+  );
+}
+```
+
+## Advanced Patterns
+
+### Skeleton Loading States
+
+```typescript
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
+export function PostCardSkeleton() {
+  return (
+    <Card>
+      <CardHeader>
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-3 w-1/2 mt-2" />
+      </CardHeader>
+      <CardContent>
+        <Skeleton className="h-20 w-full" />
+      </CardContent>
+    </Card>
+  );
+}
+
+export function PostsListSkeleton() {
+  return (
+    <div className="space-y-4">
+      {[...Array(3)].map((_, i) => (
+        <PostCardSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
+```
+
+### Toast Notifications
+
+```typescript
+import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+
+export function DeleteButton({ itemId }: { itemId: Id<"items"> }) {
+  const { toast } = useToast();
+  const deleteItem = useMutation(api.items.delete);
+
+  const handleDelete = async () => {
+    try {
+      await deleteItem({ id: itemId });
+      toast({
+        title: "Success",
+        description: "Item deleted successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete item",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
-    <div className="flex justify-center items-center">
-      <div
-        className={`${sizeClasses[size]} border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin`}
-      />
-    </div>
+    <Button variant="destructive" onClick={handleDelete}>
+      Delete
+    </Button>
   );
 }
 ```
 
-### Empty State
+### Dropdown Menu with Actions
 
 ```typescript
-interface EmptyStateProps {
-  icon?: React.ReactNode;
-  title: string;
-  description?: string;
-  action?: React.ReactNode;
-}
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { MoreVertical, Edit, Trash, Copy, Archive } from "lucide-react";
 
-export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
+export function ItemActions({ item }: { item: Item }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
-      {icon && <div className="mb-4 text-gray-400">{icon}</div>}
-      <h3 className="text-lg font-medium text-gray-900 mb-2">{title}</h3>
-      {description && <p className="text-gray-600 mb-4 max-w-sm">{description}</p>}
-      {action}
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon">
+          <MoreVertical className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Edit className="mr-2 h-4 w-4" />
+          Edit
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Copy className="mr-2 h-4 w-4" />
+          Duplicate
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Archive className="mr-2 h-4 w-4" />
+          Archive
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="text-destructive">
+          <Trash className="mr-2 h-4 w-4" />
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 ```
 
-### Error Message
+## Data Fetching with shadcn/ui
 
-```typescript
-interface ErrorMessageProps {
-  message: string;
-  retry?: () => void;
-}
-
-export function ErrorMessage({ message, retry }: ErrorMessageProps) {
-  return (
-    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-      <p className="text-red-800">{message}</p>
-      {retry && (
-        <button
-          onClick={retry}
-          className="mt-2 text-sm text-red-600 hover:text-red-700 font-medium"
-        >
-          Try again
-        </button>
-      )}
-    </div>
-  );
-}
-```
-
-## Data Fetching Patterns
-
-### List with Loading and Error States
+### List with Loading and Empty States
 
 ```typescript
 "use client";
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { FileX } from "lucide-react";
 
 export function PostsList() {
   const posts = useQuery(api.posts.list);
 
   // Loading state
   if (posts === undefined) {
-    return <LoadingSpinner />;
-  }
-
-  // Error state (Convex returns undefined on error)
-  if (posts === null) {
-    return <ErrorMessage message="Failed to load posts" />;
+    return (
+      <div className="space-y-4">
+        {[...Array(3)].map((_, i) => (
+          <Card key={i} className="p-6">
+            <Skeleton className="h-4 w-3/4 mb-2" />
+            <Skeleton className="h-3 w-1/2 mb-4" />
+            <Skeleton className="h-20 w-full" />
+          </Card>
+        ))}
+      </div>
+    );
   }
 
   // Empty state
   if (posts.length === 0) {
     return (
-      <EmptyState
-        title="No posts yet"
-        description="Be the first to create a post!"
-        action={<Button>Create Post</Button>}
-      />
+      <Card className="p-12">
+        <div className="flex flex-col items-center justify-center text-center">
+          <FileX className="h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Get started by creating your first post.
+          </p>
+          <Button>Create Post</Button>
+        </div>
+      </Card>
     );
   }
 
@@ -265,57 +493,21 @@ export function PostsList() {
 }
 ```
 
-### Infinite Scroll / Pagination
+### Search with Debounce
 
 ```typescript
 "use client";
 
-import { usePaginatedQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-
-export function InfinitePostsList() {
-  const { results, status, loadMore } = usePaginatedQuery(
-    api.posts.list,
-    {},
-    { initialNumItems: 10 }
-  );
-
-  return (
-    <div className="space-y-4">
-      {results.map(post => (
-        <PostCard key={post._id} post={post} />
-      ))}
-
-      {status === "CanLoadMore" && (
-        <button
-          onClick={() => loadMore(10)}
-          className="w-full py-2 bg-gray-100 hover:bg-gray-200 rounded"
-        >
-          Load More
-        </button>
-      )}
-
-      {status === "LoadingMore" && <LoadingSpinner />}
-    </div>
-  );
-}
-```
-
-## Advanced Patterns
-
-### Debounced Search
-
-```typescript
-"use client";
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
 
 export function SearchPosts() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearch = useDebounce(searchTerm, 300);
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 300);
 
   const results = useQuery(
     api.posts.search,
@@ -323,27 +515,30 @@ export function SearchPosts() {
   );
 
   return (
-    <div>
-      <input
-        type="search"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search posts..."
-        className="w-full px-4 py-2 border rounded-md"
-      />
+    <div className="space-y-4">
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search posts..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="pl-10"
+        />
+      </div>
 
-      {debouncedSearch && (
-        <div className="mt-4">
-          {results === undefined ? (
-            <LoadingSpinner />
-          ) : results.length === 0 ? (
-            <p className="text-gray-600">No results found</p>
+      {debouncedSearch && results && (
+        <div className="space-y-2">
+          {results.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-8">
+              No results found for "{debouncedSearch}"
+            </p>
           ) : (
-            <div className="space-y-2">
-              {results.map(post => (
-                <PostCard key={post._id} post={post} />
-              ))}
-            </div>
+            results.map(post => (
+              <Card key={post._id} className="p-4">
+                <h3 className="font-semibold">{post.title}</h3>
+                <p className="text-sm text-muted-foreground">{post.excerpt}</p>
+              </Card>
+            ))
           )}
         </div>
       )}
@@ -352,58 +547,13 @@ export function SearchPosts() {
 }
 ```
 
-### Optimistic Updates
+## Best Practices
 
-```typescript
-"use client";
-
-import { useMutation, useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { useState } from "react";
-
-export function TodoList() {
-  const todos = useQuery(api.todos.list);
-  const toggleTodo = useMutation(api.todos.toggle);
-  const [optimisticUpdates, setOptimisticUpdates] = useState<Set<string>>(new Set());
-
-  const handleToggle = async (todoId: string) => {
-    // Add to optimistic updates
-    setOptimisticUpdates(prev => new Set(prev).add(todoId));
-
-    try {
-      await toggleTodo({ id: todoId });
-    } finally {
-      // Remove from optimistic updates
-      setOptimisticUpdates(prev => {
-        const next = new Set(prev);
-        next.delete(todoId);
-        return next;
-      });
-    }
-  };
-
-  if (!todos) return <LoadingSpinner />;
-
-  return (
-    <ul className="space-y-2">
-      {todos.map(todo => (
-        <li key={todo._id} className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={
-              optimisticUpdates.has(todo._id)
-                ? !todo.completed
-                : todo.completed
-            }
-            onChange={() => handleToggle(todo._id)}
-            className="h-4 w-4"
-          />
-          <span className={todo.completed ? "line-through text-gray-500" : ""}>
-            {todo.text}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-```
+1. **Always use shadcn/ui components** instead of building custom ones
+2. **Customize through className** prop when needed
+3. **Use Radix UI primitives** for complex interactions (shadcn is built on Radix)
+4. **Follow shadcn naming conventions** for consistency
+5. **Use lucide-react** for icons (official shadcn icon library)
+6. **Leverage composition** - combine simple components to build complex UIs
+7. **Use Skeleton components** for loading states instead of spinners
+8. **Toast for notifications** instead of alerts or modals for simple feedback

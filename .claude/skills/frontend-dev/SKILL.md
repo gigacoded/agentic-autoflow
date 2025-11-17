@@ -1,13 +1,69 @@
-# Frontend Development - React, Next.js, Tailwind CSS
+# Frontend Development - React, Next.js, Tailwind CSS, shadcn/ui
 
-You are working with a modern React frontend using Next.js and Tailwind CSS. This skill provides guidelines for developing frontend components and features.
+You are working with a modern React frontend using Next.js, Tailwind CSS, and shadcn/ui components. This skill provides guidelines for developing frontend components and features.
 
 ## Tech Stack
 
 - **React 18+**: Component-based UI library
 - **Next.js 14+**: React framework with App Router
 - **Tailwind CSS**: Utility-first CSS framework
+- **shadcn/ui**: Beautifully designed components built with Radix UI
 - **TypeScript**: Type-safe JavaScript
+
+## shadcn/ui Integration
+
+**IMPORTANT**: This project uses shadcn/ui for UI components. Always prefer shadcn/ui components over building custom components from scratch.
+
+### Installing shadcn/ui Components
+
+```bash
+# Initialize shadcn/ui (if not already done)
+npx shadcn@latest init
+
+# Add individual components as needed
+npx shadcn@latest add button
+npx shadcn@latest add card
+npx shadcn@latest add dialog
+npx shadcn@latest add form
+npx shadcn@latest add input
+npx shadcn@latest add select
+npx shadcn@latest add table
+npx shadcn@latest add dropdown-menu
+npx shadcn@latest add sheet
+npx shadcn@latest add toast
+```
+
+### Available shadcn/ui Components
+
+Common components to use:
+- **Button**: Primary UI actions
+- **Card**: Container for content
+- **Dialog/Sheet**: Modals and side panels
+- **Form**: Form handling with React Hook Form + Zod
+- **Input/Textarea**: Form inputs
+- **Select/Combobox**: Dropdowns
+- **Table**: Data tables
+- **Toast**: Notifications
+- **Dropdown Menu**: Context menus
+- **Tabs**: Tabbed interfaces
+- **Badge**: Status indicators
+- **Avatar**: User avatars
+- **Skeleton**: Loading states
+
+### shadcn/ui File Location
+
+Components are installed in `components/ui/` and can be customized:
+
+```
+components/
+├── ui/                  # shadcn/ui components (customizable)
+│   ├── button.tsx
+│   ├── card.tsx
+│   ├── dialog.tsx
+│   ├── form.tsx
+│   └── ...
+└── custom/              # Your custom components
+```
 
 ## Core Principles
 
@@ -87,50 +143,104 @@ export function CreatePostForm() {
 }
 ```
 
-## React Component Patterns
+## React Component Patterns with shadcn/ui
 
-### Functional Components with TypeScript
+### Using shadcn/ui Components
 
+**Button Component:**
 ```typescript
-interface ButtonProps {
-  variant?: "primary" | "secondary" | "danger";
-  size?: "sm" | "md" | "lg";
-  children: React.ReactNode;
-  onClick?: () => void;
-  disabled?: boolean;
-  className?: string;
-}
+import { Button } from "@/components/ui/button";
 
-export function Button({
-  variant = "primary",
-  size = "md",
-  children,
-  onClick,
-  disabled = false,
-  className = "",
-}: ButtonProps) {
-  const baseStyles = "rounded font-medium transition-colors";
-  const variantStyles = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700",
-    secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300",
-    danger: "bg-red-600 text-white hover:bg-red-700",
-  };
-  const sizeStyles = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-4 py-2 text-base",
-    lg: "px-6 py-3 text-lg",
-  };
-
+export function Example() {
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className} ${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
-      }`}
-    >
-      {children}
-    </button>
+    <div className="space-x-2">
+      {/* Variants */}
+      <Button variant="default">Default</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="destructive">Destructive</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="link">Link</Button>
+
+      {/* Sizes */}
+      <Button size="sm">Small</Button>
+      <Button size="default">Default</Button>
+      <Button size="lg">Large</Button>
+      <Button size="icon">
+        <IconComponent />
+      </Button>
+
+      {/* States */}
+      <Button disabled>Disabled</Button>
+      <Button loading>Loading</Button>
+    </div>
+  );
+}
+```
+
+**Card Component:**
+```typescript
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+export function PostCard({ post }: { post: Post }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{post.title}</CardTitle>
+        <CardDescription>{post.author}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p>{post.content}</p>
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <Button variant="outline">Edit</Button>
+        <Button variant="destructive">Delete</Button>
+      </CardFooter>
+    </Card>
+  );
+}
+```
+
+**Dialog/Modal Component:**
+```typescript
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+
+export function ConfirmDialog() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="destructive">Delete Post</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you sure?</DialogTitle>
+          <DialogDescription>
+            This action cannot be undone. This will permanently delete the post.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline">Cancel</Button>
+          <Button variant="destructive">Delete</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 ```
@@ -275,82 +385,174 @@ export function LikeButton({ postId }: { postId: Id<"posts"> }) {
 }
 ```
 
-## Form Handling
+## Form Handling with shadcn/ui
 
-### React Hook Form Pattern
+### shadcn/ui Form Component
+
+**IMPORTANT**: Always use shadcn/ui Form components for forms. They integrate React Hook Form + Zod validation with accessible markup.
 
 ```typescript
 "use client";
 
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { toast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   content: z.string().min(10, "Content must be at least 10 characters"),
 });
 
-type FormData = z.infer<typeof formSchema>;
-
 export function CreatePostForm() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<FormData>({
+  const createPost = useMutation(api.posts.create);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "",
+      content: "",
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await createPost(values);
+      toast({
+        title: "Success",
+        description: "Post created successfully",
+      });
+      form.reset();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create post",
+        variant: "destructive",
+      });
+    }
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter post title" {...field} />
+              </FormControl>
+              <FormDescription>
+                This is the title of your post.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="content"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Content</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Write your content here"
+                  className="min-h-[100px]"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit" disabled={form.formState.isSubmitting}>
+          {form.formState.isSubmitting ? "Creating..." : "Create Post"}
+        </Button>
+      </form>
+    </Form>
+  );
+}
+```
+
+### Form with Select and Multiple Fields
+
+```typescript
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const formSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  category: z.string(),
+  bio: z.string().optional(),
+});
+
+export function UserProfileForm() {
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
-  const createPost = useMutation(api.posts.create);
-
-  const onSubmit = async (data: FormData) => {
-    await createPost(data);
-    reset();
-  };
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label htmlFor="title" className="block text-sm font-medium mb-1">
-          Title
-        </label>
-        <input
-          {...register("title")}
-          id="title"
-          className="w-full px-3 py-2 border rounded-md"
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {errors.title && (
-          <p className="text-red-600 text-sm mt-1">{errors.title.message}</p>
-        )}
-      </div>
 
-      <div>
-        <label htmlFor="content" className="block text-sm font-medium mb-1">
-          Content
-        </label>
-        <textarea
-          {...register("content")}
-          id="content"
-          rows={4}
-          className="w-full px-3 py-2 border rounded-md"
+        <FormField
+          control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="tech">Technology</SelectItem>
+                  <SelectItem value="design">Design</SelectItem>
+                  <SelectItem value="business">Business</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {errors.content && (
-          <p className="text-red-600 text-sm mt-1">{errors.content.message}</p>
-        )}
-      </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-      >
-        {isSubmitting ? "Creating..." : "Create Post"}
-      </button>
-    </form>
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
   );
 }
 ```
