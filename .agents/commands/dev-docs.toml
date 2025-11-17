@@ -1,0 +1,31 @@
+description = "Create or update dev docs for the current task"
+prompt = """
+Create/update dev documentation in `dev/active/` for the current task.
+
+**Current Context**:
+- Git status: !{git status}
+- Working directory: !{pwd}
+- Recent commits: !{git log --oneline -5}
+
+**Create Documentation**:
+
+1. **Task Name**: Generate from current work
+2. **Plan** (`{task}-plan.md`):
+   - Objectives
+   - Approach
+   - Technical decisions
+
+3. **Context** (`{task}-context.md`):
+   - Current status
+   - Blockers/challenges
+   - Key decisions made
+
+4. **Tasks** (`{task}-tasks.md`):
+   - [ ] Task 1
+   - [ ] Task 2
+   - [ ] Task 3
+
+Format as markdown with clear sections.
+
+Also reference: @.agents/skills/task-management.md for dev docs patterns.
+"""

@@ -1,0 +1,11 @@
+description = "Load a specific skill"
+prompt = """
+Load and activate the skill: @.agents/skills/{{args}}.md
+
+Apply this skill's patterns and best practices to the current task.
+
+Also load all rules from `.agents/rules/` to ensure compliance with project standards.
+
+Declare in your response:
+**Skills**: {{args}} | **Rules**: api-patterns, component-structure, commit-format, error-handling
+"""

@@ -1,0 +1,27 @@
+description = "Show full project context and loaded files"
+prompt = """
+Display the current context being used:
+
+**1. AGENTS.md Protocol**:
+@AGENTS.md
+
+**2. Loaded Skills** (show which are active):
+- Check working directory and recent messages for triggers
+- List applicable skills from `.agents/skills/`
+
+**3. Active Rules** (always loaded):
+- api-patterns.md
+- component-structure.md
+- commit-format.md
+- error-handling.md
+
+**4. Hierarchical GEMINI.md Files**:
+Current directory: !{pwd}
+List GEMINI.md files that should be loaded based on location.
+
+**5. Recent Work**:
+!{git log --oneline -3}
+!{git status}
+
+Summarize what context is currently active and ready to guide responses.
+"""

@@ -1,0 +1,18 @@
+description = "Run quality checks on the codebase"
+prompt = """
+Run quality checks and report any errors:
+
+**TypeScript Check**:
+!{npx tsc --noEmit}
+
+**Linting Check**:
+!{npm run lint}
+
+**Summary**:
+1. Parse the output above
+2. Identify any errors or warnings
+3. Provide specific fixes for each issue
+4. If all checks pass, confirm with ✅
+
+Remember to apply our error-handling rules when fixing issues.
+"""
