@@ -38,7 +38,55 @@ This template provides a comprehensive workflow system for Claude Code, extracte
 - Node.js and npm (for TypeScript hook)
 - Git (optional, for workflow features)
 
-### 5-Minute Setup
+### 🚀 Automated Setup (Recommended - 2 Minutes)
+
+**NEW!** Use the automated installer for hassle-free deployment:
+
+```bash
+# Clone template
+git clone https://github.com/gigacoded/agentic-autoflow.git
+cd agentic-autoflow
+
+# Run automated installer in your target project
+./setup.sh /path/to/your/project
+
+# Follow interactive prompts:
+# - Enter project name
+# - Enter your name
+# - Confirm customizations
+# ✅ Done! Infrastructure installed and customized
+```
+
+**What setup.sh does**:
+- ✅ Copies `.claude/` directory structure
+- ✅ Installs `task-management-dev` skill
+- ✅ Creates `docs/delivery/` with backlog template
+- ✅ Creates `dev/active/` for dev docs
+- ✅ Copies and customizes `CLAUDE.md`
+- ✅ Updates `.gitignore`
+- ✅ Replaces placeholders ({{PROJECT_NAME}}, etc.)
+- ✅ Provides next steps guidance
+
+Then install global hooks (one-time, applies to all projects):
+
+```bash
+# Create global hooks directory
+mkdir -p ~/.claude/hooks
+
+# Copy hooks from template
+cp .claude/hooks-global/* ~/.claude/hooks/
+
+# Register hooks
+claude hooks add UserPromptSubmit ~/.claude/hooks/user-prompt-submit.ts --user
+claude hooks add PostToolUse ~/.claude/hooks/stop.ts --user --matcher "Edit|Write"
+
+# Verify
+claude hooks list
+```
+
+### Manual Setup (Alternative - 5 Minutes)
+
+If you prefer manual control:
 
 **Step 1: Clone Template**
 
@@ -153,9 +201,12 @@ See [BRANCH-README.md](https://github.com/gigacoded/agentic-autoflow/blob/exampl
 ├── CLAUDE.template.md               # Lean CLAUDE.md template
 └── README.md                        # Setup guide (this for .claude dir)
 
-docs/delivery/                       # Optional: Task-driven development
-├── backlog.md.template              # PBI tracking template
-└── README.md                        # Task workflow documentation
+docs/delivery/                       # Task-driven development
+├── backlog.md                       # PBI tracking (ready to use)
+└── examples/                        # Example PBI structure
+    └── 1/                           # Complete example PBI
+        ├── prd.md                   # Product Requirements Doc (200+ lines)
+        └── tasks.md                 # Task breakdown (5 detailed tasks)
 
 dev/active/                          # Dev docs (created by slash commands)
 └── .gitkeep
