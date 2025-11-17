@@ -357,4 +357,4 @@ Comprehensive testing and documentation for the profile feature.
 
 ---
 
-For complete task management workflow, see `.claude/skills/task-management-dev/SKILL.md`
+For complete task management workflow, see `.gemini/skills/task-management-dev/SKILL.md`

@@ -1,12 +1,12 @@
 # Setup Guide
 
-Detailed installation instructions for the Claude Code Workflow Template.
+Detailed installation instructions for the Gemini CLI Workflow Template.
 
 ## Prerequisites
 
 Before you begin:
 
-- [ ] Claude Code CLI installed (`claude --version` works)
+- [ ] Gemini CLI CLI installed (`claude --version` works)
 - [ ] Node.js and npm installed (for TypeScript hook)
 - [ ] Git installed (optional, for workflow features)
 - [ ] Existing project OR ready to start new one
@@ -44,7 +44,7 @@ rm -rf .git
 git init
 
 # Clean up
-rm -rf .claude/hooks-global  # We'll install these globally
+rm -rf .gemini/hooks-global  # We'll install these globally
 ```
 
 **For Existing Project**:
@@ -52,8 +52,8 @@ rm -rf .claude/hooks-global  # We'll install these globally
 # Navigate to your project
 cd your-existing-project
 
-# Copy .claude directory
-cp -r /path/to/agentic-autoflow/.claude .
+# Copy .gemini directory
+cp -r /path/to/agentic-autoflow/.gemini .
 
 # Optional: Copy docs structure
 cp -r /path/to/agentic-autoflow/docs/delivery ./docs/
@@ -63,31 +63,31 @@ cp -r /path/to/agentic-autoflow/docs/delivery ./docs/
 
 ```bash
 # Create global hooks directory (if doesn't exist)
-mkdir -p ~/.claude/hooks
+mkdir -p ~/.gemini/hooks
 
 # Copy hooks from template
-cp .claude/hooks-global/user-prompt-submit.ts ~/.claude/hooks/
-cp .claude/hooks-global/stop.ts ~/.claude/hooks/
+cp .gemini/hooks-global/user-prompt-submit.ts ~/.gemini/hooks/
+cp .gemini/hooks-global/stop.ts ~/.gemini/hooks/
 
 # Register hooks globally
-claude hooks add UserPromptSubmit ~/.claude/hooks/user-prompt-submit.ts --user
-claude hooks add PostToolUse ~/.claude/hooks/stop.ts --user --matcher "Edit|Write"
+gemini add UserPromptSubmit ~/.gemini/hooks/user-prompt-submit.ts --user
+gemini add PostToolUse ~/.gemini/hooks/stop.ts --user --matcher "Edit|Write"
 
 # Verify registration
-claude hooks list
+gemini list
 ```
 
 **Expected output**:
 ```
-UserPromptSubmit: ~/.claude/hooks/user-prompt-submit.ts (user-level)
-PostToolUse: ~/.claude/hooks/stop.ts (user-level, matcher: Edit|Write)
+UserPromptSubmit: ~/.gemini/hooks/user-prompt-submit.ts (user-level)
+PostToolUse: ~/.gemini/hooks/stop.ts (user-level, matcher: Edit|Write)
 ```
 
 ### Step 3: Make Hooks Executable
 
 ```bash
-chmod +x ~/.claude/hooks/user-prompt-submit.ts
-chmod +x ~/.claude/hooks/stop.ts
+chmod +x ~/.gemini/hooks/user-prompt-submit.ts
+chmod +x ~/.gemini/hooks/stop.ts
 ```
 
 ### Step 4: Verify Hook Dependencies
@@ -96,17 +96,17 @@ The hooks require Node.js and tsx. Test them:
 
 ```bash
 # Test user-prompt-submit hook
-echo '{"prompt":"test backend query"}' | ~/.claude/hooks/user-prompt-submit.ts
+echo '{"prompt":"test backend query"}' | ~/.gemini/hooks/user-prompt-submit.ts
 
 # Test stop hook (will gracefully skip if not TypeScript project)
-echo '{"tool_name":"Edit"}' | ~/.claude/hooks/stop.ts
+echo '{"tool_name":"Edit"}' | ~/.gemini/hooks/stop.ts
 ```
 
-### Step 5: Create Your CLAUDE.md
+### Step 5: Create Your GEMINI.md
 
 ```bash
 # Copy template to project root
-cp .claude/CLAUDE.template.md CLAUDE.md
+cp .gemini/CLAUDE.template.md GEMINI.md
 
 # Edit for your project
 # Replace:
@@ -138,14 +138,14 @@ The template includes `example-skill` as a reference. You can:
 
 ```bash
 # Create skill directory
-mkdir -p .claude/skills/my-tech-stack
-mkdir -p .claude/skills/my-tech-stack/resources
+mkdir -p .gemini/skills/my-tech-stack
+mkdir -p .gemini/skills/my-tech-stack/resources
 
 # Create SKILL.md (see SKILLS-GUIDE.md for details)
-touch .claude/skills/my-tech-stack/SKILL.md
+touch .gemini/skills/my-tech-stack/SKILL.md
 
 # Create skill-config.json
-touch .claude/skills/my-tech-stack/skill-config.json
+touch .gemini/skills/my-tech-stack/skill-config.json
 ```
 
 Example `skill-config.json`:
@@ -161,7 +161,7 @@ Example `skill-config.json`:
 
 ### Step 7: Update skill-rules.json
 
-Edit `.claude/skills/skill-rules.json` to add triggers for your skills:
+Edit `.gemini/skills/skill-rules.json` to add triggers for your skills:
 
 ```json
 {
@@ -199,7 +199,7 @@ Edit `.claude/skills/skill-rules.json` to add triggers for your skills:
 
 **Test 1: Skill Activation**
 ```bash
-# Start Claude Code
+# Start Gemini CLI
 claude
 
 # Type a message with your skill keyword
@@ -210,7 +210,7 @@ Expected: See skill activation message before Claude responds.
 
 **Test 2: TypeScript Hook (if applicable)**
 ```bash
-# In Claude Code session
+# In Gemini CLI session
 # Ask Claude to edit a TypeScript file
 # Introduce a type error (e.g., assign string to number)
 ```
@@ -219,7 +219,7 @@ Expected: See TypeScript error message after Edit/Write.
 
 **Test 3: Dev Docs Commands**
 ```bash
-# In Claude Code session
+# In Gemini CLI session
 # Type: /create-dev-docs
 ```
 
@@ -229,7 +229,7 @@ Expected: Prompt for task name, creates dev docs structure.
 
 ```bash
 git add .
-git commit -m "Initial setup with Claude Code workflow template"
+git commit -m "Initial setup with Gemini CLI workflow template"
 ```
 
 ---
@@ -240,23 +240,23 @@ If you only want quality automation:
 
 ```bash
 # Create global hooks directory
-mkdir -p ~/.claude/hooks
+mkdir -p ~/.gemini/hooks
 
 # Copy hooks
-cp /path/to/template/.claude/hooks-global/* ~/.claude/hooks/
+cp /path/to/template/.gemini/hooks-global/* ~/.gemini/hooks/
 
 # Register
-claude hooks add UserPromptSubmit ~/.claude/hooks/user-prompt-submit.ts --user
-claude hooks add PostToolUse ~/.claude/hooks/stop.ts --user --matcher "Edit|Write"
+gemini add UserPromptSubmit ~/.gemini/hooks/user-prompt-submit.ts --user
+gemini add PostToolUse ~/.gemini/hooks/stop.ts --user --matcher "Edit|Write"
 
 # Make executable
-chmod +x ~/.claude/hooks/*.ts
+chmod +x ~/.gemini/hooks/*.ts
 
 # Verify
-claude hooks list
+gemini list
 ```
 
-**You can skip**: Skills, dev docs, CLAUDE.md template
+**You can skip**: Skills, dev docs, GEMINI.md template
 
 ---
 
@@ -266,15 +266,15 @@ If you want auto-activation without global hooks:
 
 ```bash
 # Copy skills directory
-cp -r /path/to/template/.claude/skills .claude/
+cp -r /path/to/template/.gemini/skills .gemini/
 
 # Copy commands directory
-cp -r /path/to/template/.claude/commands .claude/
+cp -r /path/to/template/.gemini/commands .gemini/
 
-# Create CLAUDE.md
-cp /path/to/template/.claude/CLAUDE.template.md CLAUDE.md
+# Create GEMINI.md
+cp /path/to/template/.gemini/CLAUDE.template.md GEMINI.md
 
-# Edit CLAUDE.md and skill-rules.json for your project
+# Edit GEMINI.md and skill-rules.json for your project
 ```
 
 **You can skip**: Global hooks installation
@@ -287,12 +287,12 @@ cp /path/to/template/.claude/CLAUDE.template.md CLAUDE.md
 
 After installation:
 
-- [ ] `claude hooks list` shows registered hooks
+- [ ] `gemini list` shows registered hooks
 - [ ] Skill activation triggers on relevant keywords
 - [ ] TypeScript errors appear after edits (if TypeScript project)
 - [ ] `/create-dev-docs` command works
 - [ ] `/dev-docs-status` command works
-- [ ] CLAUDE.md reflects your project
+- [ ] GEMINI.md reflects your project
 - [ ] skill-rules.json has your skill triggers
 
 ---
@@ -306,23 +306,23 @@ After installation:
 **Checks**:
 ```bash
 # Are hooks registered?
-claude hooks list
+gemini list
 
 # Are hooks executable?
-ls -la ~/.claude/hooks/
+ls -la ~/.gemini/hooks/
 
 # Can hooks run?
-echo '{"prompt":"test"}' | ~/.claude/hooks/user-prompt-submit.ts
+echo '{"prompt":"test"}' | ~/.gemini/hooks/user-prompt-submit.ts
 ```
 
 **Fixes**:
 ```bash
 # Make executable
-chmod +x ~/.claude/hooks/*.ts
+chmod +x ~/.gemini/hooks/*.ts
 
 # Re-register
-claude hooks remove UserPromptSubmit
-claude hooks add UserPromptSubmit ~/.claude/hooks/user-prompt-submit.ts --user
+gemini remove UserPromptSubmit
+gemini add UserPromptSubmit ~/.gemini/hooks/user-prompt-submit.ts --user
 ```
 
 ### Skill Not Activating
@@ -330,14 +330,14 @@ claude hooks add UserPromptSubmit ~/.claude/hooks/user-prompt-submit.ts --user
 **Problem**: Skill doesn't inject when expected
 
 **Checks**:
-- Is skill-rules.json in `.claude/skills/`?
+- Is skill-rules.json in `.gemini/skills/`?
 - Does your keyword match what's in `skill-rules.json`?
 - Is UserPromptSubmit hook registered?
 
 **Fixes**:
 - Add more keywords/patterns to skill-rules.json
 - Check for typos in skill names
-- Restart Claude Code
+- Restart Gemini CLI
 
 ### TypeScript Hook Errors
 
@@ -365,16 +365,16 @@ npm install --save-dev typescript
 **Problem**: `/create-dev-docs` not recognized
 
 **Checks**:
-- Are command files in `.claude/commands/`?
+- Are command files in `.gemini/commands/`?
 - Do they have `.md` extension?
-- Did you restart Claude Code?
+- Did you restart Gemini CLI?
 
 **Fix**:
 ```bash
 # Copy commands
-cp /path/to/template/.claude/commands/*.md .claude/commands/
+cp /path/to/template/.gemini/commands/*.md .gemini/commands/
 
-# Restart Claude Code
+# Restart Gemini CLI
 ```
 
 ---
@@ -396,13 +396,13 @@ To remove the workflow:
 
 ```bash
 # Remove global hooks
-claude hooks remove UserPromptSubmit
-claude hooks remove PostToolUse
-rm -rf ~/.claude/hooks/
+gemini remove UserPromptSubmit
+gemini remove PostToolUse
+rm -rf ~/.gemini/hooks/
 
 # Remove from project
-rm -rf .claude/
-rm CLAUDE.md
+rm -rf .gemini/
+rm GEMINI.md
 
 # Clean up dev docs (if desired)
 rm -rf dev/active/

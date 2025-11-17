@@ -1,6 +1,6 @@
 # Skills Creation Guide
 
-Complete guide to creating and managing auto-activating skills in the Claude Code Workflow.
+Complete guide to creating and managing auto-activating skills in the Gemini CLI Workflow.
 
 ## What Are Skills?
 
@@ -13,10 +13,10 @@ Skills are context-aware documentation that Claude references automatically when
 
 ## Skill Structure
 
-Each skill lives in `.claude/skills/[skill-name]/`:
+Each skill lives in `.gemini/skills/[skill-name]/`:
 
 ```
-.claude/skills/
+.gemini/skills/
 └── my-skill/
     ├── SKILL.md              # Main skill content (required)
     ├── skill-config.json     # Metadata (optional but recommended)
@@ -34,7 +34,7 @@ Ask yourself:
 - What technology/framework does this cover?
 - What common mistakes happen in this area?
 - What patterns do I wish Claude knew about?
-- Is this big enough for a skill or just a CLAUDE.md section?
+- Is this big enough for a skill or just a GEMINI.md section?
 
 **Good skill candidates**:
 - Backend API development with your framework
@@ -44,7 +44,7 @@ Ask yourself:
 - Authentication/authorization
 - Deployment processes
 
-**Not good for skills** (use CLAUDE.md instead):
+**Not good for skills** (use GEMINI.md instead):
 - Project-specific constants
 - Single-line reminders
 - Git commit format
@@ -54,7 +54,7 @@ Ask yourself:
 
 ```bash
 # Replace 'backend-api' with your skill name
-mkdir -p .claude/skills/backend-api/resources
+mkdir -p .gemini/skills/backend-api/resources
 ```
 
 ### Step 3: Write SKILL.md
@@ -152,7 +152,7 @@ try {
 
 ### Step 4: Add skill-config.json
 
-Create `.claude/skills/backend-api/skill-config.json`:
+Create `.gemini/skills/backend-api/skill-config.json`:
 
 ```json
 {
@@ -175,7 +175,7 @@ Create `.claude/skills/backend-api/skill-config.json`:
 
 ### Step 5: Register Triggers
 
-Edit `.claude/skills/skill-rules.json`:
+Edit `.gemini/skills/skill-rules.json`:
 
 ```json
 {
@@ -245,7 +245,7 @@ Edit `.claude/skills/skill-rules.json`:
 ### Step 6: Test Activation
 
 ```bash
-# Start Claude Code
+# Start Gemini CLI
 claude
 
 # Test with keyword
@@ -258,7 +258,7 @@ claude
 - Check skill-rules.json for typos
 - Try more specific keywords
 - Check that UserPromptSubmit hook is registered
-- Restart Claude Code
+- Restart Gemini CLI
 
 ## Skill Types
 
@@ -406,7 +406,7 @@ my-skill/
 For complex domains, create related skills:
 
 ```
-.claude/skills/
+.gemini/skills/
 ├── backend-core/          # Core backend principles
 ├── backend-auth/          # Authentication patterns
 ├── backend-database/      # Database operations
@@ -449,7 +449,7 @@ This skill focuses on data operations assuming authenticated context.
 For projects with multiple versions:
 
 ```
-.claude/skills/
+.gemini/skills/
 ├── api-v1/           # Legacy API patterns
 └── api-v2/           # Current API patterns
 ```
@@ -512,7 +512,7 @@ Use file path triggers to activate the right one:
 **Check triggers**:
 ```bash
 # View skill-rules.json
-cat .claude/skills/skill-rules.json
+cat .gemini/skills/skill-rules.json
 
 # Look for your keywords
 ```
@@ -521,7 +521,7 @@ cat .claude/skills/skill-rules.json
 - Typo in keyword
 - Pattern too specific
 - UserPromptSubmit hook not registered
-- Need to restart Claude Code
+- Need to restart Gemini CLI
 
 **Fix**:
 - Add more keywords

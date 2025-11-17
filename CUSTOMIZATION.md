@@ -1,6 +1,6 @@
 # Customization Guide
 
-How to adapt the Claude Code Workflow Template for your specific project and team.
+How to adapt the Gemini CLI Workflow Template for your specific project and team.
 
 ## Overview
 
@@ -14,18 +14,18 @@ This template is designed to be forked and customized. This guide shows you how 
 ## Quick Customization Path
 
 1. **Install template** (see SETUP.md)
-2. **Adapt CLAUDE.md** (10 minutes)
+2. **Adapt GEMINI.md** (10 minutes)
 3. **Create 1-3 skills** for your stack (30-60 minutes)
 4. **Customize hooks** if needed (15 minutes)
 5. **Test and iterate** (ongoing)
 
 ---
 
-## Adapting CLAUDE.md
+## Adapting GEMINI.md
 
 ### Step 1: Update Project Basics
 
-Edit `CLAUDE.md` and replace placeholders:
+Edit `GEMINI.md` and replace placeholders:
 
 ```markdown
 # [Your Project Name] Development Infrastructure
@@ -85,7 +85,7 @@ All errors must extend `AppError` base class with proper error codes.
 
 ### Step 4: Keep It Lean
 
-Target: **200-300 lines** for CLAUDE.md
+Target: **200-300 lines** for GEMINI.md
 
 **Move to skills**:
 - Detailed patterns and examples
@@ -93,7 +93,7 @@ Target: **200-300 lines** for CLAUDE.md
 - Complex workflows
 - Reference tables
 
-**Keep in CLAUDE.md**:
+**Keep in GEMINI.md**:
 - Quick start commands
 - Project structure overview
 - Core principles
@@ -227,12 +227,12 @@ Target: **200-300 lines** for CLAUDE.md
 
 1. **Install Chrome DevTools MCP**:
 ```bash
-claude mcp add chrome-devtools "npx chrome-devtools-mcp"
+gemini add chrome-devtools "npx chrome-devtools-mcp"
 ```
 
 2. **Create E2E Testing Skill**:
 
-Create `.claude/skills/e2e-testing-framework/SKILL.md`:
+Create `.gemini/skills/e2e-testing-framework/SKILL.md`:
 
 ```markdown
 # E2E Testing Framework
@@ -356,7 +356,7 @@ The TypeScript stop hook can be adapted for other languages:
 
 #### Python (mypy)
 
-Edit `~/.claude/hooks/stop.ts`:
+Edit `~/.gemini/hooks/stop.ts`:
 
 ```typescript
 function checkTypeErrors(): string | null {
@@ -413,7 +413,7 @@ function checkCompilation(): string | null {
 Create language-specific hooks:
 
 ```bash
-~/.claude/hooks/
+~/.gemini/hooks/
 ├── stop-typescript.ts    # TypeScript projects
 ├── stop-python.ts        # Python projects
 └── stop-rust.ts          # Rust projects
@@ -423,10 +423,10 @@ Register conditionally based on project:
 
 ```bash
 # In TypeScript project
-claude hooks add PostToolUse ~/.claude/hooks/stop-typescript.ts --matcher "Edit|Write"
+gemini add PostToolUse ~/.gemini/hooks/stop-typescript.ts --matcher "Edit|Write"
 
 # In Python project
-claude hooks add PostToolUse ~/.claude/hooks/stop-python.ts --matcher "Edit|Write"
+gemini add PostToolUse ~/.gemini/hooks/stop-python.ts --matcher "Edit|Write"
 ```
 
 ### Adding Lint Checks
@@ -473,7 +473,7 @@ function checkLint(): string | null {
 Add project-specific skill activation logic:
 
 ```typescript
-// In ~/.claude/hooks/user-prompt-submit.ts
+// In ~/.gemini/hooks/user-prompt-submit.ts
 
 // After skill matching, add custom logic
 if (originalPrompt.toLowerCase().includes("urgent")) {
@@ -495,7 +495,7 @@ if (originalPrompt.toLowerCase().includes("production")) {
 
 ### Custom Dev Docs Templates
 
-Edit `.claude/commands/create-dev-docs.md` to match your workflow:
+Edit `.gemini/commands/create-dev-docs.md` to match your workflow:
 
 **Example: Add "Testing" section**:
 
@@ -527,7 +527,7 @@ Edit `.claude/commands/create-dev-docs.md` to match your workflow:
 Create project-specific commands:
 
 ```bash
-# .claude/commands/run-full-check.md
+# .gemini/commands/run-full-check.md
 ```
 
 ```markdown
@@ -557,25 +557,25 @@ For teams with multiple projects:
 
 ```bash
 # Create team skills
-mkdir -p ~/.claude/skills-team/
+mkdir -p ~/.gemini/skills-team/
 
 # Symlink in each project
-ln -s ~/.claude/skills-team/.claude/skills/backend-standards .claude/skills/
+ln -s ~/.gemini/skills-team/.gemini/skills/backend-standards .gemini/skills/
 
 # Share via git
-git clone team-claude-skills.git ~/.claude/skills-team/
+git clone team-claude-skills.git ~/.gemini/skills-team/
 ```
 
 **Option 2: Git submodule**
 
 ```bash
 # In your project
-git submodule add https://github.com/acmecorp/claude-skills.git .claude/skills-shared
+git submodule add https://github.com/acmecorp/claude-skills.git .gemini/skills-shared
 
-# In CLAUDE.md, reference both
+# In GEMINI.md, reference both
 ```
 
-### Team Conventions in CLAUDE.md
+### Team Conventions in GEMINI.md
 
 Document team-wide practices:
 
@@ -626,7 +626,7 @@ Adapt task-driven development for your team:
 
 **Skills per service**:
 ```
-.claude/skills/
+.gemini/skills/
 ├── auth-service/          # Auth service patterns
 ├── payment-service/       # Payment service patterns
 ├── notification-service/  # Notification patterns
@@ -648,7 +648,7 @@ Adapt task-driven development for your team:
 
 **Skills per package**:
 ```
-.claude/skills/
+.gemini/skills/
 ├── web-app/               # Web app patterns
 ├── mobile-app/            # Mobile patterns
 ├── shared-lib/            # Shared library patterns
@@ -659,7 +659,7 @@ Adapt task-driven development for your team:
 
 **Skills by layer**:
 ```
-.claude/skills/
+.gemini/skills/
 ├── frontend/              # React patterns
 ├── backend/               # Express patterns
 ├── database/              # PostgreSQL patterns
@@ -674,7 +674,7 @@ Adapt task-driven development for your team:
 
 Monitor these to gauge effectiveness:
 
-1. **CLAUDE.md length** - Target: < 300 lines
+1. **GEMINI.md length** - Target: < 300 lines
 2. **Skill activation rate** - How often skills trigger
 3. **TypeScript errors caught** - Hook effectiveness
 4. **Context loss incidents** - Dev docs effectiveness
@@ -719,7 +719,7 @@ Fast iteration, high autonomy:
 - **Minimal skills** (1-2 core ones)
 - **Lightweight task tracking** (dev docs only, skip PBI workflow)
 - **Aggressive hooks** (fail-fast on any error)
-- **Quick reference** CLAUDE.md
+- **Quick reference** GEMINI.md
 
 ### Enterprise-Specific
 
@@ -735,7 +735,7 @@ Process compliance, audit trails:
 Community contributions, consistency:
 
 - **Public skills** (contribution guidelines)
-- **Contributor-focused** CLAUDE.md
+- **Contributor-focused** GEMINI.md
 - **Testing skills** (required for PRs)
 - **Documentation skills** (README, API docs)
 
@@ -748,34 +748,34 @@ Community contributions, consistency:
 **Check**:
 ```bash
 # Validate JSON
-cat .claude/skills/skill-rules.json | jq .
+cat .gemini/skills/skill-rules.json | jq .
 
 # Check skill name matches
-ls .claude/skills/
-cat .claude/skills/skill-rules.json | jq 'keys'
+ls .gemini/skills/
+cat .gemini/skills/skill-rules.json | jq 'keys'
 ```
 
 ### Hook Breaking After Edit
 
 **Test individually**:
 ```bash
-echo '{"tool_name":"Edit"}' | ~/.claude/hooks/stop.ts
+echo '{"tool_name":"Edit"}' | ~/.gemini/hooks/stop.ts
 ```
 
 **Check syntax**:
 ```bash
-npx tsc --noEmit ~/.claude/hooks/stop.ts
+npx tsc --noEmit ~/.gemini/hooks/stop.ts
 ```
 
 ### Dev Docs Command Not Working
 
 **Verify files**:
 ```bash
-ls .claude/commands/
-cat .claude/commands/create-dev-docs.md
+ls .gemini/commands/
+cat .gemini/commands/create-dev-docs.md
 ```
 
-**Restart Claude Code**
+**Restart Gemini CLI**
 
 ---
 
@@ -784,7 +784,7 @@ cat .claude/commands/create-dev-docs.md
 After customization:
 
 1. **Test thoroughly** - Try skills, hooks, commands
-2. **Document changes** - Update your CLAUDE.md
+2. **Document changes** - Update your GEMINI.md
 3. **Share with team** - Gather feedback
 4. **Iterate** - Refine based on actual usage
 

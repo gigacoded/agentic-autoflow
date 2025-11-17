@@ -60,11 +60,11 @@ cd agentic-autoflow
 ```
 
 **What setup.sh does**:
-- ✅ Copies `.claude/` directory structure
+- ✅ Copies `.gemini/` directory structure
 - ✅ Installs `task-management-dev` skill
 - ✅ Creates `docs/delivery/` with backlog template
 - ✅ Creates `dev/active/` for dev docs
-- ✅ Copies and customizes `CLAUDE.md`
+- ✅ Copies and customizes `GEMINI.md`
 - ✅ Updates `.gitignore`
 - ✅ Replaces placeholders ({{PROJECT_NAME}}, etc.)
 - ✅ Provides next steps guidance
@@ -73,17 +73,17 @@ Then install global hooks (one-time, applies to all projects):
 
 ```bash
 # Create global hooks directory
-mkdir -p ~/.claude/hooks
+mkdir -p ~/.gemini/hooks
 
 # Copy hooks from template
-cp .claude/hooks-global/* ~/.claude/hooks/
+cp .gemini/hooks-global/* ~/.gemini/hooks/
 
 # Register hooks
-claude hooks add UserPromptSubmit ~/.claude/hooks/user-prompt-submit.ts --user
-claude hooks add PostToolUse ~/.claude/hooks/stop.ts --user --matcher "Edit|Write"
+gemini add UserPromptSubmit ~/.gemini/hooks/user-prompt-submit.ts --user
+gemini add PostToolUse ~/.gemini/hooks/stop.ts --user --matcher "Edit|Write"
 
 # Verify
-claude hooks list
+gemini list
 ```
 
 ### Manual Setup (Alternative - 5 Minutes)
@@ -102,31 +102,31 @@ git clone -b example/convex-nextjs-stack https://github.com/gigacoded/agentic-au
 cd agentic-autoflow
 
 # OR: Copy into existing project
-cp -r /path/to/agentic-autoflow/.claude .claude/
+cp -r /path/to/agentic-autoflow/.gemini .gemini/
 ```
 
 **Step 2: Install Global Hooks**
 
 ```bash
 # Create global hooks directory
-mkdir -p ~/.claude/hooks
+mkdir -p ~/.gemini/hooks
 
 # Copy hooks
-cp .claude/hooks-global/* ~/.claude/hooks/
+cp .gemini/hooks-global/* ~/.gemini/hooks/
 
 # Register hooks
-claude hooks add UserPromptSubmit ~/.claude/hooks/user-prompt-submit.ts --user
-claude hooks add PostToolUse ~/.claude/hooks/stop.ts --user --matcher "Edit|Write"
+gemini add UserPromptSubmit ~/.gemini/hooks/user-prompt-submit.ts --user
+gemini add PostToolUse ~/.gemini/hooks/stop.ts --user --matcher "Edit|Write"
 
 # Verify registration
-claude hooks list
+gemini list
 ```
 
-**Step 3: Customize CLAUDE.md**
+**Step 3: Customize GEMINI.md**
 
 ```bash
 # Copy template
-cp .claude/CLAUDE.template.md CLAUDE.md
+cp .gemini/CLAUDE.template.md GEMINI.md
 
 # Edit for your project
 # - Update project name
@@ -139,7 +139,7 @@ cp .claude/CLAUDE.template.md CLAUDE.md
 
 ```bash
 # Review included example skill
-cat .claude/skills/example-skill/SKILL.md
+cat .gemini/skills/example-skill/SKILL.md
 
 # Create your own skills (see docs below)
 # Or copy skills from other projects
@@ -148,8 +148,8 @@ cat .claude/skills/example-skill/SKILL.md
 **Step 5: Test Installation**
 
 ```bash
-# Start Claude Code
-claude
+# Start Gemini CLI
+gemini
 
 # Test skill activation
 # Type: "How do I write a test?"
@@ -172,7 +172,7 @@ git clone -b example/convex-nextjs-stack https://github.com/gigacoded/agentic-au
 - ✅ `convex-backend-dev` skill - Complete Convex patterns (queries, mutations, actions, auth)
 - ✅ `nextjs-frontend-dev` skill - Next.js App Router, React, Tailwind, shadcn/ui
 - ✅ `e2e-testing-framework` skill - 4-pillar testing with Chrome MCP
-- ✅ Stack-specific CLAUDE.md - Ready-to-use quick reference
+- ✅ Stack-specific GEMINI.md - Ready-to-use quick reference
 - ✅ Production patterns - Real code examples from 6+ months use
 
 **Perfect for**: Convex + Next.js + Tailwind + shadcn/ui + Clerk projects
@@ -186,22 +186,22 @@ See [BRANCH-README.md](https://github.com/gigacoded/agentic-autoflow/blob/exampl
 ### Core Infrastructure
 
 ```
-.claude/
+.gemini/
 ├── skills/                          # Auto-activating skills
 │   └── example-skill/               # Example skill showing structure
 │       ├── SKILL.md                 # Skill content (best practices, patterns)
 │       ├── skill-config.json        # Skill metadata
 │       └── resources/               # Additional reference materials
 │           └── examples.md
-├── hooks-global/                    # Global hooks (copy to ~/.claude/hooks/)
+├── hooks-global/                    # Global hooks (copy to ~/.gemini/hooks/)
 │   ├── user-prompt-submit.ts        # Skill activation hook
 │   └── stop.ts                      # TypeScript error checking hook
 ├── commands/                        # Slash commands
 │   ├── create-dev-docs.md           # Initialize dev docs
 │   ├── update-dev-docs.md           # Update progress
 │   └── dev-docs-status.md           # Show overview
-├── CLAUDE.template.md               # Lean CLAUDE.md template
-└── README.md                        # Setup guide (this for .claude dir)
+├── CLAUDE.template.md               # Lean GEMINI.md template
+└── README.md                        # Setup guide (this for .gemini dir)
 
 docs/delivery/                       # Task-driven development
 ├── backlog.md                       # PBI tracking (ready to use)
@@ -218,7 +218,7 @@ SETUP.md                             # Detailed setup guide
 CUSTOMIZATION.md                     # How to adapt for your project
 SKILLS-GUIDE.md                      # Creating custom skills
 HOOKS-GUIDE.md                       # Writing custom hooks
-MIGRATION-GUIDE.md                   # Migrating from monolithic CLAUDE.md
+MIGRATION-GUIDE.md                   # Migrating from monolithic GEMINI.md
 ```
 
 ### Documentation
@@ -228,7 +228,7 @@ MIGRATION-GUIDE.md                   # Migrating from monolithic CLAUDE.md
 - **CUSTOMIZATION.md** - Adapting the template for your project
 - **SKILLS-GUIDE.md** - Creating and managing skills
 - **HOOKS-GUIDE.md** - Writing custom hooks
-- **MIGRATION-GUIDE.md** - Moving from monolithic CLAUDE.md
+- **MIGRATION-GUIDE.md** - Moving from monolithic GEMINI.md
 - **TASK-WORKFLOW.md** - Optional task-driven development workflow
 
 ## Key Features
@@ -310,9 +310,9 @@ If you only want quality automation without skills:
 
 ```bash
 # Copy hooks only
-cp .claude/hooks-global/* ~/.claude/hooks/
-claude hooks add UserPromptSubmit ~/.claude/hooks/user-prompt-submit.ts --user
-claude hooks add PostToolUse ~/.claude/hooks/stop.ts --user --matcher "Edit|Write"
+cp .gemini/hooks-global/* ~/.gemini/hooks/
+gemini add UserPromptSubmit ~/.gemini/hooks/user-prompt-submit.ts --user
+gemini add PostToolUse ~/.gemini/hooks/stop.ts --user --matcher "Edit|Write"
 
 # Skip skills and dev docs
 ```
@@ -324,7 +324,7 @@ For comprehensive workflow with auto-activation:
 ```bash
 # Full installation (see Quick Start above)
 # Customize skills for your tech stack
-# Create CLAUDE.md from template
+# Create GEMINI.md from template
 ```
 
 ### Full Task-Driven Development
@@ -361,19 +361,19 @@ cp docs/delivery/backlog.md.template docs/delivery/backlog.md
 - Modify stop hook to run `go vet`
 - Add triggers for goroutines, channels
 
-## Migration from Monolithic CLAUDE.md
+## Migration from Monolithic GEMINI.md
 
-If you have a large CLAUDE.md (500+ lines):
+If you have a large GEMINI.md (500+ lines):
 
 1. **Read MIGRATION-GUIDE.md** for detailed instructions
-2. **Identify topics** in your current CLAUDE.md
+2. **Identify topics** in your current GEMINI.md
 3. **Extract to skills** - One skill per domain/topic
 4. **Update triggers** in `skill-rules.json`
 5. **Test activation** with relevant keywords
-6. **Create lean CLAUDE.md** from template (keep < 300 lines)
+6. **Create lean GEMINI.md** from template (keep < 300 lines)
 
 **Benefits**:
-- 70-80% reduction in CLAUDE.md size
+- 70-80% reduction in GEMINI.md size
 - Better organization and discoverability
 - Automatic activation (no manual reminders)
 - Easier to maintain and update
@@ -384,7 +384,7 @@ This template is based on production infrastructure from a real-world project:
 
 - **4 production skills**: E2E testing, backend dev, frontend dev, task management
 - **11 tasks to build it**: Complete infrastructure evolution
-- **74% CLAUDE.md reduction**: 916 lines → 239 lines
+- **74% GEMINI.md reduction**: 916 lines → 239 lines
 - **6+ months in production**: Battle-tested on real product
 
 ### Testing Philosophy from Source Project
@@ -408,7 +408,7 @@ The source project uses a comprehensive testing approach with **Chrome DevTools 
 - Visual regression testing
 
 **Note**: The template itself doesn't require MCPs, but if you want to replicate the E2E testing workflow from the source project, you'll want to:
-1. Install Chrome DevTools MCP: `claude mcp add chrome-devtools "npx chrome-devtools-mcp"`
+1. Install Chrome DevTools MCP: `gemini add chrome-devtools "npx chrome-devtools-mcp"`
 2. Create an E2E testing skill based on the 4-pillar structure
 3. See CUSTOMIZATION.md for examples
 

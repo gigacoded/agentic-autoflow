@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} Development Infrastructure
 
-Quick reference for {{PROJECT_NAME}} development. See `.claude/skills/` for detailed patterns and best practices.
+Quick reference for {{PROJECT_NAME}} development. See `.gemini/skills/` for detailed patterns and best practices.
 
 > **Template Note**: Replace `{{PROJECT_NAME}}` with your actual project name. Customize the Quick Start commands and Project Structure sections for your stack.
 
@@ -45,7 +45,7 @@ Auto-activating skills provide consistent patterns without manual reminders.
    - Component patterns, styling, performance
    - Auto-activates: "frontend", working in frontend directories
 
-**Skills activate automatically** based on keywords, file paths, and intent patterns defined in `.claude/skills/skill-rules.json`.
+**Skills activate automatically** based on keywords, file paths, and intent patterns defined in `.gemini/skills/skill-rules.json`.
 
 ### Customizing Skills
 
@@ -153,10 +153,10 @@ Configure your testing approach based on your stack:
 │   ├── delivery/           # PBIs and tasks (REQUIRED)
 │   └── architecture/       # Architecture docs (optional)
 ├── dev/active/             # Active dev docs (for long tasks)
-├── .claude/
+├── .gemini/
 │   ├── skills/             # Auto-activating skills
 │   └── commands/           # Slash commands
-└── CLAUDE.md              # This file
+└── GEMINI.md              # This file
 ```
 
 **Customize** the directory names above to match your project structure.
@@ -202,7 +202,7 @@ try {
 ## Important Links
 
 - **Backlog**: [`docs/delivery/backlog.md`](./docs/delivery/backlog.md)
-- **Skills**: [`.claude/skills/`](./.claude/skills/)
+- **Skills**: [`.gemini/skills/`](./.gemini/skills/)
 - **Active Dev Docs**: `dev/active/` (if exists)
 
 ---
@@ -247,12 +247,12 @@ After copying this template to your project:
 - [ ] Replace all `{{PLACEHOLDERS}}` with actual values
 - [ ] Update Quick Start commands for your stack
 - [ ] Customize Project Structure section
-- [ ] Delete irrelevant skills from `.claude/skills/`
+- [ ] Delete irrelevant skills from `.gemini/skills/`
 - [ ] Add project-specific rules and patterns
 - [ ] Update testing strategy for your needs
 - [ ] Verify all links point to correct locations
 - [ ] Remove this customization checklist
-- [ ] Rename to `CLAUDE.md` (remove `.template`)
+- [ ] Rename to `GEMINI.md` (remove `.template`)
 
 ---
 

@@ -1,22 +1,22 @@
 # Quick Start - Get Running in 5 Minutes
 
-The fastest path to using the Claude Code Workflow Template.
+The fastest path to using the Gemini CLI Workflow Template.
 
 ## TL;DR
 
 ```bash
 # 1. Copy to your project
-cp -r /path/to/agentic-autoflow/.claude your-project/
+cp -r /path/to/agentic-autoflow/.gemini your-project/
 
 # 2. Install global hooks
-mkdir -p ~/.claude/hooks
-cp your-project/.claude/hooks-global/* ~/.claude/hooks/
-claude hooks add UserPromptSubmit ~/.claude/hooks/user-prompt-submit.ts --user
-claude hooks add PostToolUse ~/.claude/hooks/stop.ts --user --matcher "Edit|Write"
+mkdir -p ~/.gemini/hooks
+cp your-project/.gemini/hooks-global/* ~/.gemini/hooks/
+gemini add UserPromptSubmit ~/.gemini/hooks/user-prompt-submit.ts --user
+gemini add PostToolUse ~/.gemini/hooks/stop.ts --user --matcher "Edit|Write"
 
-# 3. Create CLAUDE.md
-cp your-project/.claude/CLAUDE.template.md your-project/CLAUDE.md
-# Edit CLAUDE.md for your project
+# 3. Create GEMINI.md
+cp your-project/.gemini/CLAUDE.template.md your-project/GEMINI.md
+# Edit GEMINI.md for your project
 
 # 4. Test
 cd your-project && claude
@@ -38,10 +38,10 @@ After 5 minutes:
 
 ```bash
 # Create directory
-mkdir -p .claude/skills/your-tech-stack
+mkdir -p .gemini/skills/your-tech-stack
 
 # Copy example skill as template
-cp -r .claude/skills/example-skill/SKILL.md .claude/skills/your-tech-stack/
+cp -r .gemini/skills/example-skill/SKILL.md .gemini/skills/your-tech-stack/
 
 # Edit SKILL.md
 # - Replace [Skill Name] with your technology
@@ -51,7 +51,7 @@ cp -r .claude/skills/example-skill/SKILL.md .claude/skills/your-tech-stack/
 
 ### 2. Add Triggers
 
-Edit `.claude/skills/skill-rules.json`:
+Edit `.gemini/skills/skill-rules.json`:
 
 ```json
 {
@@ -85,9 +85,9 @@ claude
 # With your skill name
 ```
 
-### 4. Customize CLAUDE.md
+### 4. Customize GEMINI.md
 
-Edit your CLAUDE.md:
+Edit your GEMINI.md:
 
 - Update project name
 - Add your quick start commands
@@ -134,23 +134,23 @@ Edit your CLAUDE.md:
 
 After setup:
 
-- [ ] `claude hooks list` shows 2 hooks
+- [ ] `gemini list` shows 2 hooks
 - [ ] Typing "test" shows skill activation message
 - [ ] `/create-dev-docs` command works
-- [ ] CLAUDE.md reflects your project
+- [ ] GEMINI.md reflects your project
 - [ ] At least 1 real skill created
 
 ## Troubleshooting
 
 **Hooks not running?**
 ```bash
-chmod +x ~/.claude/hooks/*.ts
-claude hooks list
+chmod +x ~/.gemini/hooks/*.ts
+gemini list
 ```
 
 **Skills not activating?**
 ```bash
-cat .claude/skills/skill-rules.json | jq .
+cat .gemini/skills/skill-rules.json | jq .
 # Check for JSON errors
 ```
 

@@ -83,4 +83,4 @@ Changelog Actions:
 
 ---
 
-For detailed PBI and task workflow, see `.claude/skills/task-management-dev/SKILL.md`
+For detailed PBI and task workflow, see `.gemini/skills/task-management-dev/SKILL.md`
