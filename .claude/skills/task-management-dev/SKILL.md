@@ -693,9 +693,3 @@ For detailed workflows, see:
 - Create: `/create-dev-docs`
 - Update: `/update-dev-docs`
 - Status: `/dev-docs-status`
-
----
-
-## Attribution
-
-This workflow is inspired by [Julian Harris's AI Coding Agent Policy](https://x.com/julianharris).
