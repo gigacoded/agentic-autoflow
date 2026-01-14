@@ -4,15 +4,18 @@
 
 ## Overview
 
-Meta-skill for managing Product Backlog Items (PBIs) and tasks in the CargoBuddy project. Defines workflows, validation rules, dev docs system, and best practices for task-driven development.
+Meta-skill for managing Product Backlog Items (PBIs) and tasks. Defines workflows, validation rules, dev docs system, and best practices for task-driven development.
 
 ## Core Principles
 
 1. **Task-Driven Development** - No code changes without an approved task
 2. **PBI Association** - All tasks link to a PBI
-3. **One InProgress Task** - Focus on one task at a time per PBI
-4. **Dev Docs for Long Tasks** - Use dev docs for 3+ step tasks
-5. **Status Synchronization** - Task status must match in both file and index
+3. **PRD Alignment** - All PBIs must align with PRD scope (if PRD exists)
+4. **One InProgress Task** - Focus on one task at a time per PBI
+5. **Dev Docs for Long Tasks** - Use dev docs for 3+ step tasks
+6. **Status Synchronization** - Task status must match in both file and index
+7. **External Package Research** - Document package APIs before implementation
+8. **User Authority** - User is sole decider for scope and design of ALL work
 
 ## PBI Workflow
 
@@ -26,24 +29,29 @@ Proposed → Agreed → InProgress → InReview → Done
 
 ### Starting a New PBI
 
-1. **Create PBI Directory**:
+1. **PRD Alignment Check** (if PRD exists):
+   - ✅ Verify PBI aligns with PRD scope
+   - ✅ Flag any discrepancies with User
+   - ✅ Get explicit approval before proceeding
+
+2. **Create PBI Directory**:
    ```bash
    mkdir -p docs/delivery/{PBI-ID}
    ```
 
-2. **Create PBI Detail Document** (`prd.md`):
+3. **Create PBI Detail Document** (`prd.md`):
    - Problem statement
    - User stories
    - Technical approach
    - Conditions of Satisfaction
    - Dependencies
 
-3. **Create Tasks List** (`tasks.md`):
+4. **Create Tasks List** (`tasks.md`):
    - Break down PBI into small tasks
    - Each task = cohesive, testable unit
    - E2E test task at the end (if user-facing)
 
-4. **Update Backlog**:
+5. **Update Backlog**:
    - Add PBI to `docs/delivery/backlog.md`
    - Status: "Proposed"
    - Link to detail document
@@ -265,6 +273,255 @@ Create three files in `/dev/active/{task-name}/`:
 
 ---
 
+## External Package Research
+
+**Purpose**: Avoid hallucinations when using external packages by researching and documenting APIs first.
+
+### When Required
+
+For any task involving external packages:
+1. Research official documentation via web search
+2. Create a package guide document
+3. Document with date stamp and source links
+
+### Package Guide Format
+
+Create: `docs/delivery/{PBI-ID}/{task-id}-{package}-guide.md`
+
+Example: `docs/delivery/2/2-1-pg-boss-guide.md`
+
+```markdown
+# {Package Name} API Guide
+
+**Task**: {task-id} - {task description}
+**Date**: {YYYY-MM-DD}
+**Documentation Source**: {link to official docs}
+
+## Overview
+Brief description of what the package does
+
+## Installation
+\`\`\`bash
+npm install {package}
+\`\`\`
+
+## Key APIs Used
+
+### API 1: {method/function name}
+\`\`\`typescript
+// Example usage in our codebase context
+\`\`\`
+
+### API 2: {method/function name}
+\`\`\`typescript
+// Example usage
+\`\`\`
+
+## Configuration Options
+- Option 1: description
+- Option 2: description
+
+## Error Handling
+Common errors and how to handle them
+
+## Notes
+Any gotchas or important considerations
+```
+
+### Workflow
+
+1. **Before implementation**: Research package docs
+2. **Create guide**: Document APIs you'll use with examples
+3. **Reference during coding**: Use guide as source of truth
+4. **Update if needed**: Add discoveries during implementation
+
+---
+
+## E2E Testing with Chrome DevTools MCP
+
+**Purpose**: Use Chrome DevTools MCP for visual E2E testing and browser automation.
+
+### When to Use
+
+- ✅ User-facing feature verification
+- ✅ Visual regression testing
+- ✅ Form submission flows
+- ✅ Navigation and routing tests
+- ✅ Error state verification
+- ✅ Responsive design checks
+
+### E2E Test Task Structure
+
+Every user-facing PBI should include an E2E test task:
+
+```markdown
+## Task {PBI-ID}-E2E: E2E Conditions of Satisfaction Test
+
+### Description
+Verify all Conditions of Satisfaction using Chrome DevTools MCP
+
+### Test Plan
+
+#### Setup
+1. Ensure dev server running at localhost:3000
+2. Chrome DevTools MCP connected (isolated mode)
+
+#### Test Cases
+
+| # | Scenario | Steps | Expected Result |
+|---|----------|-------|-----------------|
+| 1 | {scenario} | Navigate to X, click Y | Z is displayed |
+| 2 | {scenario} | Fill form, submit | Success message |
+
+### Verification
+- [ ] All CoS verified via browser
+- [ ] Screenshots captured for key states
+- [ ] Error scenarios tested
+- [ ] Mobile responsive checked
+```
+
+### Chrome DevTools MCP Commands
+
+**Navigation**:
+```
+Navigate to http://localhost:3000/route
+Take a screenshot of the current page
+```
+
+**Interaction**:
+```
+Click the button with text "Submit"
+Fill the input field #email with "test@example.com"
+Select option "Medium" from dropdown #size
+```
+
+**Verification**:
+```
+Check if element with text "Success" is visible
+Verify the page title is "Dashboard"
+Check the console for any errors
+```
+
+**Debugging**:
+```
+Show me the console logs
+Check network requests for /api/endpoint
+Inspect the element with selector .error-message
+```
+
+### E2E Test Report Format
+
+After completing E2E tests, document results:
+
+```markdown
+## E2E Test Results - {PBI-ID}
+
+**Date**: {YYYY-MM-DD}
+**Tester**: Claude (Chrome DevTools MCP)
+**Environment**: localhost:3000
+
+### Summary
+- Total Tests: X
+- Passed: Y
+- Failed: Z
+
+### Test Results
+
+| # | Test Case | Result | Notes |
+|---|-----------|--------|-------|
+| 1 | User login flow | ✅ Pass | - |
+| 2 | Form validation | ✅ Pass | Error messages display correctly |
+| 3 | Mobile layout | ⚠️ Issue | Button overlaps on iPhone SE |
+
+### Screenshots
+- `screenshots/login-success.png`
+- `screenshots/mobile-layout-issue.png`
+
+### Recommendations
+1. Fix mobile button overlap before release
+2. Consider adding loading indicator
+```
+
+---
+
+## Test Plan Proportionality
+
+**Principle**: Test plans must be proportional to task complexity. Avoid over-engineering.
+
+### Simple Tasks (< 2 hours)
+
+Examples: Constants, interfaces, config changes, single-function additions
+
+**Test Plan Format**:
+```markdown
+## Test Plan
+- TypeScript compilation passes
+- Existing tests still pass
+- Function can be called without errors
+```
+
+### Standard Tasks (2-4 hours)
+
+Examples: Component creation, API endpoint, service method
+
+**Test Plan Format**:
+```markdown
+## Test Plan
+### Unit Tests
+- [ ] Test happy path
+- [ ] Test error handling
+
+### Integration
+- [ ] Works with existing components
+- [ ] No regressions
+```
+
+### Complex Tasks (4+ hours)
+
+Examples: Multi-service integration, complex business logic, new features
+
+**Test Plan Format**:
+```markdown
+## Test Plan
+
+### Objective
+What this test plan verifies
+
+### Test Scope
+- Component A behavior
+- Service B integration
+- Error scenarios
+
+### Unit Tests
+| Test Case | Input | Expected Output |
+|-----------|-------|-----------------|
+| Happy path | valid data | success |
+| Invalid input | null | validation error |
+
+### Integration Tests
+- [ ] API endpoint responds correctly
+- [ ] Database operations succeed
+- [ ] Cache invalidation works
+
+### E2E Tests (if user-facing)
+- [ ] User can complete workflow
+- [ ] Error states display correctly
+
+### Success Criteria
+- All tests pass
+- No TypeScript errors
+- Code coverage maintained
+```
+
+### What NOT to Include
+
+- ❌ Exhaustive edge cases for simple tasks
+- ❌ Duplicate testing across multiple tasks
+- ❌ Testing package/library internals
+- ❌ Over-specified test scenarios
+
+---
+
 ## Best Practices
 
 ### Task Granularity
@@ -397,19 +654,22 @@ For detailed workflows, see:
 ## Quick Reference
 
 **Create PBI**:
-1. Create directory: `docs/delivery/{PBI-ID}/`
-2. Create `prd.md` and `tasks.md`
-3. Add to backlog.md
+1. PRD alignment check (if PRD exists)
+2. Create directory: `docs/delivery/{PBI-ID}/`
+3. Create `prd.md` and `tasks.md`
+4. Add to backlog.md
 
 **Create Task**:
 1. Add to tasks.md index
 2. Create `{PBI-ID}-{N}.md` file
 3. Fill in all required sections
+4. Scale test plan to complexity
 
 **Start Task**:
 1. Mark status "InProgress"
 2. Create dev docs if 3+ steps
-3. Update status in both file and index
+3. Research external packages (create guide if needed)
+4. Update status in both file and index
 
 **Complete Task**:
 1. All tests passing
@@ -418,7 +678,24 @@ For detailed workflows, see:
 4. Mark status "Done" in both locations
 5. Commit: `{task-id} {description}`
 
+**E2E Testing** (Chrome DevTools MCP):
+1. Ensure dev server running
+2. Navigate, interact, verify via MCP
+3. Capture screenshots
+4. Document results in test report
+
+**External Packages**:
+- Create: `{task-id}-{package}-guide.md`
+- Research docs before implementation
+- Date stamp and link to sources
+
 **Dev Docs**:
 - Create: `/create-dev-docs`
 - Update: `/update-dev-docs`
 - Status: `/dev-docs-status`
+
+---
+
+## Attribution
+
+This workflow is inspired by [Julian Harris's AI Coding Agent Policy](https://x.com/julianharris).
