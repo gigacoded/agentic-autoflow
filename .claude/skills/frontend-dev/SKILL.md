@@ -1,14 +1,245 @@
-# Frontend Development - React, Next.js, Tailwind CSS, shadcn/ui
+# Frontend Development - React, TanStack Start, Tailwind CSS, shadcn/ui
 
-You are working with a modern React frontend using Next.js, Tailwind CSS, and shadcn/ui components. This skill provides guidelines for developing frontend components and features.
+You are working with a modern React frontend using TanStack Start, Tailwind CSS, and shadcn/ui components. This skill provides guidelines for developing frontend components and features.
 
 ## Tech Stack
 
 - **React 18+**: Component-based UI library
-- **Next.js 14+**: React framework with App Router
+- **TanStack Start**: Full-stack React framework (Vite-powered)
+- **TanStack Router**: Type-safe file-based routing
+- **TanStack Query**: Data fetching and caching
 - **Tailwind CSS**: Utility-first CSS framework
 - **shadcn/ui**: Beautifully designed components built with Radix UI
 - **TypeScript**: Type-safe JavaScript
+
+## TanStack Start Overview
+
+TanStack Start is a full-stack React framework built on Vite, featuring:
+- Full-document SSR and streaming
+- Server functions (`createServerFn`)
+- File-based routing with type safety
+- Deploy anywhere (no vendor lock-in)
+
+## Project Structure
+
+```
+├── src/
+│   ├── routes/
+│   │   ├── __root.tsx        # Root layout (required)
+│   │   ├── index.tsx         # Home page (/)
+│   │   ├── about.tsx         # /about
+│   │   ├── posts/
+│   │   │   ├── index.tsx     # /posts
+│   │   │   └── $postId.tsx   # /posts/$postId (dynamic)
+│   │   └── _auth/            # Pathless layout group
+│   │       ├── login.tsx
+│   │       └── signup.tsx
+│   ├── components/
+│   │   ├── ui/               # shadcn/ui components
+│   │   └── custom/           # Custom components
+│   ├── utils/
+│   │   ├── *.functions.ts    # Server function wrappers
+│   │   ├── *.server.ts       # Server-only helpers
+│   │   └── schemas.ts        # Shared validation schemas
+│   ├── router.tsx            # Router configuration
+│   └── routeTree.gen.ts      # Auto-generated route tree
+├── app.config.ts             # TanStack Start config
+├── vite.config.ts
+├── package.json
+└── tsconfig.json
+```
+
+## File-Based Routing
+
+### Route File Naming Conventions
+
+| File Pattern | Route Path | Description |
+|--------------|------------|-------------|
+| `__root.tsx` | - | Root layout (required) |
+| `index.tsx` | `/` | Index route |
+| `about.tsx` | `/about` | Static route |
+| `posts/$postId.tsx` | `/posts/:postId` | Dynamic parameter |
+| `_layout/` | - | Pathless layout group |
+| `(group)/` | - | Route group (organizational) |
+
+### Root Route (`__root.tsx`)
+
+```typescript
+// src/routes/__root.tsx
+import { createRootRoute, Outlet } from '@tanstack/react-router'
+import { HeadContent, Scripts } from '@tanstack/react-start'
+
+export const Route = createRootRoute({
+  component: RootComponent,
+})
+
+function RootComponent() {
+  return (
+    <html lang="en">
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        <div className="min-h-screen">
+          <Outlet />
+        </div>
+        <Scripts />
+      </body>
+    </html>
+  )
+}
+```
+
+### Basic Route with Loader
+
+```typescript
+// src/routes/posts/index.tsx
+import { createFileRoute } from '@tanstack/react-router'
+import { getPosts } from '@/utils/posts.functions'
+
+export const Route = createFileRoute('/posts/')({
+  component: PostsPage,
+  loader: () => getPosts(),
+})
+
+function PostsPage() {
+  const posts = Route.useLoaderData()
+
+  return (
+    <div className="space-y-4">
+      {posts.map(post => (
+        <PostCard key={post.id} post={post} />
+      ))}
+    </div>
+  )
+}
+```
+
+### Dynamic Route with Parameters
+
+```typescript
+// src/routes/posts/$postId.tsx
+import { createFileRoute } from '@tanstack/react-router'
+import { getPost } from '@/utils/posts.functions'
+
+export const Route = createFileRoute('/posts/$postId')({
+  component: PostPage,
+  loader: ({ params }) => getPost(params.postId),
+})
+
+function PostPage() {
+  const post = Route.useLoaderData()
+
+  return (
+    <article>
+      <h1 className="text-3xl font-bold">{post.title}</h1>
+      <p>{post.content}</p>
+    </article>
+  )
+}
+```
+
+## Server Functions
+
+### Creating Server Functions
+
+Server functions run **only on the server** and are the secure way to handle database operations, secrets, and sensitive logic.
+
+```typescript
+// src/utils/posts.functions.ts
+import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
+import { db } from './db.server'
+
+// GET - Fetch data
+export const getPosts = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  return db.posts.findMany()
+})
+
+// GET with parameters
+export const getPost = createServerFn({
+  method: 'GET',
+})
+  .validator(z.string())
+  .handler(async ({ data: postId }) => {
+    return db.posts.findUnique({ where: { id: postId } })
+  })
+
+// POST - Mutations with validation
+const CreatePostSchema = z.object({
+  title: z.string().min(3),
+  content: z.string().min(10),
+})
+
+export const createPost = createServerFn({
+  method: 'POST',
+})
+  .validator(CreatePostSchema)
+  .handler(async ({ data }) => {
+    return db.posts.create({ data })
+  })
+```
+
+### Using Server Functions in Components
+
+```typescript
+"use client"
+
+import { useRouter } from '@tanstack/react-router'
+import { createPost } from '@/utils/posts.functions'
+
+export function CreatePostForm() {
+  const router = useRouter()
+  const [isPending, setIsPending] = useState(false)
+
+  const handleSubmit = async (formData: FormData) => {
+    setIsPending(true)
+    try {
+      await createPost({
+        data: {
+          title: formData.get('title') as string,
+          content: formData.get('content') as string,
+        },
+      })
+      router.invalidate() // Refresh data
+      router.navigate({ to: '/posts' })
+    } finally {
+      setIsPending(false)
+    }
+  }
+
+  return (
+    <form action={handleSubmit}>
+      {/* form fields */}
+    </form>
+  )
+}
+```
+
+## Router Configuration
+
+```typescript
+// src/router.tsx
+import { createRouter } from '@tanstack/react-router'
+import { routeTree } from './routeTree.gen'
+
+export function createAppRouter() {
+  return createRouter({
+    routeTree,
+    scrollRestoration: true,
+    defaultPreload: 'intent',
+    defaultPreloadStaleTime: 0,
+  })
+}
+
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: ReturnType<typeof createAppRouter>
+  }
+}
+```
 
 ## shadcn/ui Integration
 
@@ -21,165 +252,13 @@ You are working with a modern React frontend using Next.js, Tailwind CSS, and sh
 npx shadcn@latest init
 
 # Add individual components as needed
-npx shadcn@latest add button
-npx shadcn@latest add card
-npx shadcn@latest add dialog
-npx shadcn@latest add form
-npx shadcn@latest add input
-npx shadcn@latest add select
-npx shadcn@latest add table
-npx shadcn@latest add dropdown-menu
-npx shadcn@latest add sheet
-npx shadcn@latest add toast
+npx shadcn@latest add button card dialog form input select table toast
 ```
-
-### Available shadcn/ui Components
-
-Common components to use:
-- **Button**: Primary UI actions
-- **Card**: Container for content
-- **Dialog/Sheet**: Modals and side panels
-- **Form**: Form handling with React Hook Form + Zod
-- **Input/Textarea**: Form inputs
-- **Select/Combobox**: Dropdowns
-- **Table**: Data tables
-- **Toast**: Notifications
-- **Dropdown Menu**: Context menus
-- **Tabs**: Tabbed interfaces
-- **Badge**: Status indicators
-- **Avatar**: User avatars
-- **Skeleton**: Loading states
-
-### shadcn/ui File Location
-
-Components are installed in `components/ui/` and can be customized:
-
-```
-components/
-├── ui/                  # shadcn/ui components (customizable)
-│   ├── button.tsx
-│   ├── card.tsx
-│   ├── dialog.tsx
-│   ├── form.tsx
-│   └── ...
-└── custom/              # Your custom components
-```
-
-## Core Principles
-
-1. **Component Composition**: Build UIs from small, reusable components
-2. **Type Safety**: Use TypeScript for all components and logic
-3. **Responsive Design**: Mobile-first approach with Tailwind
-4. **Accessibility**: Follow WCAG guidelines (semantic HTML, ARIA labels, keyboard navigation)
-5. **Performance**: Optimize bundle size, lazy loading, image optimization
-
-## Next.js App Router Patterns
-
-### File-Based Routing
-
-```
-app/
-├── page.tsx              # Home page (/)
-├── layout.tsx            # Root layout
-├── loading.tsx           # Loading UI
-├── error.tsx             # Error UI
-├── not-found.tsx         # 404 page
-├── dashboard/
-│   ├── page.tsx          # /dashboard
-│   └── layout.tsx        # Dashboard layout
-└── api/
-    └── route.ts          # API routes
-```
-
-### Server vs Client Components
-
-**Server Components (default):**
-```typescript
-// app/posts/page.tsx
-import { convex } from "@/lib/convex";
-import { api } from "@/convex/_generated/api";
-
-export default async function PostsPage() {
-  const posts = await convex.query(api.posts.list);
-
-  return (
-    <div>
-      {posts.map(post => (
-        <PostCard key={post._id} post={post} />
-      ))}
-    </div>
-  );
-}
-```
-
-**Client Components (use "use client"):**
-```typescript
-"use client";
-
-import { useState } from "react";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-
-export function CreatePostForm() {
-  const [title, setTitle] = useState("");
-  const createPost = useMutation(api.posts.create);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await createPost({ title });
-    setTitle("");
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Post title"
-      />
-      <button type="submit">Create</button>
-    </form>
-  );
-}
-```
-
-## React Component Patterns with shadcn/ui
 
 ### Using shadcn/ui Components
 
-**Button Component:**
 ```typescript
-import { Button } from "@/components/ui/button";
-
-export function Example() {
-  return (
-    <div className="space-x-2">
-      {/* Variants */}
-      <Button variant="default">Default</Button>
-      <Button variant="secondary">Secondary</Button>
-      <Button variant="destructive">Destructive</Button>
-      <Button variant="outline">Outline</Button>
-      <Button variant="ghost">Ghost</Button>
-      <Button variant="link">Link</Button>
-
-      {/* Sizes */}
-      <Button size="sm">Small</Button>
-      <Button size="default">Default</Button>
-      <Button size="lg">Large</Button>
-      <Button size="icon">
-        <IconComponent />
-      </Button>
-
-      {/* States */}
-      <Button disabled>Disabled</Button>
-      <Button loading>Loading</Button>
-    </div>
-  );
-}
-```
-
-**Card Component:**
-```typescript
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardHeader,
@@ -187,8 +266,7 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/card"
 
 export function PostCard({ post }: { post: Post }) {
   return (
@@ -205,66 +283,177 @@ export function PostCard({ post }: { post: Post }) {
         <Button variant="destructive">Delete</Button>
       </CardFooter>
     </Card>
-  );
+  )
 }
 ```
 
-**Dialog/Modal Component:**
+## Form Handling with shadcn/ui
+
 ```typescript
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { createPost } from "@/utils/posts.functions"
+import { useRouter } from "@tanstack/react-router"
+import { toast } from "@/components/ui/use-toast"
 
-export function ConfirmDialog() {
+const formSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  content: z.string().min(10, "Content must be at least 10 characters"),
+})
+
+export function CreatePostForm() {
+  const router = useRouter()
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { title: "", content: "" },
+  })
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await createPost({ data: values })
+      toast({ title: "Success", description: "Post created" })
+      router.invalidate()
+      form.reset()
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to create post", variant: "destructive" })
+    }
+  }
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="destructive">Delete Post</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Are you sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete the post.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button variant="outline">Cancel</Button>
-          <Button variant="destructive">Delete</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter post title" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" disabled={form.formState.isSubmitting}>
+          {form.formState.isSubmitting ? "Creating..." : "Create Post"}
+        </Button>
+      </form>
+    </Form>
+  )
 }
 ```
 
-### Custom Hooks
+## Convex Integration
+
+### Using Convex with TanStack Start
 
 ```typescript
-// hooks/useDebounce.ts
-import { useEffect, useState } from "react";
+// src/utils/convex.functions.ts
+import { createServerFn } from '@tanstack/react-start'
+import { ConvexHttpClient } from 'convex/browser'
+import { api } from '@/convex/_generated/api'
 
-export function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+const convex = new ConvexHttpClient(process.env.CONVEX_URL!)
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
+export const getPosts = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  return convex.query(api.posts.list)
+})
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
+export const createPost = createServerFn({
+  method: 'POST',
+})
+  .validator(z.object({ title: z.string(), content: z.string() }))
+  .handler(async ({ data }) => {
+    return convex.mutation(api.posts.create, data)
+  })
+```
 
-  return debouncedValue;
+### Using TanStack Query with Convex (Client-Side)
+
+```typescript
+"use client"
+
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { convex } from '@/lib/convex'
+import { api } from '@/convex/_generated/api'
+
+export function PostsList() {
+  const { data: posts, isLoading } = useQuery({
+    queryKey: ['posts'],
+    queryFn: () => convex.query(api.posts.list),
+  })
+
+  if (isLoading) return <Skeleton />
+
+  return (
+    <div className="space-y-4">
+      {posts?.map(post => <PostCard key={post._id} post={post} />)}
+    </div>
+  )
+}
+```
+
+## Navigation
+
+### Link Component
+
+```typescript
+import { Link } from '@tanstack/react-router'
+
+// Basic navigation
+<Link to="/posts">Posts</Link>
+
+// With parameters
+<Link to="/posts/$postId" params={{ postId: '123' }}>
+  View Post
+</Link>
+
+// With search params
+<Link to="/posts" search={{ page: 2, filter: 'published' }}>
+  Page 2
+</Link>
+
+// Active styling
+<Link
+  to="/posts"
+  activeProps={{ className: 'font-bold text-primary' }}
+>
+  Posts
+</Link>
+```
+
+### Programmatic Navigation
+
+```typescript
+import { useRouter, useNavigate } from '@tanstack/react-router'
+
+function Component() {
+  const router = useRouter()
+  const navigate = useNavigate()
+
+  // Navigate to route
+  navigate({ to: '/posts' })
+
+  // Navigate with params
+  navigate({ to: '/posts/$postId', params: { postId: '123' } })
+
+  // Invalidate and refetch data
+  router.invalidate()
 }
 ```
 
@@ -285,10 +474,10 @@ export function useDebounce<T>(value: T, delay: number): T {
 </div>
 ```
 
-### Custom Component Variants
+### Custom Component Variants (CVA)
 
 ```typescript
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva, type VariantProps } from "class-variance-authority"
 
 const cardVariants = cva(
   "rounded-lg shadow-md p-6",
@@ -299,261 +488,24 @@ const cardVariants = cva(
         dark: "bg-gray-900 text-white",
         outline: "bg-transparent border-2 border-gray-300",
       },
-      size: {
-        sm: "p-4",
-        md: "p-6",
-        lg: "p-8",
-      },
     },
     defaultVariants: {
       variant: "default",
-      size: "md",
     },
   }
-);
+)
 
 interface CardProps extends VariantProps<typeof cardVariants> {
-  children: React.ReactNode;
-  className?: string;
+  children: React.ReactNode
+  className?: string
 }
 
-export function Card({ variant, size, children, className }: CardProps) {
+export function Card({ variant, children, className }: CardProps) {
   return (
-    <div className={cardVariants({ variant, size, className })}>
+    <div className={cardVariants({ variant, className })}>
       {children}
     </div>
-  );
-}
-```
-
-## Convex Integration
-
-### Using Queries in Client Components
-
-```typescript
-"use client";
-
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-
-export function PostsList() {
-  const posts = useQuery(api.posts.list);
-
-  if (!posts) return <div>Loading...</div>;
-
-  return (
-    <div className="space-y-4">
-      {posts.map(post => (
-        <PostCard key={post._id} post={post} />
-      ))}
-    </div>
-  );
-}
-```
-
-### Using Mutations
-
-```typescript
-"use client";
-
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { useState } from "react";
-
-export function LikeButton({ postId }: { postId: Id<"posts"> }) {
-  const [isLiking, setIsLiking] = useState(false);
-  const likePost = useMutation(api.posts.like);
-
-  const handleLike = async () => {
-    setIsLiking(true);
-    try {
-      await likePost({ postId });
-    } finally {
-      setIsLiking(false);
-    }
-  };
-
-  return (
-    <button
-      onClick={handleLike}
-      disabled={isLiking}
-      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-    >
-      {isLiking ? "Liking..." : "Like"}
-    </button>
-  );
-}
-```
-
-## Form Handling with shadcn/ui
-
-### shadcn/ui Form Component
-
-**IMPORTANT**: Always use shadcn/ui Form components for forms. They integrate React Hook Form + Zod validation with accessible markup.
-
-```typescript
-"use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { toast } from "@/components/ui/use-toast";
-
-const formSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  content: z.string().min(10, "Content must be at least 10 characters"),
-});
-
-export function CreatePostForm() {
-  const createPost = useMutation(api.posts.create);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      content: "",
-    },
-  });
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      await createPost(values);
-      toast({
-        title: "Success",
-        description: "Post created successfully",
-      });
-      form.reset();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create post",
-        variant: "destructive",
-      });
-    }
-  }
-
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter post title" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is the title of your post.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="content"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Content</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Write your content here"
-                  className="min-h-[100px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type="submit" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? "Creating..." : "Create Post"}
-        </Button>
-      </form>
-    </Form>
-  );
-}
-```
-
-### Form with Select and Multiple Fields
-
-```typescript
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-const formSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  category: z.string(),
-  bio: z.string().optional(),
-});
-
-export function UserProfileForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
-
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="tech">Technology</SelectItem>
-                  <SelectItem value="design">Design</SelectItem>
-                  <SelectItem value="business">Business</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
-  );
+  )
 }
 ```
 
@@ -565,17 +517,20 @@ export function UserProfileForm() {
    - Ensure keyboard navigation works
    - Test with screen readers
 
-2. **Performance**
-   - Use Next.js Image component for images
-   - Lazy load components with `React.lazy()` or `dynamic()`
+2. **Performance** (see `resources/react-performance.md` for full guide)
+   - **CRITICAL**: Use server functions for data fetching (avoids client waterfalls)
+   - **CRITICAL**: Leverage route loaders for parallel data fetching
+   - Use TanStack Query for client-side caching
    - Memoize expensive computations with `useMemo`
    - Avoid unnecessary re-renders with `React.memo`
+   - Use stable references for props (avoid inline objects/arrays)
 
 3. **Code Organization**
    - Keep components small and focused
    - Extract reusable logic into custom hooks
-   - Use barrel exports (index.ts) for cleaner imports
-   - Separate business logic from UI components
+   - Separate server functions into `*.functions.ts` files
+   - Keep server-only code in `*.server.ts` files
+   - Share validation schemas in `schemas.ts`
 
 4. **Styling**
    - Use Tailwind's utility classes for styling
@@ -585,39 +540,26 @@ export function UserProfileForm() {
 
 5. **Type Safety**
    - Define interfaces for all component props
-   - Use Convex-generated types for data
+   - Use Zod schemas for server function validation
+   - Leverage TanStack Router's type-safe params
    - Avoid `any` type
-   - Use discriminated unions for variant props
 
-## File Structure
+6. **Security**
+   - Use server functions for sensitive operations
+   - Never expose secrets in loaders (they run on both server AND client)
+   - Validate all inputs with Zod schemas
 
-```
-app/
-├── (auth)/              # Route groups
-│   ├── login/
-│   └── signup/
-├── dashboard/
-│   ├── page.tsx
-│   └── layout.tsx
-├── layout.tsx
-└── page.tsx
+## Resources
 
-components/
-├── ui/                  # Reusable UI components
-│   ├── button.tsx
-│   ├── card.tsx
-│   └── input.tsx
-├── forms/               # Form components
-└── layouts/             # Layout components
-
-hooks/                   # Custom React hooks
-lib/                     # Utilities and config
-public/                  # Static assets
-```
+- **[React Performance Best Practices](./resources/react-performance.md)** - Critical performance patterns
+- **[Component Patterns](./resources/components.md)** - Reusable component examples
 
 ## References
 
-- [Next.js Documentation](https://nextjs.org/docs)
+- [TanStack Start Documentation](https://tanstack.com/start/latest)
+- [TanStack Router Documentation](https://tanstack.com/router/latest)
+- [TanStack Query Documentation](https://tanstack.com/query/latest)
 - [React Documentation](https://react.dev)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [Convex React Documentation](https://docs.convex.dev/client/react)
+- [shadcn/ui Documentation](https://ui.shadcn.com)
+- [Convex Documentation](https://docs.convex.dev)

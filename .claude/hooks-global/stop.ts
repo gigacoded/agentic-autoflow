@@ -3,12 +3,19 @@
 /**
  * PostToolUse Hook - Quality Checks After Tool Use
  *
- * Claude Code Interface:
- * - Input: JSON via stdin with tool usage details
- * - Output: Message via stdout (shown to Claude after tool result)
+ * Claude Code Interface (per official docs):
+ * - Input: JSON via stdin with { tool_name, tool_input, tool_response, ... }
+ * - Output: JSON with { additionalContext: string } or plain text
  * - Exit code 0: Success
+ * - Exit code 2: Block (with reason) - provides feedback to Claude
+ *
+ * PostToolUse decisions:
+ * - "decision": "block" - provides feedback to Claude
+ * - "additionalContext" - information Claude should consider
  *
  * This implements the "#NoMessLeftBehind" philosophy
+ *
+ * @see https://code.claude.com/docs/en/hooks
  */
 
 import * as fs from "fs";
@@ -46,8 +53,12 @@ async function main() {
     const tsErrors = checkTypeScriptErrors();
 
     if (tsErrors) {
-      const message = formatQualityCheckMessage(tsErrors);
-      process.stdout.write(message);
+      // Output as JSON with additionalContext (per official docs)
+      // This provides context to Claude about the errors
+      const output = JSON.stringify({
+        additionalContext: formatQualityCheckMessage(tsErrors)
+      });
+      process.stdout.write(output);
     }
 
     process.exit(0);

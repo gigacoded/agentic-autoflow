@@ -3,12 +3,14 @@
 /**
  * UserPromptSubmit Hook - Skill Auto-Activation
  *
- * Claude Code Interface:
- * - Input: JSON via stdin with { prompt: string }
- * - Output: Modified prompt via stdout
- * - Exit code 0: Success (stdout shown to Claude)
- * - Exit code 2: Block processing
- * - Other: Error (stderr shown to user)
+ * Claude Code Interface (per official docs):
+ * - Input: JSON via stdin with { prompt: string, session_id, cwd, ... }
+ * - Output: JSON with { additionalContext: string } or plain text
+ * - Exit code 0: Success (stdout adds context to Claude)
+ * - Exit code 2: Block processing (stderr shown, prompt blocked)
+ * - Other: Non-blocking error (stderr shown in verbose mode)
+ *
+ * @see https://code.claude.com/docs/en/hooks
  */
 
 import * as fs from "fs";
@@ -64,18 +66,20 @@ async function main() {
       }
     }
 
-    // If no skills matched, return original prompt
+    // If no skills matched, exit silently (no additional context needed)
     if (activatedSkills.length === 0) {
-      process.stdout.write(originalPrompt);
       process.exit(0);
     }
 
     // Build skill activation reminder
     const skillReminder = buildSkillActivationReminder(activatedSkills, skillRules);
 
-    // Output modified prompt (reminder + original)
-    const modifiedPrompt = `${skillReminder}\n\n---\n\n${originalPrompt}`;
-    process.stdout.write(modifiedPrompt);
+    // Output as JSON with additionalContext (per official docs)
+    // This adds context to Claude without modifying the user's prompt
+    const output = JSON.stringify({
+      additionalContext: skillReminder
+    });
+    process.stdout.write(output);
     process.exit(0);
 
   } catch (error) {

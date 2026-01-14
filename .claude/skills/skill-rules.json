@@ -42,7 +42,7 @@
     "type": "domain",
     "enforcement": "suggest",
     "priority": "high",
-    "description": "React, Next.js, and Tailwind CSS frontend development",
+    "description": "React, TanStack Start, and Tailwind CSS frontend development",
     "promptTriggers": {
       "keywords": [
         "component",
@@ -51,32 +51,42 @@
         "page",
         "layout",
         "react",
-        "nextjs",
+        "tanstack",
+        "router",
+        "route",
         "tailwind",
         "style",
-        "form"
+        "form",
+        "loader",
+        "shadcn"
       ],
       "intentPatterns": [
-        "(create|build|add|implement).*?(component|page|ui|layout)",
+        "(create|build|add|implement).*?(component|page|ui|layout|route)",
         "(style|design).*?(component|page|ui)",
         "(frontend|client|ui).*?(component|feature|page)",
-        "(form|input|button|modal)"
+        "(form|input|button|modal)",
+        "(create|add).*?(server function|loader)",
+        "(tanstack|react).*?(router|query|start)"
       ]
     },
     "fileTriggers": {
       "pathPatterns": [
-        "app/**/*.tsx",
+        "src/routes/**/*.tsx",
+        "src/routes/__root.tsx",
         "components/**/*.tsx",
-        "app/**/page.tsx",
-        "app/**/layout.tsx"
+        "src/utils/*.functions.ts",
+        "src/router.tsx"
       ],
       "contentPatterns": [
-        "use client",
+        "createFileRoute",
+        "createServerFn",
+        "@tanstack/react-router",
+        "@tanstack/react-start",
+        "@tanstack/react-query",
         "import.*react",
         "className=",
         "tailwind",
-        "useQuery.*convex",
-        "useMutation.*convex"
+        "Route.useLoaderData"
       ]
     }
   },
@@ -104,6 +114,49 @@
       "contentPatterns": [
         "import.*example",
         "Example\\("
+      ]
+    }
+  },
+  "task-management-dev": {
+    "type": "meta",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "Task-driven development workflow and PBI management",
+    "promptTriggers": {
+      "keywords": [
+        "task",
+        "pbi",
+        "backlog",
+        "workflow",
+        "delivery",
+        "planning",
+        "dev docs",
+        "sprint",
+        "feature"
+      ],
+      "intentPatterns": [
+        "(create|start|plan|implement).*?(task|pbi|feature)",
+        "(update|check|show).*?(backlog|tasks|progress)",
+        "(dev docs|development docs).*?(create|update|status)",
+        "(mark|set).*?(done|complete|in.?progress)",
+        "(what|which).*?(task|pbi).*?(next|current)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "docs/delivery/**/*",
+        "dev/active/**/*",
+        "**/backlog.md",
+        "**/tasks.md",
+        "**/*-plan.md",
+        "**/*-context.md"
+      ],
+      "contentPatterns": [
+        "Status.*?(Proposed|Agreed|InProgress|InReview|Done)",
+        "## Status History",
+        "## Implementation Plan",
+        "\\[.*?\\]\\(.*?tasks\\.md\\)",
+        "PBI-\\d+"
       ]
     }
   }

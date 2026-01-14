@@ -66,22 +66,22 @@ mkdir -p .claude/hooks-global
 # Step 2: Copy core infrastructure files
 echo -e "${BLUE}2️⃣  Copying core infrastructure files...${NC}"
 
-# Copy README
-if [ -f "$TEMPLATE_DIR/.claude/README.md" ]; then
-    cp "$TEMPLATE_DIR/.claude/README.md" .claude/
-    echo -e "   ${GREEN}✓${NC} .claude/README.md"
+# Copy settings.json (hooks configuration)
+if [ -f "$TEMPLATE_DIR/.claude/settings.json" ]; then
+    cp "$TEMPLATE_DIR/.claude/settings.json" .claude/
+    echo -e "   ${GREEN}✓${NC} .claude/settings.json (hooks configuration)"
 fi
 
-# Copy task-management-dev skill (REQUIRED)
-if [ -d "$TEMPLATE_DIR/.claude/skills/task-management-dev" ]; then
-    cp -r "$TEMPLATE_DIR/.claude/skills/task-management-dev" .claude/skills/
-    echo -e "   ${GREEN}✓${NC} .claude/skills/task-management-dev/ (core workflow)"
+# Copy hooks-global scripts
+if [ -d "$TEMPLATE_DIR/.claude/hooks-global" ]; then
+    cp -r "$TEMPLATE_DIR/.claude/hooks-global/"* .claude/hooks-global/ 2>/dev/null || true
+    echo -e "   ${GREEN}✓${NC} .claude/hooks-global/ (skill activation & quality checks)"
 fi
 
-# Copy skill-rules.json
-if [ -f "$TEMPLATE_DIR/.claude/skills/skill-rules.json" ]; then
-    cp "$TEMPLATE_DIR/.claude/skills/skill-rules.json" .claude/skills/
-    echo -e "   ${GREEN}✓${NC} .claude/skills/skill-rules.json"
+# Copy all skills
+if [ -d "$TEMPLATE_DIR/.claude/skills" ]; then
+    cp -r "$TEMPLATE_DIR/.claude/skills/"* .claude/skills/ 2>/dev/null || true
+    echo -e "   ${GREEN}✓${NC} .claude/skills/ (frontend-dev, convex-backend-dev, task-management-dev)"
 fi
 
 # Copy commands
@@ -90,8 +90,19 @@ if [ -d "$TEMPLATE_DIR/.claude/commands" ]; then
     echo -e "   ${GREEN}✓${NC} .claude/commands/ (dev docs commands)"
 fi
 
-# Step 3: Copy docs/delivery structure
-echo -e "${BLUE}3️⃣  Creating docs/delivery structure...${NC}"
+# Copy .mcp.json (MCP server configuration)
+echo -e "${BLUE}3️⃣  Copying MCP configuration...${NC}"
+if [ -f "$TEMPLATE_DIR/.mcp.json" ]; then
+    if [ ! -f ".mcp.json" ]; then
+        cp "$TEMPLATE_DIR/.mcp.json" .
+        echo -e "   ${GREEN}✓${NC} .mcp.json (Convex & Chrome DevTools MCP)"
+    else
+        echo -e "   ${YELLOW}⚠${NC}  .mcp.json already exists (skipping)"
+    fi
+fi
+
+# Step 4: Copy docs/delivery structure
+echo -e "${BLUE}4️⃣  Creating docs/delivery structure...${NC}"
 mkdir -p docs/delivery
 
 # Copy backlog template
@@ -110,13 +121,13 @@ if [ -d "$TEMPLATE_DIR/docs/delivery/examples" ]; then
     echo -e "   ${GREEN}✓${NC} docs/delivery/examples/ (reference PBI)"
 fi
 
-# Step 4: Create dev/active directory for dev docs
-echo -e "${BLUE}4️⃣  Creating dev docs directory...${NC}"
+# Step 5: Create dev/active directory for dev docs
+echo -e "${BLUE}5️⃣  Creating dev docs directory...${NC}"
 mkdir -p dev/active
 echo -e "   ${GREEN}✓${NC} dev/active/ (for long-running tasks)"
 
-# Step 5: Copy CLAUDE.md template
-echo -e "${BLUE}5️⃣  Installing CLAUDE.md...${NC}"
+# Step 6: Copy CLAUDE.md template
+echo -e "${BLUE}6️⃣  Installing CLAUDE.md...${NC}"
 if [ ! -f "CLAUDE.md" ]; then
     cp "$TEMPLATE_DIR/CLAUDE.template.md" CLAUDE.md
     echo -e "   ${GREEN}✓${NC} CLAUDE.md (customize this for your project!)"
@@ -124,8 +135,8 @@ else
     echo -e "   ${YELLOW}⚠${NC}  CLAUDE.md already exists (skipping)"
 fi
 
-# Step 6: Add to .gitignore if exists
-echo -e "${BLUE}6️⃣  Updating .gitignore...${NC}"
+# Step 7: Add to .gitignore if exists
+echo -e "${BLUE}7️⃣  Updating .gitignore...${NC}"
 if [ -f ".gitignore" ]; then
     if ! grep -q "^.claude/settings.local.json" .gitignore; then
         echo "" >> .gitignore
@@ -137,9 +148,9 @@ if [ -f ".gitignore" ]; then
     fi
 fi
 
-# Step 7: Create initial backlog entry
+# Step 8: Create initial backlog entry
 echo ""
-echo -e "${BLUE}7️⃣  Would you like to customize the backlog now? (y/N)${NC}"
+echo -e "${BLUE}8️⃣  Would you like to customize the backlog now? (y/N)${NC}"
 read -p "" -n 1 -r CUSTOMIZE
 echo
 

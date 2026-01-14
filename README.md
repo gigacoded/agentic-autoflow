@@ -1,455 +1,574 @@
-# Claude Code Workflow Template
+# Agentic AutoFlow - Claude Code Workflow Automation
 
 **Production-grade Claude Code infrastructure for professional software development**
 
-This template provides a comprehensive workflow system for Claude Code, extracted from 6+ months of hardcore production use. It transforms Claude from a passive assistant into an active development partner through auto-activating skills, quality automation hooks, and structured task management.
+Drop this into any existing codebase to get auto-activating skills, quality automation hooks, and structured task management - all working with Claude Code out of the box.
 
-## What You Get
+## 30-Second Integration
 
-### 🎯 Auto-Activating Skills System
-- Skills automatically inject based on keywords, file paths, and code patterns
-- No manual reminders needed - Claude knows when to apply best practices
-- Reduces CLAUDE.md size by 74% while improving consistency
-- Extensible framework for your own domain-specific patterns
+**Prerequisites:**
+- [Claude Code](https://claude.ai/install.sh) installed (`curl -fsSL https://claude.ai/install.sh | bash`)
+- Node.js 18+ (for TypeScript hooks)
 
-### ⚡ Quality Automation Hooks
-- **TypeScript Error Checking**: Automatically runs after Edit/Write operations
-- **Skill Activation**: Analyzes prompts before execution to activate relevant skills
-- **Global Registration**: Works across all your projects
-- Fail-fast philosophy prevents cascading errors
-
-### 📋 Dev Docs Workflow
-- Prevents context loss on long tasks (3+ steps)
-- Structured progress tracking with `/create-dev-docs`, `/update-dev-docs`, `/dev-docs-status`
-- Markdown-based checklist system
-- Integrated with task-driven development workflow
-
-### 📊 Task-Driven Development (Optional)
-- PBI (Product Backlog Item) workflow with status tracking
-- Hierarchical task management
-- Complete audit trail with status history
-- Designed for professional software delivery
-
-## Quick Start
-
-### Prerequisites
-
-- Claude Code CLI installed
-- Node.js and npm (for TypeScript hook)
-- Git (optional, for workflow features)
-
-### 🚀 Automated Setup (Recommended - 2 Minutes)
-
-**NEW!** Use the automated installer for hassle-free deployment:
+### Option A: Quick Copy (Recommended)
 
 ```bash
-# Clone template
-git clone https://github.com/gigacoded/agentic-autoflow.git
-cd agentic-autoflow
+# Clone this repo temporarily
+git clone https://github.com/gigacoded/agentic-autoflow.git /tmp/agentic-autoflow
 
-# Run automated installer in your target project
-./setup.sh /path/to/your/project
+# Copy to your project (both .claude/ and .mcp.json are required)
+cp -r /tmp/agentic-autoflow/.claude /path/to/your/project/
+cp /tmp/agentic-autoflow/.mcp.json /path/to/your/project/
 
-# Follow interactive prompts:
-# - Enter project name
-# - Enter your name
-# - Confirm customizations
-# ✅ Done! Infrastructure installed and customized
-```
-
-**What setup.sh does**:
-- ✅ Copies `.claude/` directory structure
-- ✅ Installs `task-management-dev` skill
-- ✅ Creates `docs/delivery/` with backlog template
-- ✅ Creates `dev/active/` for dev docs
-- ✅ Copies and customizes `CLAUDE.md`
-- ✅ Updates `.gitignore`
-- ✅ Replaces placeholders ({{PROJECT_NAME}}, etc.)
-- ✅ Provides next steps guidance
-
-Then install global hooks (one-time, applies to all projects):
-
-```bash
-# Create global hooks directory
-mkdir -p ~/.claude/hooks
-
-# Copy hooks from template
-cp .claude/hooks-global/* ~/.claude/hooks/
-
-# Register hooks
-claude hooks add UserPromptSubmit ~/.claude/hooks/user-prompt-submit.ts --user
-claude hooks add PostToolUse ~/.claude/hooks/stop.ts --user --matcher "Edit|Write"
-
-# Verify
-claude hooks list
-```
-
-### Manual Setup (Alternative - 5 Minutes)
-
-If you prefer manual control:
-
-**Step 1: Clone Template**
-
-```bash
-# Clone main template (customizable for any stack)
-git clone https://github.com/gigacoded/agentic-autoflow.git
-cd agentic-autoflow
-
-# OR: Clone example branch (Convex + Next.js + Tailwind + shadcn/ui ready)
-git clone -b example/convex-nextjs-stack https://github.com/gigacoded/agentic-autoflow.git
-cd agentic-autoflow
-
-# OR: Copy into existing project
-cp -r /path/to/agentic-autoflow/.claude .claude/
-```
-
-**Step 2: Install Global Hooks**
-
-```bash
-# Create global hooks directory
-mkdir -p ~/.claude/hooks
-
-# Copy hooks
-cp .claude/hooks-global/* ~/.claude/hooks/
-
-# Register hooks
-claude hooks add UserPromptSubmit ~/.claude/hooks/user-prompt-submit.ts --user
-claude hooks add PostToolUse ~/.claude/hooks/stop.ts --user --matcher "Edit|Write"
-
-# Verify registration
-claude hooks list
-```
-
-**Step 3: Customize CLAUDE.md**
-
-```bash
-# Copy template
-cp .claude/CLAUDE.template.md CLAUDE.md
-
-# Edit for your project
-# - Update project name
-# - Update quick start commands
-# - Add/remove skills as needed
-# - Keep under 300 lines
-```
-
-**Step 4: Configure Skills**
-
-```bash
-# Review included example skill
-cat .claude/skills/example-skill/SKILL.md
-
-# Create your own skills (see docs below)
-# Or copy skills from other projects
-```
-
-**Step 5: Test Installation**
-
-```bash
-# Start Claude Code
+# Navigate to your project and start Claude Code
+cd /path/to/your/project
 claude
-
-# Test skill activation
-# Type: "How do I write a test?"
-# Should see skill activation message
-
-# Test TypeScript hook (if TypeScript project)
-# Make an edit, introduce a type error
-# Should see error message after Edit/Write
 ```
 
-## Example Branch: Convex + Next.js Stack
-
-**Want a ready-to-use setup?** Check out the `example/convex-nextjs-stack` branch:
+### Option B: Setup Script
 
 ```bash
-git clone -b example/convex-nextjs-stack https://github.com/gigacoded/agentic-autoflow.git
+# Clone and run installer
+git clone https://github.com/gigacoded/agentic-autoflow.git
+cd agentic-autoflow
+
+# Install to your project (interactive setup)
+./setup.sh /path/to/your/project
 ```
 
-**Includes**:
-- ✅ `convex-backend-dev` skill - Complete Convex patterns (queries, mutations, actions, auth)
-- ✅ `nextjs-frontend-dev` skill - Next.js App Router, React, Tailwind, shadcn/ui
-- ✅ `e2e-testing-framework` skill - 4-pillar testing with Chrome MCP
-- ✅ Stack-specific CLAUDE.md - Ready-to-use quick reference
-- ✅ Production patterns - Real code examples from 6+ months use
+### What Gets Copied
 
-**Perfect for**: Convex + Next.js + Tailwind + shadcn/ui + Clerk projects
+| Required | Path | Purpose |
+|----------|------|---------|
+| **Yes** | `.claude/` | Skills, hooks, commands, settings |
+| **Yes** | `.mcp.json` | MCP server configuration (Convex, Chrome DevTools) |
+| Optional | `docs/delivery/` | Task management templates |
+| Optional | `dev/active/` | Dev docs working directory |
 
-See [BRANCH-README.md](https://github.com/gigacoded/agentic-autoflow/blob/example/convex-nextjs-stack/BRANCH-README.md) in that branch for complete details.
+## What Gets Activated
 
----
+Once you copy `.claude/` and `.mcp.json` to your project, Claude Code automatically gains:
 
-## What's Included
+| Feature | What It Does | Activated By |
+|---------|--------------|--------------|
+| **Skills** | Domain-specific best practices auto-inject | Keywords in your prompts |
+| **TypeScript Checks** | Runs `tsc --noEmit` after edits | Any Edit/Write tool use |
+| **Slash Commands** | `/create-dev-docs`, `/update-dev-docs` | Type the command |
+| **Task Management** | PBI workflow with status tracking | Work in `docs/delivery/` |
+| **Convex MCP** | Query database, view schemas, run functions | First session approval |
+| **Chrome DevTools MCP** | Browser automation, screenshots, debugging | First session approval |
 
-### Core Infrastructure
+## Included Skills
 
+| Skill | Triggers On | Best Practices For |
+|-------|-------------|-------------------|
+| `frontend-dev` | "component", "react", "tanstack", "tailwind", "route" | TanStack Start, React, Tailwind CSS, shadcn/ui |
+| `convex-backend-dev` | "convex", "query", "mutation", "schema" | Convex backend development |
+| `task-management-dev` | "task", "pbi", "backlog", "planning" | Task-driven development workflow |
+| `example-skill` | "example", "demo" | Template for your own skills |
+
+## How It Works
+
+### Skill Auto-Activation
+
+When you ask Claude something like:
 ```
-.claude/
-├── skills/                          # Auto-activating skills
-│   └── example-skill/               # Example skill showing structure
-│       ├── SKILL.md                 # Skill content (best practices, patterns)
-│       ├── skill-config.json        # Skill metadata
-│       └── resources/               # Additional reference materials
-│           └── examples.md
-├── hooks-global/                    # Global hooks (copy to ~/.claude/hooks/)
-│   ├── user-prompt-submit.ts        # Skill activation hook
-│   └── stop.ts                      # TypeScript error checking hook
-├── commands/                        # Slash commands
-│   ├── create-dev-docs.md           # Initialize dev docs
-│   ├── update-dev-docs.md           # Update progress
-│   └── dev-docs-status.md           # Show overview
-├── CLAUDE.template.md               # Lean CLAUDE.md template
-└── README.md                        # Setup guide (this for .claude dir)
-
-docs/delivery/                       # Task-driven development
-├── backlog.md                       # PBI tracking (ready to use)
-└── examples/                        # Example PBI structure
-    └── 1/                           # Complete example PBI
-        ├── prd.md                   # Product Requirements Doc (200+ lines)
-        └── tasks.md                 # Task breakdown (5 detailed tasks)
-
-dev/active/                          # Dev docs (created by slash commands)
-└── .gitkeep
-
-README.md                            # This file
-SETUP.md                             # Detailed setup guide
-CUSTOMIZATION.md                     # How to adapt for your project
-SKILLS-GUIDE.md                      # Creating custom skills
-HOOKS-GUIDE.md                       # Writing custom hooks
-MIGRATION-GUIDE.md                   # Migrating from monolithic CLAUDE.md
+> create a new route for user profiles
 ```
 
-### Documentation
+The system detects keywords (`route`, `component`) and injects:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 SKILL ACTIVATION CHECK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-- **README.md** (this file) - Overview and quick start
-- **SETUP.md** - Detailed setup instructions
-- **CUSTOMIZATION.md** - Adapting the template for your project
-- **SKILLS-GUIDE.md** - Creating and managing skills
-- **HOOKS-GUIDE.md** - Writing custom hooks
-- **MIGRATION-GUIDE.md** - Moving from monolithic CLAUDE.md
-- **TASK-WORKFLOW.md** - Optional task-driven development workflow
+📋 Detected context: React, TanStack Start, and Tailwind CSS frontend development
 
-## Key Features
+💡 Recommended Skill: **frontend-dev**
 
-### Skills System
+Please reference this skill's guidelines for best practices and patterns.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
-Skills are context-aware best practices that activate automatically:
+Claude then follows the patterns defined in `.claude/skills/frontend-dev/SKILL.md`.
+
+### TypeScript Quality Checks
+
+After every file edit, the stop hook automatically runs `tsc --noEmit`:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 QUALITY CHECK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️  **TypeScript Errors Detected**:
+
+src/routes/index.tsx(15,3): error TS2322: Type 'string' is not assignable to type 'number'.
+
+Please fix these errors before continuing.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+## Configuration (settings.json)
+
+The hooks are configured via `.claude/settings.json` using Claude Code's official [hooks system](https://code.claude.com/docs/en/hooks):
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx tsx .claude/hooks-global/user-prompt-submit.ts"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx tsx .claude/hooks-global/stop.ts"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Note**: `UserPromptSubmit` does not support matchers (per official docs). `PostToolUse` uses regex matchers to filter by tool name.
+
+### Global vs Project Hooks
+
+**Project hooks** (`.claude/settings.json`) - Included in this repo, work immediately:
+- Scoped to this project only
+- Shared with your team via git
+- No additional setup required
+
+**Global hooks** (`~/.claude/settings.json`) - For all your projects:
+```bash
+# Create user settings if it doesn't exist
+mkdir -p ~/.claude
+
+# Add hooks to your global settings
+cat >> ~/.claude/settings.json << 'EOF'
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx tsx ~/.claude/hooks/user-prompt-submit.ts"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx tsx ~/.claude/hooks/stop.ts"
+          }
+        ]
+      }
+    ]
+  }
+}
+EOF
+
+# Copy hook scripts
+mkdir -p ~/.claude/hooks
+cp .claude/hooks-global/* ~/.claude/hooks/
+```
+
+## Project Structure
+
+```
+your-project/
+├── .claude/
+│   ├── settings.json              # Hook configuration (auto-loaded by Claude Code)
+│   ├── skills/
+│   │   ├── skill-rules.json       # Activation triggers for all skills
+│   │   ├── frontend-dev/
+│   │   │   ├── SKILL.md           # TanStack Start, React, Tailwind patterns
+│   │   │   ├── skill-config.json
+│   │   │   └── resources/
+│   │   │       ├── components.md
+│   │   │       └── react-performance.md
+│   │   ├── convex-backend-dev/
+│   │   │   └── ...
+│   │   ├── task-management-dev/
+│   │   │   └── ...
+│   │   └── example-skill/
+│   │       └── ...
+│   ├── hooks-global/
+│   │   ├── user-prompt-submit.ts  # Skill activation hook
+│   │   └── stop.ts                # TypeScript error checking hook
+│   ├── commands/
+│   │   ├── create-dev-docs.md     # /create-dev-docs command
+│   │   ├── update-dev-docs.md     # /update-dev-docs command
+│   │   └── dev-docs-status.md     # /dev-docs-status command
+│   └── agents/                    # (Optional) Custom subagents
+├── .mcp.json                      # MCP server configuration (Convex, Chrome DevTools)
+├── docs/delivery/                 # (Optional) PBI workflow
+│   ├── backlog.md
+│   └── examples/
+└── dev/active/                    # (Optional) Dev docs workspace
+```
+
+## Creating Your Own Skills
+
+### 1. Create Skill Directory
+
+```bash
+mkdir -p .claude/skills/my-skill/resources
+```
+
+### 2. Write SKILL.md
+
+```markdown
+# My Custom Skill
+
+**Auto-activates when**: Working with [your technology]
+
+## Patterns
+
+### Pattern 1: [Name]
+\`\`\`typescript
+// Code example
+\`\`\`
+
+## Best Practices
+- Practice 1
+- Practice 2
+```
+
+### 3. Add to skill-rules.json
 
 ```json
 {
   "my-skill": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "My custom skill description",
     "promptTriggers": {
-      "keywords": ["backend", "api", "database"],
-      "intentPatterns": ["(create|implement).*?(endpoint|route)"]
+      "keywords": ["keyword1", "keyword2"],
+      "intentPatterns": ["(create|build).*?(thing)"]
     },
     "fileTriggers": {
-      "pathPatterns": ["src/api/**/*.ts"],
-      "contentPatterns": ["import.*express"]
+      "pathPatterns": ["src/my-domain/**/*.ts"],
+      "contentPatterns": ["import.*my-library"]
     }
   }
 }
 ```
 
-When Claude detects relevant context, skills inject automatically with:
-- Domain-specific best practices
-- Code patterns and examples
-- Common gotchas and solutions
-- Testing strategies
+### 4. Create skill-config.json
 
-### Hooks System
-
-**UserPromptSubmit Hook** - Runs before execution:
-- Analyzes user prompt
-- Checks for skill trigger patterns
-- Injects skill activation reminders
-- Fast (< 100ms)
-
-**Stop Hook (PostToolUse)** - Runs after Edit/Write:
-- Checks TypeScript errors with `tsc --noEmit`
-- Gracefully skips if not TypeScript project
-- 10-second timeout for large projects
-- Fail-fast prevents cascading errors
-
-### Dev Docs Workflow
-
-For tasks with 3+ steps that risk context loss:
-
-```bash
-# Initialize tracking
-/create-dev-docs
-
-# Update progress before auto-compaction
-/update-dev-docs
-
-# Check status
-/dev-docs-status
+```json
+{
+  "name": "my-skill",
+  "version": "1.0.0",
+  "description": "My custom skill",
+  "resources": ["resources/patterns.md"]
+}
 ```
 
-Creates structured documentation:
-- `[task-name]-plan.md` - Approved plan and success criteria
-- `[task-name]-context.md` - Decisions, blockers, status
-- `[task-name]-tasks.md` - Markdown checklist with timestamps
+## Slash Commands
 
-### Task-Driven Development (Optional)
+| Command | Description |
+|---------|-------------|
+| `/create-dev-docs` | Initialize dev docs for long tasks (3+ steps) |
+| `/update-dev-docs` | Update progress before context compaction |
+| `/dev-docs-status` | Show progress overview |
 
-Professional workflow for product development:
+## Environment Variables
 
-- **PBIs (Product Backlog Items)**: Features with requirements and acceptance criteria
-- **Tasks**: Implementation steps with status tracking
-- **Status Flow**: Proposed → Agreed → InProgress → Review → Done
-- **Audit Trail**: Complete history of all status changes
-- **Documentation**: Each PBI has dedicated directory with PRD and tasks
+Set these in `.claude/settings.json` under `env`:
 
-## Customization
-
-### Minimal Setup (Just Hooks)
-
-If you only want quality automation without skills:
-
-```bash
-# Copy hooks only
-cp .claude/hooks-global/* ~/.claude/hooks/
-claude hooks add UserPromptSubmit ~/.claude/hooks/user-prompt-submit.ts --user
-claude hooks add PostToolUse ~/.claude/hooks/stop.ts --user --matcher "Edit|Write"
-
-# Skip skills and dev docs
+```json
+{
+  "env": {
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+  }
+}
 ```
 
-### Skill-Based Setup (Recommended)
-
-For comprehensive workflow with auto-activation:
+Or set globally before starting Claude:
 
 ```bash
-# Full installation (see Quick Start above)
-# Customize skills for your tech stack
-# Create CLAUDE.md from template
+export BASH_DEFAULT_TIMEOUT_MS=60000  # Longer timeout for slow commands
+claude
 ```
 
-### Full Task-Driven Development
+## Customization Examples
 
-For professional product delivery:
+### Python Projects
+
+Create `.claude/skills/python-dev/SKILL.md` and modify the stop hook to run `mypy`:
+
+```typescript
+// In stop.ts, add:
+const hasPython = fs.existsSync(path.join(cwd, "pyproject.toml"));
+if (hasPython) {
+  execSync("mypy .", { ... });
+}
+```
+
+### Go Projects
+
+```typescript
+// In stop.ts:
+const hasGo = fs.existsSync(path.join(cwd, "go.mod"));
+if (hasGo) {
+  execSync("go vet ./...", { ... });
+}
+```
+
+### Rust Projects
+
+```typescript
+// In stop.ts:
+const hasRust = fs.existsSync(path.join(cwd, "Cargo.toml"));
+if (hasRust) {
+  execSync("cargo check", { ... });
+}
+```
+
+## Troubleshooting
+
+### Skills Not Activating
+
+1. Check `.claude/skills/skill-rules.json` exists
+2. Verify keywords match your prompt (case-insensitive)
+3. Check Claude Code is reading the hooks:
+   ```bash
+   claude config get hooks
+   ```
+
+### TypeScript Hook Not Running
+
+1. Ensure `node_modules/.bin/tsc` exists (run `npm install`)
+2. Check for `package.json` in project root
+3. Verify hook is registered:
+   ```bash
+   cat .claude/settings.json | grep -A 20 hooks
+   ```
+
+### Hooks Timeout
+
+Increase timeout in settings:
+```json
+{
+  "env": {
+    "BASH_DEFAULT_TIMEOUT_MS": "30000"
+  }
+}
+```
+
+## MCP Server Integration
+
+This repo includes a pre-configured `.mcp.json` with two essential MCP servers:
+
+### Included MCP Servers
+
+| Server | Purpose | Documentation |
+|--------|---------|---------------|
+| **convex** | Query/mutate Convex database, view schemas, execute functions | [Convex MCP Docs](https://docs.convex.dev/ai/convex-mcp-server) |
+| **chrome-devtools** | Browser automation, debugging, screenshots, performance | [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp) |
+
+### Pre-configured `.mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "convex": {
+      "command": "npx",
+      "args": ["-y", "convex", "mcp", "start"]
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest", "--isolated"]
+    }
+  }
+}
+```
+
+**Note:** Chrome DevTools runs in `--isolated` mode by default, which uses a temporary clean browser profile for each session. This prevents the AI from accessing your personal browsing data (passwords, cookies, history) and ensures secure, reproducible automation sessions.
+
+### First-Time Setup
+
+When you first run `claude` in your project, you'll be prompted to approve the MCP servers:
 
 ```bash
-# Full installation + task workflow
-cp docs/delivery/backlog.md.template docs/delivery/backlog.md
-# Read TASK-WORKFLOW.md for complete guide
+cd your-project
+claude
+
+# Claude will ask: "Allow MCP server 'convex'?" → Yes
+# Claude will ask: "Allow MCP server 'chrome-devtools'?" → Yes
 ```
 
-## Tech Stack Compatibility
+Verify servers are connected:
+```bash
+# Inside Claude Code
+/mcp
+```
 
-### Works With Any Stack
-- The core infrastructure (hooks, dev docs) is language-agnostic
-- TypeScript hook gracefully skips if TypeScript not detected
-- Create skills for your specific technologies
+### Alternative: CLI Installation
 
-### Example Skill Adaptations
+If you prefer to add servers via CLI instead of `.mcp.json`:
 
-**Python Project**:
-- Create `python-dev` skill with pytest patterns
-- Modify stop hook to run `mypy` or `pylint`
-- Add triggers for Django/Flask/FastAPI
+```bash
+# Add Convex MCP (project scope - saved to .mcp.json)
+claude mcp add-json convex '{"command":"npx","args":["-y","convex","mcp","start"]}'
 
-**Rust Project**:
-- Create `rust-dev` skill with cargo patterns
-- Modify stop hook to run `cargo check`
-- Add triggers for common crates
+# Add Chrome DevTools MCP with isolated mode (project scope)
+claude mcp add-json chrome-devtools '{"command":"npx","args":["-y","chrome-devtools-mcp@latest","--isolated"]}'
 
-**Go Project**:
-- Create `go-dev` skill with testing patterns
-- Modify stop hook to run `go vet`
-- Add triggers for goroutines, channels
+# Verify installation
+claude mcp list
+```
 
-## Migration from Monolithic CLAUDE.md
+### Using MCP Tools
 
-If you have a large CLAUDE.md (500+ lines):
+Once connected, Claude can use MCP tools directly:
 
-1. **Read MIGRATION-GUIDE.md** for detailed instructions
-2. **Identify topics** in your current CLAUDE.md
-3. **Extract to skills** - One skill per domain/topic
-4. **Update triggers** in `skill-rules.json`
-5. **Test activation** with relevant keywords
-6. **Create lean CLAUDE.md** from template (keep < 300 lines)
+**Convex Examples:**
+```
+> Show me the schema for the users table
+> Query all posts created in the last 24 hours
+> What functions are available in the posts module?
+```
 
-**Benefits**:
-- 70-80% reduction in CLAUDE.md size
-- Better organization and discoverability
-- Automatic activation (no manual reminders)
-- Easier to maintain and update
+**Chrome DevTools Examples:**
+```
+> Navigate to http://localhost:3000 and take a screenshot
+> Check the console for any errors on the page
+> Click the login button and fill in the form
+```
 
-## Examples from Production
+### Advanced Chrome DevTools Options
 
-This template is based on production infrastructure from a real-world project:
+| Flag | Purpose |
+|------|---------|
+| `--isolated` | Uses temporary browser profile (recommended for security) |
+| `--headless` | Run without visible browser window (for CI/automation) |
+| `--user-data-dir` | Use persistent profile for auth sessions |
 
-- **4 production skills**: E2E testing, backend dev, frontend dev, task management
-- **11 tasks to build it**: Complete infrastructure evolution
-- **74% CLAUDE.md reduction**: 916 lines → 239 lines
-- **6+ months in production**: Battle-tested on real product
+**Default (isolated mode - recommended):**
+```json
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest", "--isolated"]
+    }
+  }
+}
+```
 
-### Testing Philosophy from Source Project
+**For E2E testing with persistent authentication:**
+```json
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "-y", "chrome-devtools-mcp@latest",
+        "--user-data-dir", "${HOME}/.chrome-mcp-profile"
+      ]
+    }
+  }
+}
+```
 
-The source project uses a comprehensive testing approach with **Chrome DevTools MCP** for E2E testing:
+**For headless CI environments:**
+```json
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "-y", "chrome-devtools-mcp@latest",
+        "--headless",
+        "--isolated"
+      ]
+    }
+  }
+}
+```
 
-**E2E Testing (Browser Automation)**:
-- Uses Chrome DevTools MCP for browser automation
-- Mandatory 4-part structure: Step 0 auth verification, step-by-step execution, fail-fast behavior, rich reports
-- Critical for user-facing features
-- See source project's `e2e-testing-framework` skill for complete patterns
+### Environment Variables
 
-**Backend Testing**:
-- Interactive testing with backend MCP integration
-- Unit tests for business logic
-- Integration tests for API endpoints
+Set these in your shell or `.claude/settings.json`:
 
-**Frontend Testing**:
-- Component testing
-- Integration tests
-- Visual regression testing
+```bash
+# Increase MCP startup timeout (default: varies)
+export MCP_TIMEOUT=30000
 
-**Note**: The template itself doesn't require MCPs, but if you want to replicate the E2E testing workflow from the source project, you'll want to:
-1. Install Chrome DevTools MCP: `claude mcp add chrome-devtools "npx chrome-devtools-mcp"`
-2. Create an E2E testing skill based on the 4-pillar structure
-3. See CUSTOMIZATION.md for examples
+# Increase tool execution timeout
+export MCP_TOOL_TIMEOUT=60000
 
-## Contributing
+# Increase max output tokens from MCP tools
+export MAX_MCP_OUTPUT_TOKENS=50000
+```
 
-Found a bug or have a suggestion? Please open an issue or PR!
+### Auto-Approve MCP Servers
 
-### Areas for Contribution
+To skip approval prompts, add to `.claude/settings.json`:
 
-- Additional example skills (Python, Rust, Go, etc.)
-- Alternative hook implementations (ESLint, Prettier, etc.)
-- Language-specific stop hooks
-- Documentation improvements
-- Migration guides for other workflows
+```json
+{
+  "enableAllProjectMcpServers": true
+}
+```
 
-## Credits
+Or approve specific servers only:
 
-**Created**: 2025-10-31
-**Based On**:
-- [Claude Code Best Practices Thread](https://www.reddit.com/r/ClaudeAI/comments/1ik26sk/claude_code_is_a_beast_tips_from_6_months_of/)
-- [Anthropic Skills Documentation](https://docs.anthropic.com/claude/docs/skills)
-- 6 months of hardcore production use
+```json
+{
+  "enabledMcpjsonServers": ["convex", "chrome-devtools"]
+}
+```
 
-**Special Thanks**:
-- Anthropic for Claude Code and skills/hooks framework
-- The Claude Code community for sharing best practices
+## Quick Reference
+
+| Task | Command |
+|------|---------|
+| Start Claude Code | `claude` |
+| Continue last session | `claude -c` |
+| Resume any session | `claude -r` |
+| One-off query | `claude -p "question"` |
+| Check config | `/config` |
+| List hooks | View `.claude/settings.json` |
+| Create dev docs | `/create-dev-docs` |
+
+## Resources
+
+- [Claude Code Documentation](https://code.claude.com/docs)
+- [Hooks Reference](https://code.claude.com/docs/en/hooks)
+- [Hooks Guide](https://code.claude.com/docs/en/hooks-guide)
+- [Settings Reference](https://code.claude.com/docs/en/settings)
+- [MCP Servers](https://code.claude.com/docs/en/mcp)
 
 ## License
 
 MIT License - Use freely in your projects!
 
-## Support
-
-- **Documentation**: See the guides in this repository
-- **Issues**: Open an issue on GitHub
-- **Discussions**: Share your adaptations and improvements
-
 ---
 
-**Next Steps**:
+**Next Steps:**
 
-1. Follow the [Quick Start](#quick-start) guide
-2. Read [SETUP.md](SETUP.md) for detailed installation
-3. Review [CUSTOMIZATION.md](CUSTOMIZATION.md) for adaptation
-4. Create your first skill with [SKILLS-GUIDE.md](SKILLS-GUIDE.md)
-5. Test with a real task and iterate!
+1. Copy `.claude/` to your project
+2. Run `claude` in your project directory
+3. Ask Claude to do something - watch skills activate
+4. Create your own skills for your tech stack
