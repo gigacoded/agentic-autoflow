@@ -129,7 +129,7 @@ echo -e "   ${GREEN}✓${NC} dev/active/ (for long-running tasks)"
 # Step 6: Copy CLAUDE.md template
 echo -e "${BLUE}6️⃣  Installing CLAUDE.md...${NC}"
 if [ ! -f "CLAUDE.md" ]; then
-    cp "$TEMPLATE_DIR/CLAUDE.template.md" CLAUDE.md
+    cp "$TEMPLATE_DIR/.claude/CLAUDE.template.md" CLAUDE.md
     echo -e "   ${GREEN}✓${NC} CLAUDE.md (customize this for your project!)"
 else
     echo -e "   ${YELLOW}⚠${NC}  CLAUDE.md already exists (skipping)"
