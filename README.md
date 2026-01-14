@@ -65,6 +65,7 @@ Once you copy `.claude/` and `.mcp.json` to your project, Claude Code automatica
 | `frontend-dev` | "component", "react", "tanstack", "tailwind", "route" | TanStack Start, React, Tailwind CSS, shadcn/ui |
 | `convex-backend-dev` | "convex", "query", "mutation", "schema" | Convex backend development |
 | `task-management-dev` | "task", "pbi", "backlog", "planning" | Task-driven development workflow |
+| `code-simplifier` | "simplify", "refactor", "clean up", "review" | Code clarity, consistency, maintainability |
 | `example-skill` | "example", "demo" | Template for your own skills |
 
 ## How It Works

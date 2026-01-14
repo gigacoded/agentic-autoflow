@@ -159,5 +159,44 @@
         "PBI-\\d+"
       ]
     }
+  },
+  "code-simplifier": {
+    "type": "quality",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "Code simplification for clarity, consistency, and maintainability",
+    "promptTriggers": {
+      "keywords": [
+        "simplify",
+        "refactor",
+        "clean up",
+        "cleanup",
+        "improve",
+        "review",
+        "readable",
+        "clarity",
+        "maintainable"
+      ],
+      "intentPatterns": [
+        "(simplify|clean|improve|refactor).*?(code|function|component)",
+        "(make|ensure).*?(readable|maintainable|clear)",
+        "(code|review).*?(quality|standards)",
+        "(reduce|remove).*?(complexity|nesting|duplication)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.js",
+        "**/*.jsx"
+      ],
+      "contentPatterns": [
+        "\\?.*?\\?.*?:",
+        "if.*?{.*?if.*?{.*?if",
+        "TODO.*?simplify",
+        "TODO.*?refactor"
+      ]
+    }
   }
 }
