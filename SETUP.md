@@ -36,7 +36,7 @@ Auto-activation without global hooks.
 **For New Project**:
 ```bash
 # Clone template
-git clone https://github.com/yourusername/agentic-autoflow.git my-project
+git clone https://github.com/gigacoded/agentic-autoflow.git my-project
 cd my-project
 
 # Remove template git history

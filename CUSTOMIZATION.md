@@ -696,7 +696,7 @@ When this template gets updates:
 
 ```bash
 # Add template as remote
-git remote add template https://github.com/yourusername/agentic-autoflow.git
+git remote add template https://github.com/gigacoded/agentic-autoflow.git
 
 # Fetch updates
 git fetch template

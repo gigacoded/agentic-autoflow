@@ -187,4 +187,4 @@ Skills activate automatically - no need to invoke manually!
 ---
 
 **Version**: 1.0 (Initial Setup - [DATE])
-**Based On**: [Claude Code Workflow Template](https://github.com/yourusername/agentic-autoflow)
+**Based On**: [Claude Code Workflow Template](https://github.com/gigacoded/agentic-autoflow)
