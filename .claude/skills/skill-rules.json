@@ -3,7 +3,7 @@
     "type": "domain",
     "enforcement": "suggest",
     "priority": "high",
-    "description": "Convex backend development with MCP integration",
+    "description": "Convex backend development with MCP integration and performance optimization",
     "promptTriggers": {
       "keywords": [
         "convex",
@@ -13,13 +13,29 @@
         "action",
         "database",
         "schema",
-        "server"
+        "server",
+        "bandwidth",
+        "performance",
+        "optimize",
+        "index",
+        "slow",
+        "expensive",
+        "billing",
+        "cost",
+        "full table scan",
+        "collect"
       ],
       "intentPatterns": [
         "(create|write|add|implement).*?(query|mutation|action|function)",
         "(update|modify|change).*?(schema|database|table)",
         "(backend|server).*?(logic|function|api)",
-        "convex.*?(function|query|mutation)"
+        "convex.*?(function|query|mutation)",
+        "(optimize|improve|fix).*(query|performance|bandwidth)",
+        "(slow|expensive|costly).*(query|queries)",
+        "(add|create|need).*index",
+        "(audit|review|check).*(performance|bandwidth|queries)",
+        "full.*table.*scan",
+        "convex.*(billing|cost|bandwidth)"
       ]
     },
     "fileTriggers": {
@@ -34,7 +50,10 @@
         "mutation\\(",
         "action\\(",
         "defineSchema",
-        "defineTable"
+        "defineTable",
+        "\\.collect\\(\\)",
+        "\\.filter\\(",
+        "\\.withIndex\\("
       ]
     }
   },
