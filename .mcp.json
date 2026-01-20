@@ -4,9 +4,13 @@
       "command": "npx",
       "args": ["-y", "convex", "mcp", "start"]
     },
-    "chrome-devtools": {
+    "chrome-1": {
       "command": "npx",
-      "args": ["-y", "chrome-devtools-mcp@latest", "--isolated"]
+      "args": ["-y", "chrome-devtools-mcp@latest", "--browserUrl=http://127.0.0.1:9222"]
+    },
+    "chrome-2": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest", "--browserUrl=http://127.0.0.1:9223"]
     }
   }
 }
