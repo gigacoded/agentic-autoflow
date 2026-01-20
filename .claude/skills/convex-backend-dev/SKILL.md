@@ -1,6 +1,6 @@
 ---
 name: "Convex Backend Development"
-description: "Convex database functions, queries, mutations, schema design, and performance optimization"
+description: "Convex database functions, queries, mutations, schema design, MCP integration, and performance optimization"
 ---
 
 # Convex Backend Development
@@ -12,6 +12,58 @@ description: "Convex database functions, queries, mutations, schema design, and 
 Develops efficient, type-safe Convex backend functions with optimal database performance. Focuses on query optimization, proper indexing, and bandwidth efficiency.
 
 **Key Principle**: Every query must use an appropriate index. Full table scans are unacceptable.
+
+---
+
+## Autonomous Audit Process
+
+When this skill activates, **proceed without asking** - follow these steps:
+
+### Step 1: Identify Convex Code
+
+Look at files in `convex/` directory:
+- New or modified queries/mutations/actions
+- Schema changes
+- Cron jobs or high-frequency functions
+
+### Step 2: Check for Anti-Patterns
+
+Scan for these issues (use Grep tool):
+
+```bash
+# Find potential full table scans
+grep -n "\.collect()" convex/*.ts
+grep -n "\.filter(" convex/*.ts
+```
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| `.query("table").collect()` | Full table scan | Add `.withIndex()` |
+| `.collect()` + JS `.filter()` | Fetches all, filters in JS | Use `.withIndex()` + server `.filter()` |
+| `.filter()` without `.withIndex()` | No index = full scan | Add index to schema |
+| Cron every N seconds + collect | N × full_scans/day | Ensure query uses index |
+
+### Step 3: Verify Indexes
+
+Check `convex/schema.ts` has required indexes:
+- [ ] Every frequently queried field has an index
+- [ ] Compound indexes for multi-field queries
+- [ ] High-frequency queries (crons) use indexes
+
+### Step 4: Apply Fixes
+
+For each issue found:
+1. Add missing index to schema if needed
+2. Update query to use `.withIndex()`
+3. Convert JS filtering to server-side `.filter()`
+
+### Step 5: Verify & Report
+
+- [ ] TypeScript compiles (`npx tsc --noEmit`)
+- [ ] Test query still returns correct results
+- [ ] Report changes made
+
+---
 
 ## Core Rules
 
@@ -120,45 +172,102 @@ defineTable({...})
 
 ---
 
-## Development Process
+## Convex MCP Integration
 
-### Step 1: Check Existing Functions
+**IMPORTANT**: Use the Convex MCP tools to inspect and test:
 
-Before creating new functions:
-- Use `list_functions` MCP tool to see existing Convex functions
-- Use `get_schema` MCP tool to understand current schema
-- Avoid duplicating existing functionality
+### Available MCP Tools
 
-### Step 2: Design Schema With Indexes
+When the Convex MCP is configured, you have access to these tools:
 
-For every new table or query pattern:
-- [ ] Identify all query patterns needed
-- [ ] Create appropriate indexes
-- [ ] Use compound indexes for multi-field queries
-- [ ] Order compound index fields correctly
+- **list_functions**: List all Convex functions (queries, mutations, actions)
+- **get_function**: Get details about a specific function
+- **run_query**: Execute a Convex query
+- **run_mutation**: Execute a Convex mutation
+- **run_action**: Execute a Convex action
+- **list_tables**: List all database tables
+- **get_schema**: Get the database schema
+- **query_table**: Query records from a table
 
-### Step 3: Write Type-Safe Functions
+### Using MCP Tools
 
-Use proper Convex patterns:
-- [ ] Import from `"./_generated/server"`
-- [ ] Use `v.*` validators for all args
-- [ ] Use `query`, `mutation`, or `action` helpers
-- [ ] Return typed data
+**List all functions:**
+```
+Use the list_functions MCP tool to see all available Convex functions
+```
 
-### Step 4: Optimize Queries
+**Execute a query:**
+```
+Use the run_query MCP tool with:
+- functionName: "tableName:functionName"
+- args: JSON object with query arguments
+```
 
-Before finalizing:
-- [ ] Every `.collect()` has a `.withIndex()`
-- [ ] No JS filtering on database results
-- [ ] High-frequency queries are optimized
-- [ ] Use `.first()` instead of `.collect()[0]`
+**Query database directly:**
+```
+Use the query_table MCP tool to inspect table contents during development
+```
 
-### Step 5: Test With MCP Tools
+### MCP Configuration
 
-Verify using Convex MCP:
-- Use `run_query` to test queries
-- Use `query_table` to inspect data
-- Verify results match expectations
+The Convex MCP should be configured in your Claude Code settings to connect to your deployment:
+
+```json
+{
+  "mcpServers": {
+    "convex": {
+      "command": "npx",
+      "args": ["-y", "@convex-dev/mcp-server@latest"],
+      "env": {
+        "CONVEX_DEPLOYMENT_URL": "https://your-deployment.convex.cloud"
+      }
+    }
+  }
+}
+```
+
+When working on Convex functions, always leverage the MCP tools to:
+- Inspect existing functions before creating new ones
+- Test queries and mutations directly
+- Validate schema changes
+- Debug data issues
+
+---
+
+## Performance & Bandwidth Optimization
+
+**CRITICAL**: Database bandwidth is a major cost driver in Convex. Inefficient queries can cost $10-50/day in overages. Always audit queries for performance.
+
+### Understanding Bandwidth Costs
+
+Convex charges for **database bandwidth** - the amount of data transferred from the database to your functions:
+- Every `.collect()` transfers ALL matching rows
+- `.filter()` without an index scans the ENTIRE table
+- High-frequency queries (crons, polling) multiply the impact
+
+### Bandwidth Audit Checklist
+
+When reviewing Convex code, check for these patterns:
+
+| Pattern | Problem | Fix |
+|---------|---------|-----|
+| `.query("table").collect()` | Full table scan | Add `.withIndex()` |
+| `.collect()` + `.filter()` in JS | Fetches all, filters in JS | Use `.withIndex()` or server `.filter()` |
+| `.filter()` without `.withIndex()` | No index = full scan | Add index to schema |
+| Cron calling query every N seconds | N × full_scans/day | Ensure query uses index |
+| `.find()` after `.collect()` | Full scan for single item | Use `.withIndex().first()` |
+
+### Bandwidth Calculation
+
+Estimate bandwidth impact:
+```
+Daily bandwidth = (records_fetched × avg_record_size) × calls_per_day
+
+Example:
+- 100 records × 500 bytes = 50KB per call
+- Called every 10 seconds = 8,640 calls/day
+- Total: 50KB × 8,640 = 432 GB/day (!!)
+```
 
 ---
 
@@ -273,31 +382,25 @@ const [user, posts, followers] = await Promise.all([
 
 ---
 
-## MCP Tools Reference
-
-When Convex MCP is configured:
-
-| Tool | Use For |
-|------|---------|
-| `list_functions` | See all available functions |
-| `get_function` | Get function details |
-| `run_query` | Test a query function |
-| `run_mutation` | Execute a mutation |
-| `list_tables` | See all database tables |
-| `get_schema` | Get database schema |
-| `query_table` | Inspect table contents |
-
----
-
 ## Quick Checklist
 
 Before marking Convex code complete:
 
-- [ ] All queries use `.withIndex()`
-- [ ] No full table scans (`.query("table").collect()`)
-- [ ] No JS filtering on query results
-- [ ] All function args use `v.*` validators
+- [ ] All queries use `.withIndex()` (no full table scans)
+- [ ] No JS `.filter()` after `.collect()` (use server-side filter)
+- [ ] Schema has indexes for all frequently queried fields
+- [ ] High-frequency queries (crons) are optimized
+- [ ] Validators (`v.*`) on all function arguments
 - [ ] Authentication checked early
-- [ ] Schema has required indexes
-- [ ] High-frequency queries optimized
-- [ ] Tested with MCP tools
+- [ ] TypeScript compiles without errors
+- [ ] Functions tested via MCP or dashboard
+
+---
+
+## References
+
+- [Convex Documentation](https://docs.convex.dev/)
+- [Convex TypeScript API](https://docs.convex.dev/api/modules)
+- [Convex Best Practices](https://docs.convex.dev/production/best-practices)
+- [Convex Indexes Documentation](https://docs.convex.dev/database/reading-data/indexes/)
+- [Convex Billing](https://docs.convex.dev/production/billing)
