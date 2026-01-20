@@ -2,6 +2,9 @@
 dev/active/*
 !dev/active/.gitkeep
 
+# Test credentials (keep example, ignore actual)
+dev/test-credentials.json
+
 # Task workflow (if using)
 docs/delivery/**/[0-9]*-*.md
 !docs/delivery/**/*.template.md
