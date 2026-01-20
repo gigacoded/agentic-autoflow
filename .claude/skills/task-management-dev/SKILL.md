@@ -1,3 +1,8 @@
+---
+name: "Task Management & Development Workflow"
+description: "PBI management, task workflows, dev docs system, and task-driven development patterns"
+---
+
 # Task Management & Development Workflow
 
 **Auto-activates when**: Working in `/docs/delivery`, discussing PBIs/tasks, planning features, creating dev docs

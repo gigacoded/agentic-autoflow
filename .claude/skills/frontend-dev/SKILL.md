@@ -1,3 +1,8 @@
+---
+name: "Frontend Development"
+description: "React, TanStack Start, TanStack Router, Tailwind CSS, and shadcn/ui frontend patterns"
+---
+
 # Frontend Development - React, TanStack Start, Tailwind CSS, shadcn/ui
 
 You are working with a modern React frontend using TanStack Start, Tailwind CSS, and shadcn/ui components. This skill provides guidelines for developing frontend components and features.

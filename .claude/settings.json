@@ -23,7 +23,20 @@
     ]
   },
   "permissions": {
-    "allow": [],
+    "allow": [
+      "Bash(npx tsx .claude/*:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Read(.claude/**/*)",
+      "Edit(.claude/**/*)",
+      "Glob",
+      "Grep"
+    ],
     "deny": []
   }
 }

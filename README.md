@@ -112,7 +112,7 @@ Please fix these errors before continuing.
 
 ## Configuration (settings.json)
 
-The hooks are configured via `.claude/settings.json` using Claude Code's official [hooks system](https://code.claude.com/docs/en/hooks):
+The hooks and permissions are configured via `.claude/settings.json` using Claude Code's official [hooks system](https://code.claude.com/docs/en/hooks):
 
 ```json
 {
@@ -138,9 +138,28 @@ The hooks are configured via `.claude/settings.json` using Claude Code's officia
         ]
       }
     ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npx tsx .claude/*:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Read(.claude/**/*)",
+      "Edit(.claude/**/*)",
+      "Glob",
+      "Grep"
+    ],
+    "deny": []
   }
 }
 ```
+
+**Pre-configured permissions** reduce approval prompts for common development operations. Modify the `allow` list to suit your workflow.
 
 **Note**: `UserPromptSubmit` does not support matchers (per official docs). `PostToolUse` uses regex matchers to filter by tool name.
 
@@ -195,29 +214,32 @@ cp .claude/hooks-global/* ~/.claude/hooks/
 ```
 your-project/
 ├── .claude/
-│   ├── settings.json              # Hook configuration (auto-loaded by Claude Code)
+│   ├── CLAUDE.md                  # Project instructions (customize for your project)
+│   ├── settings.json              # Hook configuration + pre-allowed permissions
+│   ├── rules/                     # Conditional rules (auto-loaded)
+│   │   └── example-rule.md        # Example conditional rule
 │   ├── skills/
 │   │   ├── skill-rules.json       # Activation triggers for all skills
 │   │   ├── frontend-dev/
-│   │   │   ├── SKILL.md           # TanStack Start, React, Tailwind patterns
-│   │   │   ├── skill-config.json
+│   │   │   ├── SKILL.md           # YAML frontmatter + patterns
 │   │   │   └── resources/
 │   │   │       ├── components.md
 │   │   │       └── react-performance.md
 │   │   ├── convex-backend-dev/
-│   │   │   └── ...
+│   │   │   └── SKILL.md
 │   │   ├── task-management-dev/
-│   │   │   └── ...
+│   │   │   └── SKILL.md
+│   │   ├── code-simplifier/
+│   │   │   └── SKILL.md
 │   │   └── example-skill/
-│   │       └── ...
+│   │       └── SKILL.md
 │   ├── hooks-global/
 │   │   ├── user-prompt-submit.ts  # Skill activation hook
 │   │   └── stop.ts                # TypeScript error checking hook
-│   ├── commands/
-│   │   ├── create-dev-docs.md     # /create-dev-docs command
-│   │   ├── update-dev-docs.md     # /update-dev-docs command
-│   │   └── dev-docs-status.md     # /dev-docs-status command
-│   └── agents/                    # (Optional) Custom subagents
+│   └── commands/
+│       ├── create-dev-docs.md     # /create-dev-docs command
+│       ├── update-dev-docs.md     # /update-dev-docs command
+│       └── dev-docs-status.md     # /dev-docs-status command
 ├── .mcp.json                      # MCP server configuration (Convex, Chrome DevTools)
 ├── docs/delivery/                 # (Optional) PBI workflow
 │   ├── backlog.md
@@ -233,9 +255,16 @@ your-project/
 mkdir -p .claude/skills/my-skill/resources
 ```
 
-### 2. Write SKILL.md
+### 2. Write SKILL.md with YAML Frontmatter
+
+Per [Claude Code Skills documentation](https://code.claude.com/docs/en/skills), skills use YAML frontmatter:
 
 ```markdown
+---
+name: "My Custom Skill"
+description: "Description of what this skill helps with"
+---
+
 # My Custom Skill
 
 **Auto-activates when**: Working with [your technology]
@@ -254,6 +283,8 @@ mkdir -p .claude/skills/my-skill/resources
 
 ### 3. Add to skill-rules.json
 
+This enables the hook-based auto-activation system:
+
 ```json
 {
   "my-skill": {
@@ -270,17 +301,6 @@ mkdir -p .claude/skills/my-skill/resources
       "contentPatterns": ["import.*my-library"]
     }
   }
-}
-```
-
-### 4. Create skill-config.json
-
-```json
-{
-  "name": "my-skill",
-  "version": "1.0.0",
-  "description": "My custom skill",
-  "resources": ["resources/patterns.md"]
 }
 ```
 

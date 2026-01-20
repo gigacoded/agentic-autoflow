@@ -1,8 +1,0 @@
-{
-  "name": "convex-backend-dev",
-  "version": "1.0.0",
-  "description": "Convex backend development patterns and best practices",
-  "resources": [
-    "resources/patterns.md"
-  ]
-}

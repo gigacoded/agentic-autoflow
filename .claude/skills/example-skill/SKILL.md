@@ -1,3 +1,8 @@
+---
+name: "Example Skill"
+description: "Template skill showing recommended structure - replace with your domain-specific patterns"
+---
+
 # Example Skill
 
 **Auto-activates when**: Working with [technology/domain], using keywords like "[keyword1]", "[keyword2]", or editing files in `[path]/**/*.ext`

@@ -1,8 +1,0 @@
-{
-  "name": "example-skill",
-  "version": "1.0.0",
-  "description": "Example skill showing recommended structure and patterns",
-  "resources": [
-    "resources/examples.md"
-  ]
-}

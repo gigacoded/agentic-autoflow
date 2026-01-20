@@ -1,3 +1,8 @@
+---
+name: "Convex Backend Development"
+description: "Convex database functions, queries, mutations, schema design, and performance optimization"
+---
+
 # Convex Backend Development
 
 **Auto-activates when**: Creating/modifying Convex functions, working with schema, debugging queries, optimizing database performance

@@ -1,9 +1,0 @@
-{
-  "name": "frontend-dev",
-  "version": "2.0.0",
-  "description": "React, TanStack Start, Tailwind CSS, and shadcn/ui frontend development patterns with performance best practices",
-  "resources": [
-    "resources/components.md",
-    "resources/react-performance.md"
-  ]
-}

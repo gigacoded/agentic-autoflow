@@ -1,3 +1,8 @@
+---
+name: "Code Simplifier"
+description: "Code refactoring, simplification, and clarity improvements while preserving functionality"
+---
+
 # Code Simplifier
 
 **Auto-activates when**: Completing code changes, refactoring, code review, after implementing features
