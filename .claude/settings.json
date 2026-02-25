@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npx tsx .claude/hooks-global/user-prompt-submit.ts"
+            "command": "npx tsx \"$CLAUDE_PROJECT_DIR/.claude/hooks/user-prompt-submit.ts\""
           }
         ]
       }
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npx tsx .claude/hooks-global/stop.ts"
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/typescript-check.py\""
           }
         ]
       }
@@ -27,11 +27,13 @@
       "Bash(npx tsx .claude/*:*)",
       "Bash(npx tsc:*)",
       "Bash(npm run:*)",
+      "Bash(npx vitest:*)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
+      "Bash(npx convex:*)",
       "Read(.claude/**/*)",
       "Edit(.claude/**/*)",
       "Glob",

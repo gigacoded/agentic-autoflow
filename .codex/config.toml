@@ -1,0 +1,8 @@
+# Project configuration for OpenAI Codex
+# See: https://developers.openai.com/codex/config-reference/
+#
+# Customize these settings for your project:
+
+model = "o4-mini"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"

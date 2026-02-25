@@ -40,8 +40,11 @@ cd agentic-autoflow
 
 | Required | Path | Purpose |
 |----------|------|---------|
-| **Yes** | `.claude/` | Skills, hooks, commands, settings |
+| **Yes** | `.claude/` | Skills, hooks, agents, commands, settings |
 | **Yes** | `.mcp.json` | MCP server configuration (Convex, Chrome DevTools) |
+| **Yes** | `CLAUDE.md` | Claude Code project instructions (customize) |
+| Optional | `.codex/` | OpenAI Codex configuration and skills |
+| Optional | `AGENTS.md` | Codex project instructions (customize) |
 | Optional | `docs/delivery/` | Task management templates |
 | Optional | `dev/active/` | Dev docs working directory |
 
@@ -213,18 +216,20 @@ cp .claude/hooks-global/* ~/.claude/hooks/
 
 ```
 your-project/
+├── CLAUDE.md                        # Claude Code project instructions (customize)
+├── AGENTS.md                        # OpenAI Codex project instructions (customize)
 ├── .claude/
-│   ├── CLAUDE.md                  # Project instructions (customize for your project)
-│   ├── settings.json              # Hook configuration + pre-allowed permissions
-│   ├── rules/                     # Conditional rules (auto-loaded)
-│   │   └── example-rule.md        # Example conditional rule
+│   ├── settings.json                # Hook configuration + pre-allowed permissions
+│   ├── rules/                       # Conditional rules (auto-loaded)
+│   │   └── example-rule.md          # Example conditional rule
+│   ├── agents/                      # Specialist sub-agents
+│   │   ├── code-simplifier.md       # Proactive code simplification (Opus)
+│   │   └── convex-backend-dev.md    # Convex backend specialist (Sonnet)
 │   ├── skills/
-│   │   ├── skill-rules.json       # Activation triggers for all skills
+│   │   ├── skill-rules.json         # Activation triggers for all skills
 │   │   ├── frontend-dev/
-│   │   │   ├── SKILL.md           # YAML frontmatter + patterns
+│   │   │   ├── SKILL.md
 │   │   │   └── resources/
-│   │   │       ├── components.md
-│   │   │       └── react-performance.md
 │   │   ├── convex-backend-dev/
 │   │   │   └── SKILL.md
 │   │   ├── task-management-dev/
@@ -233,18 +238,29 @@ your-project/
 │   │   │   └── SKILL.md
 │   │   └── example-skill/
 │   │       └── SKILL.md
-│   ├── hooks-global/
-│   │   ├── user-prompt-submit.ts  # Skill activation hook
-│   │   └── stop.ts                # TypeScript error checking hook
+│   ├── hooks/                       # Project-level hooks
+│   │   ├── user-prompt-submit.ts    # Skill activation hook
+│   │   └── typescript-check.py      # TypeScript error checking (Python - fast)
+│   ├── hooks-global/                # Legacy - kept for global hook installation
+│   │   ├── user-prompt-submit.ts
+│   │   └── stop.ts
 │   └── commands/
-│       ├── create-dev-docs.md     # /create-dev-docs command
-│       ├── update-dev-docs.md     # /update-dev-docs command
-│       └── dev-docs-status.md     # /dev-docs-status command
-├── .mcp.json                      # MCP server configuration (Convex, Chrome DevTools)
-├── docs/delivery/                 # (Optional) PBI workflow
+│       ├── create-dev-docs.md
+│       ├── update-dev-docs.md
+│       └── dev-docs-status.md
+├── .codex/                          # OpenAI Codex configuration
+│   ├── config.toml                  # Codex settings (model, approval, sandbox)
+│   └── skills/                      # Skills with Codex-style frontmatter
+│       ├── convex-backend-dev/
+│       ├── frontend-dev/
+│       ├── task-management-dev/
+│       ├── code-simplifier/
+│       └── example-skill/
+├── .mcp.json                        # MCP server configuration
+├── docs/delivery/                   # (Optional) PBI workflow
 │   ├── backlog.md
 │   └── examples/
-└── dev/active/                    # (Optional) Dev docs workspace
+└── dev/active/                      # (Optional) Dev docs workspace
 ```
 
 ## Creating Your Own Skills
@@ -573,6 +589,56 @@ Or approve specific servers only:
 | List hooks | View `.claude/settings.json` |
 | Create dev docs | `/create-dev-docs` |
 
+## OpenAI Codex Support
+
+This template also includes infrastructure for [OpenAI Codex](https://developers.openai.com/codex/cli), following official Codex conventions.
+
+### What's Included
+
+| File | Purpose |
+|------|---------|
+| `AGENTS.md` | Project instructions for Codex (like CLAUDE.md for Claude Code) |
+| `.codex/config.toml` | Codex configuration (model, approval policy, sandbox mode) |
+| `.codex/skills/` | Domain-specific skills with YAML frontmatter for implicit matching |
+
+### How Codex Discovers Instructions
+
+Codex reads `AGENTS.md` files at the project root before doing any work. It also searches `.codex/skills/` for skill folders containing `SKILL.md` files with frontmatter:
+
+```yaml
+---
+name: my-skill
+description: Use when [specific context]. Do not use for [out-of-scope work].
+---
+
+# Skill instructions here
+```
+
+Codex uses the `description` field for implicit skill matching - write clear scope and boundaries.
+
+### Codex Configuration
+
+The `.codex/config.toml` uses the official TOML format:
+
+```toml
+model = "o4-mini"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+```
+
+See the [Codex Configuration Reference](https://developers.openai.com/codex/config-reference/) for all available settings.
+
+### Key Differences from Claude Code
+
+| Feature | Claude Code | OpenAI Codex |
+|---------|-------------|--------------|
+| Project instructions | `CLAUDE.md` | `AGENTS.md` |
+| Config format | `.claude/settings.json` (JSON) | `.codex/config.toml` (TOML) |
+| Hooks | `PostToolUse`, `UserPromptSubmit` | `notify` in config.toml |
+| Agents | `.claude/agents/*.md` | Not a Codex concept |
+| Skills | `.claude/skills/` + `skill-rules.json` | `.codex/skills/` + SKILL.md `description` |
+| Commands | `.claude/commands/*.md` | Not a Codex concept |
+
 ## Resources
 
 - [Claude Code Documentation](https://code.claude.com/docs)
@@ -580,6 +646,10 @@ Or approve specific servers only:
 - [Hooks Guide](https://code.claude.com/docs/en/hooks-guide)
 - [Settings Reference](https://code.claude.com/docs/en/settings)
 - [MCP Servers](https://code.claude.com/docs/en/mcp)
+- [Codex CLI](https://developers.openai.com/codex/cli)
+- [Codex AGENTS.md Guide](https://developers.openai.com/codex/guides/agents-md/)
+- [Codex Skills](https://developers.openai.com/codex/skills/)
+- [Codex Config Reference](https://developers.openai.com/codex/config-reference/)
 
 ## License
 
