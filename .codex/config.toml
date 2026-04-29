@@ -3,6 +3,12 @@
 #
 # Customize these settings for your project:
 
-model = "o4-mini"
+model = "gpt-5.5"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
+
+# Allow large AGENTS.md (skills + project guidance can exceed default 32 KiB)
+project_doc_max_bytes = 65536
+
+# Fallback filenames if AGENTS.md is missing in a directory
+project_doc_fallback_filenames = ["CLAUDE.md", ".codex/instructions.md"]

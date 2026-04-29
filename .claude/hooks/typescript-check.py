@@ -116,7 +116,12 @@ def main():
         errors = check_typescript_errors(project_dir)
 
         if errors:
-            output = json.dumps({"additionalContext": format_quality_message(errors)})
+            output = json.dumps({
+                "hookSpecificOutput": {
+                    "hookEventName": "PostToolUse",
+                    "additionalContext": format_quality_message(errors),
+                }
+            })
             print(output)
 
         sys.exit(0)

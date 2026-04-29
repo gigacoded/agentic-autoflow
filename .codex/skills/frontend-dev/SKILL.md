@@ -1,6 +1,7 @@
 ---
 name: frontend-dev
-description: Use when building or modifying React components, pages, routes, or UI with TanStack Start, Tailwind CSS, and shadcn/ui. Do not use for Convex backend code.
+description: React, TanStack Start, TanStack Router, Tailwind CSS, and shadcn/ui frontend patterns. Use when building UI, components, routes, forms, or styling. For deep server-fn / router work see tanstack-start-dev.
+paths: "src/routes/**/*.tsx,src/components/**/*.tsx,components/**/*.tsx,src/router.tsx,src/utils/*.functions.ts"
 ---
 
 # Frontend Development - React, TanStack Start, Tailwind CSS, shadcn/ui
@@ -167,7 +168,7 @@ export const getPosts = createServerFn({
 export const getPost = createServerFn({
   method: 'GET',
 })
-  .validator(z.string())
+  .inputValidator(z.string())
   .handler(async ({ data: postId }) => {
     return db.posts.findUnique({ where: { id: postId } })
   })
@@ -181,7 +182,7 @@ const CreatePostSchema = z.object({
 export const createPost = createServerFn({
   method: 'POST',
 })
-  .validator(CreatePostSchema)
+  .inputValidator(CreatePostSchema)
   .handler(async ({ data }) => {
     return db.posts.create({ data })
   })
@@ -382,7 +383,7 @@ export const getPosts = createServerFn({
 export const createPost = createServerFn({
   method: 'POST',
 })
-  .validator(z.object({ title: z.string(), content: z.string() }))
+  .inputValidator(z.object({ title: z.string(), content: z.string() }))
   .handler(async ({ data }) => {
     return convex.mutation(api.posts.create, data)
   })

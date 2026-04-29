@@ -1,8 +1,8 @@
-# Agentic AutoFlow - Claude Code Workflow Automation
+# Agentic AutoFlow - Agent Infrastructure
 
-**Production-grade Claude Code infrastructure for professional software development**
+**Reusable Claude Code and OpenAI Codex infrastructure for software development**
 
-Drop this into any existing codebase to get auto-activating skills, quality automation hooks, and structured task management - all working with Claude Code out of the box.
+Drop this into an existing codebase to get Claude Code skills, hooks, agents, commands, Codex skills, Codex instructions, MCP config, and optional task management templates.
 
 ## 30-Second Integration
 
@@ -10,41 +10,38 @@ Drop this into any existing codebase to get auto-activating skills, quality auto
 - [Claude Code](https://claude.ai/install.sh) installed (`curl -fsSL https://claude.ai/install.sh | bash`)
 - Node.js 18+ (for TypeScript hooks)
 
-### Option A: Quick Copy (Recommended)
-
-```bash
-# Clone this repo temporarily
-git clone https://github.com/gigacoded/agentic-autoflow.git /tmp/agentic-autoflow
-
-# Copy to your project (both .claude/ and .mcp.json are required)
-cp -r /tmp/agentic-autoflow/.claude /path/to/your/project/
-cp /tmp/agentic-autoflow/.mcp.json /path/to/your/project/
-
-# Navigate to your project and start Claude Code
-cd /path/to/your/project
-claude
-```
-
-### Option B: Setup Script
+### Option A: Setup Script (Recommended)
 
 ```bash
 # Clone and run installer
 git clone https://github.com/gigacoded/agentic-autoflow.git
 cd agentic-autoflow
 
-# Install to your project (interactive setup)
+# Install to your project
 ./setup.sh /path/to/your/project
+```
+
+### Option B: Manual Copy
+
+```bash
+git clone https://github.com/gigacoded/agentic-autoflow.git /tmp/agentic-autoflow
+
+cp -R /tmp/agentic-autoflow/.claude /path/to/your/project/
+cp -R /tmp/agentic-autoflow/.codex /path/to/your/project/
+cp /tmp/agentic-autoflow/.mcp.json /path/to/your/project/
+cp /tmp/agentic-autoflow/.claude/CLAUDE.template.md /path/to/your/project/CLAUDE.md
+cp /tmp/agentic-autoflow/.codex/AGENTS.template.md /path/to/your/project/AGENTS.md
 ```
 
 ### What Gets Copied
 
 | Required | Path | Purpose |
 |----------|------|---------|
-| **Yes** | `.claude/` | Skills, hooks, agents, commands, settings |
-| **Yes** | `.mcp.json` | MCP server configuration (Convex, Chrome DevTools) |
-| **Yes** | `CLAUDE.md` | Claude Code project instructions (customize) |
-| Optional | `.codex/` | OpenAI Codex configuration and skills |
-| Optional | `AGENTS.md` | Codex project instructions (customize) |
+| **Yes** | `.claude/` | Claude Code skills, hooks, agents, commands, settings |
+| **Yes** | `.codex/` | OpenAI Codex configuration and skills |
+| **Yes** | `CLAUDE.md` | Claude Code project instructions |
+| **Yes** | `AGENTS.md` | Codex project instructions |
+| Recommended | `.mcp.json` | MCP server configuration (Convex, Chrome DevTools) |
 | Optional | `docs/delivery/` | Task management templates |
 | Optional | `dev/active/` | Dev docs working directory |
 
@@ -67,9 +64,9 @@ Once you copy `.claude/` and `.mcp.json` to your project, Claude Code automatica
 |-------|-------------|-------------------|
 | `frontend-dev` | "component", "react", "tanstack", "tailwind", "route" | TanStack Start, React, Tailwind CSS, shadcn/ui |
 | `convex-backend-dev` | "convex", "query", "mutation", "schema" | Convex backend development |
+| `tanstack-start-dev` | "createServerFn", "createFileRoute", "loader", "router" | TanStack Start routing and server functions |
 | `task-management-dev` | "task", "pbi", "backlog", "planning" | Task-driven development workflow |
 | `code-simplifier` | "simplify", "refactor", "clean up", "review" | Code clarity, consistency, maintainability |
-| `example-skill` | "example", "demo" | Template for your own skills |
 
 ## How It Works
 
@@ -125,7 +122,7 @@ The hooks and permissions are configured via `.claude/settings.json` using Claud
         "hooks": [
           {
             "type": "command",
-            "command": "npx tsx .claude/hooks-global/user-prompt-submit.ts"
+            "command": "npx tsx \"$CLAUDE_PROJECT_DIR/.claude/hooks/user-prompt-submit.ts\""
           }
         ]
       }
@@ -136,7 +133,7 @@ The hooks and permissions are configured via `.claude/settings.json` using Claud
         "hooks": [
           {
             "type": "command",
-            "command": "npx tsx .claude/hooks-global/stop.ts"
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/typescript-check.py\""
           }
         ]
       }
@@ -147,11 +144,13 @@ The hooks and permissions are configured via `.claude/settings.json` using Claud
       "Bash(npx tsx .claude/*:*)",
       "Bash(npx tsc:*)",
       "Bash(npm run:*)",
+      "Bash(npx vitest:*)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
+      "Bash(npx convex:*)",
       "Read(.claude/**/*)",
       "Edit(.claude/**/*)",
       "Glob",
@@ -236,7 +235,7 @@ your-project/
 │   │   │   └── SKILL.md
 │   │   ├── code-simplifier/
 │   │   │   └── SKILL.md
-│   │   └── example-skill/
+│   │   └── tanstack-start-dev/
 │   │       └── SKILL.md
 │   ├── hooks/                       # Project-level hooks
 │   │   ├── user-prompt-submit.ts    # Skill activation hook
@@ -255,7 +254,7 @@ your-project/
 │       ├── frontend-dev/
 │       ├── task-management-dev/
 │       ├── code-simplifier/
-│       └── example-skill/
+│       └── tanstack-start-dev/
 ├── .mcp.json                        # MCP server configuration
 ├── docs/delivery/                   # (Optional) PBI workflow
 │   ├── backlog.md
@@ -621,7 +620,7 @@ Codex uses the `description` field for implicit skill matching - write clear sco
 The `.codex/config.toml` uses the official TOML format:
 
 ```toml
-model = "o4-mini"
+model = "gpt-5.5"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 ```

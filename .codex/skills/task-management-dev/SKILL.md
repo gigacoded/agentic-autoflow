@@ -1,6 +1,7 @@
 ---
 name: task-management-dev
-description: Use when creating or managing PBIs, tasks, dev docs, or working in docs/delivery/. Do not use for code implementation or testing.
+description: PBI management, task workflows, dev docs system, and task-driven development patterns. Use when planning features, tracking PBIs, or creating dev docs for long tasks (3+ steps).
+paths: "docs/delivery/**/*,dev/active/**/*,**/backlog.md,**/tasks.md"
 ---
 
 # Task Management & Development Workflow
@@ -293,7 +294,7 @@ For any task involving external packages:
 
 Create: `docs/delivery/{PBI-ID}/{task-id}-{package}-guide.md`
 
-Example: `docs/delivery/2/2-1-pg-boss-guide.md`
+Example: `docs/delivery/2/2-1-{package-name}-guide.md`
 
 ```markdown
 # {Package Name} API Guide
@@ -538,14 +539,14 @@ What this test plan verifies
 - Can be tested independently
 
 **Too Large** (break it down):
-- "Implement entire quote system" ❌
+- "Implement entire {feature} system" ❌
 - "Add all authentication" ❌
 - "Refactor everything" ❌
 
 **Good Examples**:
-- "Create quote submission form UI" ✅
-- "Add authentication check to quotes API" ✅
-- "Refactor JobCard component to use new layout" ✅
+- "Create {feature} submission form UI" ✅
+- "Add authentication check to {feature} API" ✅
+- "Refactor {Component} to use new layout" ✅
 
 ### Commit Messages
 
@@ -553,9 +554,9 @@ Format: `{task-id} {task-description}`
 
 Examples:
 ```
-260-1 Create e2e-testing-framework skill
-240-4 Driver 1 submits quote on matched job
-218-3 Implement badge hierarchy for job status
+12-1 Create e2e-testing-framework skill
+8-4 Add user role to session payload
+3-3 Implement badge hierarchy for status display
 ```
 
 ### Documentation

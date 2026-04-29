@@ -1,6 +1,6 @@
 # Development Infrastructure
 
-Claude Code instructions for this repository.
+Codex instructions for this repository. Customize project-specific commands after install.
 
 ## Working Agreements
 
@@ -19,7 +19,7 @@ Claude Code instructions for this repository.
 
 ## Skills
 
-Skills in `.claude/skills/` provide focused guidance:
+Skills in `.codex/skills/` provide focused guidance:
 
 - `convex-backend-dev` - Convex queries, mutations, schema, indexes, validators, actions, and MCP checks.
 - `tanstack-start-dev` - TanStack Start server functions, file routes, loaders, middleware, and SSR.
@@ -39,18 +39,6 @@ Use the PBI workflow when this repository has `docs/delivery/` enabled:
 - Long-running dev docs: `dev/active/[task-name]/`
 
 For small changes, keep documentation lightweight unless the user asks for full PBI tracking.
-
-## Project Structure
-
-```text
-/
-├── .claude/          # Claude Code settings, hooks, commands, agents, skills
-├── .codex/           # Codex config and skills
-├── docs/delivery/    # Optional PBI/task workflow
-├── dev/active/       # Optional long-task working notes
-├── CLAUDE.md         # Claude Code instructions
-└── AGENTS.md         # Codex instructions
-```
 
 ## Local State
 

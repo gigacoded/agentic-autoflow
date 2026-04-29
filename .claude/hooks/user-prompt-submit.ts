@@ -75,10 +75,13 @@ async function main() {
     // Build skill activation reminder
     const skillReminder = buildSkillActivationReminder(activatedSkills, skillRules);
 
-    // Output as JSON with additionalContext (per official docs)
-    // This adds context to Claude without modifying the user's prompt
+    // Output as JSON with hookSpecificOutput.additionalContext (per official docs)
+    // https://code.claude.com/docs/en/hooks
     const output = JSON.stringify({
-      additionalContext: skillReminder
+      hookSpecificOutput: {
+        hookEventName: "UserPromptSubmit",
+        additionalContext: skillReminder
+      }
     });
     process.stdout.write(output);
     process.exit(0);

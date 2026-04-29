@@ -1,6 +1,7 @@
 ---
-name: "Code Simplifier"
-description: "Code refactoring, simplification, and clarity improvements while preserving functionality"
+name: code-simplifier
+description: Code refactoring, simplification, and clarity improvements while preserving functionality. Use after writing or modifying code to enforce project standards (no nested ternaries, named exports, explicit return types, early returns).
+paths: "**/*.ts,**/*.tsx,**/*.js,**/*.jsx"
 ---
 
 # Code Simplifier

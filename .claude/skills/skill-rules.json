@@ -61,7 +61,7 @@
     "type": "domain",
     "enforcement": "suggest",
     "priority": "high",
-    "description": "React, TanStack Start, and Tailwind CSS frontend development",
+    "description": "React, Tailwind CSS, and shadcn/ui frontend patterns (UI/styling). For deep TanStack Start work use tanstack-start-dev.",
     "promptTriggers": {
       "keywords": [
         "component",
@@ -70,69 +70,80 @@
         "page",
         "layout",
         "react",
-        "tanstack",
-        "router",
-        "route",
         "tailwind",
         "style",
         "form",
-        "loader",
         "shadcn"
       ],
       "intentPatterns": [
-        "(create|build|add|implement).*?(component|page|ui|layout|route)",
+        "(create|build|add|implement).*?(component|page|ui|layout)",
         "(style|design).*?(component|page|ui)",
         "(frontend|client|ui).*?(component|feature|page)",
-        "(form|input|button|modal)",
-        "(create|add).*?(server function|loader)",
-        "(tanstack|react).*?(router|query|start)"
+        "(form|input|button|modal)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "components/**/*.tsx",
+        "src/components/**/*.tsx"
+      ],
+      "contentPatterns": [
+        "import.*react",
+        "className=",
+        "tailwind"
+      ]
+    }
+  },
+  "tanstack-start-dev": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "TanStack Start (Vite-native React full-stack): server functions, file routing, loaders, middleware, SSR.",
+    "promptTriggers": {
+      "keywords": [
+        "tanstack",
+        "tanstack start",
+        "createServerFn",
+        "createFileRoute",
+        "server function",
+        "server fn",
+        "inputValidator",
+        "validator",
+        "route loader",
+        "beforeLoad",
+        "validateSearch",
+        "router",
+        "route"
+      ],
+      "intentPatterns": [
+        "(create|add|write).*?(server function|server fn|route|loader)",
+        "(tanstack|react).*?(router|start)",
+        "(file|nested).*?(route|routing)",
+        "(redirect|notFound).*?(loader|route)",
+        "(middleware).*?(server|route)"
       ]
     },
     "fileTriggers": {
       "pathPatterns": [
         "src/routes/**/*.tsx",
         "src/routes/__root.tsx",
-        "components/**/*.tsx",
         "src/utils/*.functions.ts",
-        "src/router.tsx"
+        "src/utils/*.server.ts",
+        "src/router.tsx",
+        "vite.config.ts",
+        "app.config.ts"
       ],
       "contentPatterns": [
         "createFileRoute",
         "createServerFn",
         "@tanstack/react-router",
         "@tanstack/react-start",
-        "@tanstack/react-query",
-        "import.*react",
-        "className=",
-        "tailwind",
-        "Route.useLoaderData"
-      ]
-    }
-  },
-  "example-skill": {
-    "type": "domain",
-    "enforcement": "suggest",
-    "priority": "low",
-    "description": "Example skill showing structure (replace with your skills)",
-    "promptTriggers": {
-      "keywords": [
-        "example",
-        "demo",
-        "template"
-      ],
-      "intentPatterns": [
-        "(how to|best practice).*?example",
-        "(create|implement).*?demo"
-      ]
-    },
-    "fileTriggers": {
-      "pathPatterns": [
-        "examples/**/*.ts",
-        "src/example/**/*"
-      ],
-      "contentPatterns": [
-        "import.*example",
-        "Example\\("
+        "Route\\.useLoaderData",
+        "Route\\.useSearch",
+        "Route\\.useParams",
+        "useServerFn",
+        "inputValidator",
+        "createMiddleware"
       ]
     }
   },

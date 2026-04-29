@@ -1,6 +1,6 @@
 # Development Infrastructure
 
-Claude Code instructions for this repository.
+Claude Code instructions for this repository. Customize project-specific commands after install.
 
 ## Working Agreements
 

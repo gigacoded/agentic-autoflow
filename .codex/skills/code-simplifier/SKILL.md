@@ -1,6 +1,7 @@
 ---
 name: code-simplifier
-description: Use when simplifying, refactoring, or reviewing code for clarity and maintainability. Do not use for new feature implementation or bug fixes.
+description: Code refactoring, simplification, and clarity improvements while preserving functionality. Use after writing or modifying code to enforce project standards (no nested ternaries, named exports, explicit return types, early returns).
+paths: "**/*.ts,**/*.tsx,**/*.js,**/*.jsx"
 ---
 
 # Code Simplifier

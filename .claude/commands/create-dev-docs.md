@@ -2,7 +2,7 @@ You are helping the user create dev docs for a new task to prevent context loss 
 
 ## Workflow
 
-1. **Ask for task name**: Prompt the user for a task identifier (e.g., "implement-quote-system", "pbi-240-enrichment")
+1. **Ask for task name**: Prompt the user for a kebab-case task identifier (e.g., "add-search-filter", "refactor-auth-middleware")
 
 2. **Create directory structure**:
    ```

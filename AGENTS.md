@@ -1,60 +1,59 @@
-# [Your Project Name]
+# Development Infrastructure
 
-[Brief description of your project and what it does.]
+Codex instructions for this repository.
 
 ## Working Agreements
 
-- Run `[build command]` after modifying TypeScript files to check for errors
-- Run `[lint command]` before committing
-- [Add your project-specific working agreements]
+- Inspect existing scripts before running build, lint, typecheck, or test commands.
+- After TypeScript changes, run the available typecheck or build script.
+- Before committing, run the available lint and test scripts when present.
+- Do not overwrite user changes or local settings.
 
-## Development
+## Common Commands
 
-- `[dev command]` - Start development server
-- `[other command]` - Description
-
-## Build & Quality
-
-- `[build command]` - Build for production
-- `[lint command]` - Lint code
-- `[typecheck command]` - TypeScript checks
-
-## Project Structure
-
-```
-/
-├── [your directories]/    # Description
-├── [structure]/           # Description
-├── docs/delivery/         # PBIs and task tracking
-└── .codex/skills/         # Codex skills for domain-specific guidance
-```
-
-## Architecture
-
-- **Frontend**: [Your frontend stack]
-- **Backend**: [Your backend stack]
-- **Auth**: [Your auth approach]
-
-## Coding Standards
-
-- [Your key coding standards]
-- [Framework-specific conventions]
-- [Testing requirements]
+- Development server: use the package script that starts the app, commonly `npm run dev`, `pnpm dev`, or `yarn dev`.
+- Build: use the project build script when present.
+- Lint: use the project lint script when present.
+- Typecheck: use the project typecheck script when present, or `npx tsc --noEmit` for TypeScript projects.
+- Tests: use the project test script when present.
 
 ## Skills
 
-Skills in `.codex/skills/` provide domain-specific guidance:
+Skills in `.codex/skills/` provide focused guidance:
 
-- **convex-backend-dev** - Convex patterns, indexing, performance optimization
-- **frontend-dev** - React, TanStack Start, Tailwind CSS, shadcn/ui patterns
-- **task-management-dev** - PBI/task workflow, dev docs system
-- **code-simplifier** - Code clarity, consistency, maintainability
+- `convex-backend-dev` - Convex queries, mutations, schema, indexes, validators, actions, and MCP checks.
+- `tanstack-start-dev` - TanStack Start server functions, file routes, loaders, middleware, and SSR.
+- `frontend-dev` - React, Tailwind CSS, shadcn/ui, components, forms, layout, and styling.
+- `task-management-dev` - PBI workflow, task docs, backlog, and dev docs.
+- `code-simplifier` - Code clarity, refactoring, maintainability, and review cleanup.
 
 ## Task Workflow
 
-All work follows the PBI workflow: `Proposed -> Agreed -> InProgress -> InReview -> Done`
+Use the PBI workflow when this repository has `docs/delivery/` enabled:
 
-- PBIs tracked in `docs/delivery/backlog.md`
-- Each PBI has a directory: `docs/delivery/[PBI-ID]/`
-- Tasks tracked in `docs/delivery/[PBI-ID]/tasks.md`
-- Dev docs for complex tasks: `dev/active/[task-name]/`
+`Proposed -> Agreed -> InProgress -> InReview -> Done`
+
+- Backlog: `docs/delivery/backlog.md`
+- PBI directory: `docs/delivery/[PBI-ID]/`
+- Task index: `docs/delivery/[PBI-ID]/tasks.md`
+- Long-running dev docs: `dev/active/[task-name]/`
+
+For small changes, keep documentation lightweight unless the user asks for full PBI tracking.
+
+## Project Structure
+
+```text
+/
+├── .claude/          # Claude Code settings, hooks, commands, agents, skills
+├── .codex/           # Codex config and skills
+├── docs/delivery/    # Optional PBI/task workflow
+├── dev/active/       # Optional long-task working notes
+├── CLAUDE.md         # Claude Code instructions
+└── AGENTS.md         # Codex instructions
+```
+
+## Local State
+
+- Keep `.claude/settings.local.json` untracked.
+- Keep secrets in environment-specific files, not in shared templates.
+- Review `.mcp.json` before first use and remove MCP servers that do not apply.
