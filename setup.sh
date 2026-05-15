@@ -71,12 +71,14 @@ copy_file_if_missing "$TEMPLATE_DIR/.codex/AGENTS.template.md" "$TARGET_DIR/AGEN
 copy_file_if_missing "$TEMPLATE_DIR/.mcp.json" "$TARGET_DIR/.mcp.json"
 
 mkdir -p "$TARGET_DIR/docs/delivery" "$TARGET_DIR/dev/active"
+copy_file "$TEMPLATE_DIR/dev/check-line-limits.sh" "$TARGET_DIR/dev/check-line-limits.sh"
 copy_file_if_missing "$TEMPLATE_DIR/docs/delivery/backlog.md" "$TARGET_DIR/docs/delivery/backlog.md"
 copy_dir "$TEMPLATE_DIR/docs/delivery/examples" "$TARGET_DIR/docs/delivery/examples"
 
 append_gitignore_once ''
 append_gitignore_once '# Agentic AutoFlow local state'
 append_gitignore_once '.claude/settings.local.json'
+append_gitignore_once 'CLAUDE.local.md'
 append_gitignore_once 'dev/active/*'
 append_gitignore_once '!dev/active/.gitkeep'
 

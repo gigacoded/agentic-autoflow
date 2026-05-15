@@ -8,6 +8,7 @@ Codex instructions for this repository. Customize project-specific commands afte
 - After TypeScript changes, run the available typecheck or build script.
 - Before committing, run the available lint and test scripts when present.
 - Do not overwrite user changes or local settings.
+- Keep application code files at 500 lines or fewer. If an app code file exceeds 500 lines, refactor it into smaller modules before finishing the task.
 
 ## Common Commands
 
@@ -16,6 +17,7 @@ Codex instructions for this repository. Customize project-specific commands afte
 - Lint: use the project lint script when present.
 - Typecheck: use the project typecheck script when present, or `npx tsc --noEmit` for TypeScript projects.
 - Tests: use the project test script when present.
+- App code line limit: run `dev/check-line-limits.sh` when this repo is present, or apply the same 500-line maximum manually.
 
 ## Skills
 
@@ -45,3 +47,4 @@ For small changes, keep documentation lightweight unless the user asks for full 
 - Keep `.claude/settings.local.json` untracked.
 - Keep secrets in environment-specific files, not in shared templates.
 - Review `.mcp.json` before first use and remove MCP servers that do not apply.
+- Codex loads `AGENTS.md` hierarchically. Put broad rules at the repository root and narrow overrides in nested `AGENTS.override.md` files only when needed.

@@ -41,6 +41,7 @@ cp /tmp/agentic-autoflow/.codex/AGENTS.template.md /path/to/your/project/AGENTS.
 | **Yes** | `.codex/` | OpenAI Codex configuration and skills |
 | **Yes** | `CLAUDE.md` | Claude Code project instructions |
 | **Yes** | `AGENTS.md` | Codex project instructions |
+| Recommended | `dev/check-line-limits.sh` | Checks application code files stay under 500 lines |
 | Recommended | `.mcp.json` | MCP server configuration (Convex, Chrome DevTools) |
 | Optional | `docs/delivery/` | Task management templates |
 | Optional | `dev/active/` | Dev docs working directory |
@@ -164,6 +165,16 @@ The hooks and permissions are configured via `.claude/settings.json` using Claud
 **Pre-configured permissions** reduce approval prompts for common development operations. Modify the `allow` list to suit your workflow.
 
 **Note**: `UserPromptSubmit` does not support matchers (per official docs). `PostToolUse` uses regex matchers to filter by tool name.
+
+### Application Code Line Limit
+
+Installed projects include a core rule for maintainability: application code files should not exceed 500 lines. Run:
+
+```bash
+dev/check-line-limits.sh
+```
+
+The checker targets common code extensions (`.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.go`, `.rs`, and similar) and ignores docs, templates, dependencies, generated output, and local agent state. If it reports a file, split that application code into smaller modules before completing the task.
 
 ### Global vs Project Hooks
 
