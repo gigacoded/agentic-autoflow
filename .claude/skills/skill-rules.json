@@ -190,6 +190,62 @@
       ]
     }
   },
+  "programmatic-seo": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "Programmatic SEO strategy and implementation for data-driven, templated SEO pages at scale.",
+    "promptTriggers": {
+      "keywords": [
+        "programmatic seo",
+        "pseo",
+        "template pages",
+        "templated landing pages",
+        "pages at scale",
+        "directory pages",
+        "location pages",
+        "comparison pages",
+        "integration pages",
+        "data-driven pages",
+        "keyword + city",
+        "generate 100 pages",
+        "many pages for seo"
+      ],
+      "intentPatterns": [
+        "(create|build|generate|make|launch).*?(seo|landing).*?(pages|templates)",
+        "(create|build|generate|make).*?(directory|location|comparison|integration).*?pages",
+        "(programmatic|data.?driven|templated).*?(seo|pages|landing pages)",
+        "(keyword|service|product).*?\\+.*?(city|location|industry|audience)",
+        "(scale|mass|bulk).*?(seo|landing).*?pages",
+        "(100|hundreds|thousands).*?(seo|landing|template).*?pages"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "**/sitemap*.ts",
+        "**/sitemap*.js",
+        "**/robots.ts",
+        "**/robots.js",
+        "**/seo/**/*.ts",
+        "**/seo/**/*.tsx",
+        "**/schema/**/*.ts",
+        "**/content/**/*.md",
+        "**/data/**/*.csv",
+        "**/data/**/*.json"
+      ],
+      "contentPatterns": [
+        "programmatic.?seo",
+        "pSEO",
+        "generateStaticParams",
+        "getStaticPaths",
+        "sitemap",
+        "canonical",
+        "noindex",
+        "structured.?data",
+        "schema\\.org"
+      ]
+    }
+  },
   "code-simplifier": {
     "type": "quality",
     "enforcement": "suggest",
