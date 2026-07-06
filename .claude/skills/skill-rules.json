@@ -1,4 +1,196 @@
 {
+  "usage-guide": {
+    "type": "meta",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "Map of this agent infrastructure kit: which skill/tool/loop to use when, where everything lives, how to maintain or install it.",
+    "promptTriggers": {
+      "keywords": [
+        "which skill",
+        "usage guide",
+        "how does this kit",
+        "agent infrastructure",
+        "add a skill",
+        "new skill",
+        "install the kit",
+        "setup.sh",
+        "skill-rules"
+      ],
+      "intentPatterns": [
+        "(which|what).*?(skill|tool|mcp).*?(use|apply|for)",
+        "(add|create|update|edit).*?(skill|hook|rule).*?(kit|infrastructure|claude|codex)",
+        "(install|set up|copy).*?(kit|infrastructure|autoflow).*?(project|codebase|repo)",
+        "(how|where).*?(skills|hooks|settings).*?(work|configured|live)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        ".claude/skills/**/*",
+        ".codex/skills/**/*",
+        ".claude/settings.json",
+        ".codex/config.toml"
+      ],
+      "contentPatterns": []
+    }
+  },
+  "fable-mindset": {
+    "type": "meta",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "Operating principles for agentic coding (evidence, root cause, minimal diffs, verification, honest reporting). Load at the start of any non-trivial task.",
+    "promptTriggers": {
+      "keywords": [
+        "debug",
+        "investigate",
+        "root cause",
+        "bug",
+        "broken",
+        "refactor",
+        "implement",
+        "migrate",
+        "audit",
+        "not working",
+        "fails",
+        "error"
+      ],
+      "intentPatterns": [
+        "(fix|debug|investigate|diagnose).*?(bug|issue|error|failure|crash)",
+        "(implement|build|add|migrate).*?(feature|system|module)",
+        "(why|what).*?(failing|broken|wrong|happening)",
+        "(long|complex|multi.?step).*?(task|change|refactor)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [],
+      "contentPatterns": []
+    }
+  },
+  "agentic-loops": {
+    "type": "meta",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "Loop design for long-running or recurring agentic work: /goal, /loop, /schedule, stop conditions, token budgets.",
+    "promptTriggers": {
+      "keywords": [
+        "loop",
+        "goal",
+        "schedule",
+        "recurring",
+        "cron",
+        "routine",
+        "keep going",
+        "until it passes",
+        "babysit",
+        "every hour",
+        "every morning",
+        "autonomous",
+        "long-running"
+      ],
+      "intentPatterns": [
+        "(keep|continue).*?(running|trying|iterating|going).*?(until|unless)",
+        "(check|poll|watch).*?(every|each).*?(minute|hour|day|morning)",
+        "(set up|create|design).*?(loop|routine|schedule|recurring)",
+        "(don.?t stop|run) until",
+        "(babysit|monitor).*?(pr|ci|pipeline|deploy)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [],
+      "contentPatterns": []
+    }
+  },
+  "verify-frontend-change": {
+    "type": "quality",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "Browser verification of UI changes via Chrome DevTools MCP: interact, console check, screenshot, perf trace.",
+    "promptTriggers": {
+      "keywords": [
+        "verify",
+        "screenshot",
+        "browser",
+        "check the page",
+        "looks right",
+        "console errors",
+        "lighthouse",
+        "web vitals"
+      ],
+      "intentPatterns": [
+        "(verify|confirm|check|test).*?(ui|page|component|button|form|change).*?(works|browser|renders)",
+        "(take|capture).*?screenshot",
+        "(check|look at).*?(console|network).*?(errors|requests)",
+        "(did|does).*?(it|the change|the page).*?(work|render|look)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "components/**/*.tsx",
+        "src/components/**/*.tsx",
+        "src/routes/**/*.tsx"
+      ],
+      "contentPatterns": []
+    }
+  },
+  "verify-backend-change": {
+    "type": "quality",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "Live-data verification of backend changes via Convex MCP: run functions, read documents, check logs and insights.",
+    "promptTriggers": {
+      "keywords": [
+        "live data",
+        "convex logs",
+        "deployment",
+        "verify backend",
+        "run the function",
+        "check the data",
+        "production data",
+        "dev deployment"
+      ],
+      "intentPatterns": [
+        "(verify|confirm|check|test).*?(mutation|query|function|schema|backend).*?(works|deployed|live)",
+        "(read|check|look at|query).*?(live|real|actual).*?(data|documents|table)",
+        "(check|tail|read).*?(convex|server|backend).*?logs",
+        "(run|execute).*?(function|query|mutation).*?(against|on).*?(dev|deployment)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "convex/**/*.ts"
+      ],
+      "contentPatterns": []
+    }
+  },
+  "e2e-testing-framework": {
+    "type": "quality",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "End-to-end browser testing with Chrome DevTools MCP: Step 0 auth, step-by-step execution, fail-fast, completion reports.",
+    "promptTriggers": {
+      "keywords": [
+        "e2e",
+        "end-to-end",
+        "browser test",
+        "chrome mcp",
+        "user flow",
+        "integration test",
+        "test the flow",
+        "multi-user test"
+      ],
+      "intentPatterns": [
+        "(write|create|run|implement).*?(e2e|end.?to.?end|browser|integration).*?test",
+        "(test|verify).*?(full|complete|whole).*?(flow|journey|workflow)",
+        "(simulate|automate).*?(user|browser).*?(interaction|flow|session)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "**/e2e/**/*",
+        "**/*.e2e.*"
+      ],
+      "contentPatterns": []
+    }
+  },
   "convex-backend-dev": {
     "type": "domain",
     "enforcement": "suggest",
@@ -243,6 +435,48 @@
         "noindex",
         "structured.?data",
         "schema\\.org"
+      ]
+    }
+  },
+  "make-interfaces-feel-better": {
+    "type": "quality",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "Design engineering details that make UI feel polished: micro-interactions, animations, border radius, shadows, typography, optical alignment.",
+    "promptTriggers": {
+      "keywords": [
+        "feel better",
+        "feels off",
+        "polish",
+        "micro-interaction",
+        "animation",
+        "hover state",
+        "border radius",
+        "shadow",
+        "stagger",
+        "transition",
+        "premium feel",
+        "juice"
+      ],
+      "intentPatterns": [
+        "(make|help).*?(ui|interface|page|component|app).*?(feel|look).*?(better|polished|premium|smooth|alive)",
+        "(add|improve|fix).*?(animation|transition|hover|micro.?interaction)",
+        "(something|it).*?(feels|looks).*?(off|cheap|flat|janky)",
+        "(polish|refine).*?(ui|interface|design|component)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "**/*.css",
+        "components/**/*.tsx",
+        "src/components/**/*.tsx"
+      ],
+      "contentPatterns": [
+        "transition",
+        "animate-",
+        "keyframes",
+        "box-shadow",
+        "border-radius"
       ]
     }
   },

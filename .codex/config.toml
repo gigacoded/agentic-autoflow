@@ -4,6 +4,7 @@
 # Customize these settings for your project:
 
 model = "gpt-5.5"
+model_reasoning_effort = "high"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 
@@ -12,3 +13,50 @@ project_doc_max_bytes = 65536
 
 # Fallback filenames if AGENTS.md is missing in a directory
 project_doc_fallback_filenames = ["CLAUDE.md", ".codex/instructions.md"]
+
+[features]
+goals = true
+hooks = true
+
+# --- Hooks: safety guard + post-edit quality checks ---
+
+[[hooks.PreToolUse]]
+matcher = "Bash"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = "python3 ${CODEX_PROJECT_DIR:-.}/.codex/hooks/bash-guard.py"
+timeout = 5
+statusMessage = "Checking command safety"
+
+[[hooks.PostToolUse]]
+matcher = "Edit|Write|apply_patch|MultiEdit"
+
+[[hooks.PostToolUse.hooks]]
+type = "command"
+command = "python3 ${CODEX_PROJECT_DIR:-.}/.codex/hooks/typecheck.py"
+timeout = 45
+statusMessage = "Typechecking"
+
+[[hooks.PostToolUse]]
+matcher = "Edit|Write|apply_patch|MultiEdit"
+
+[[hooks.PostToolUse.hooks]]
+type = "command"
+command = "python3 ${CODEX_PROJECT_DIR:-.}/.codex/hooks/line-limit.py"
+timeout = 5
+statusMessage = "Line-limit check"
+
+# --- MCP servers: live verification (browser + backend) ---
+
+[mcp_servers.chrome-devtools]
+command = "npx"
+args = ["-y", "chrome-devtools-mcp@latest", "--isolated"]
+
+# Convex MCP reads the deployment from the project's .env.local.
+# To pin a specific dev deployment, add:
+#   [mcp_servers.convex.env]
+#   CONVEX_DEPLOYMENT = "dev:your-deployment-name"
+[mcp_servers.convex]
+command = "npx"
+args = ["-y", "convex", "mcp", "start"]

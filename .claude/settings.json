@@ -37,8 +37,25 @@
       "Read(.claude/**/*)",
       "Edit(.claude/**/*)",
       "Glob",
-      "Grep"
+      "Grep",
+      "mcp__convex__status",
+      "mcp__convex__tables",
+      "mcp__convex__data",
+      "mcp__convex__functionSpec",
+      "mcp__convex__logs",
+      "mcp__convex__runOneoffQuery",
+      "mcp__convex__insights",
+      "mcp__convex__envList",
+      "mcp__chrome-devtools__new_page",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__list_console_messages",
+      "mcp__chrome-devtools__list_network_requests",
+      "mcp__chrome-devtools__wait_for",
+      "mcp__chrome-devtools__list_pages"
     ],
     "deny": []
-  }
+  },
+  "enabledMcpjsonServers": ["convex", "chrome-devtools"]
 }

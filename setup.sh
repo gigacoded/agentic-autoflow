@@ -59,7 +59,6 @@ printf 'Installing Agentic AutoFlow into %s\n' "$TARGET_DIR"
 copy_dir "$TEMPLATE_DIR/.claude/agents" "$TARGET_DIR/.claude/agents"
 copy_dir "$TEMPLATE_DIR/.claude/commands" "$TARGET_DIR/.claude/commands"
 copy_dir "$TEMPLATE_DIR/.claude/hooks" "$TARGET_DIR/.claude/hooks"
-copy_dir "$TEMPLATE_DIR/.claude/hooks-global" "$TARGET_DIR/.claude/hooks-global"
 copy_dir "$TEMPLATE_DIR/.claude/rules" "$TARGET_DIR/.claude/rules"
 copy_dir "$TEMPLATE_DIR/.claude/skills" "$TARGET_DIR/.claude/skills"
 copy_file "$TEMPLATE_DIR/.claude/settings.json" "$TARGET_DIR/.claude/settings.json"
@@ -81,6 +80,8 @@ append_gitignore_once '.claude/settings.local.json'
 append_gitignore_once 'CLAUDE.local.md'
 append_gitignore_once 'dev/active/*'
 append_gitignore_once '!dev/active/.gitkeep'
+append_gitignore_once '.codex/hooks/__pycache__/'
+append_gitignore_once 'dev/test-credentials.json'
 
 printf 'Install complete.\n'
 printf 'Next: review CLAUDE.md, AGENTS.md, .claude/settings.json, and .mcp.json for project-specific commands and MCP servers.\n'

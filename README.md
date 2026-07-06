@@ -63,11 +63,32 @@ Once you copy `.claude/` and `.mcp.json` to your project, Claude Code automatica
 
 | Skill | Triggers On | Best Practices For |
 |-------|-------------|-------------------|
+| `usage-guide` | "which skill", "add a skill", "install the kit" | Agent-facing map of this kit: which skill/tool/loop when, where everything lives, how to maintain it |
+| `fable-mindset` | "debug", "root cause", "implement", "investigate" | Operating principles for accurate agentic coding (evidence, root cause, verification, honest reporting) |
+| `agentic-loops` | "loop", "goal", "schedule", "keep going until" | Designing loops for long-running/recurring work with stop conditions and token budgets |
+| `verify-frontend-change` | "verify", "screenshot", "console errors" | Browser verification of UI changes via Chrome DevTools MCP |
+| `verify-backend-change` | "live data", "convex logs", "verify backend" | Live-data verification of backend changes via Convex MCP |
+| `e2e-testing-framework` | "e2e", "browser test", "user flow" | End-to-end browser testing: Step 0 auth, fail-fast, completion reports |
 | `frontend-dev` | "component", "react", "tanstack", "tailwind", "route" | TanStack Start, React, Tailwind CSS, shadcn/ui |
+| `make-interfaces-feel-better` | "polish", "feels off", "animation", "hover state" | UI polish details: micro-interactions, animations, radius, shadows, typography ([jakubkrehel/make-interfaces-feel-better](https://github.com/jakubkrehel/make-interfaces-feel-better)) |
 | `convex-backend-dev` | "convex", "query", "mutation", "schema" | Convex backend development |
 | `tanstack-start-dev` | "createServerFn", "createFileRoute", "loader", "router" | TanStack Start routing and server functions |
 | `task-management-dev` | "task", "pbi", "backlog", "planning" | Task-driven development workflow |
 | `code-simplifier` | "simplify", "refactor", "clean up", "review" | Code clarity, consistency, maintainability |
+| `programmatic-seo` | "programmatic seo", "pages at scale" | Data-driven, templated SEO pages |
+
+## Designing Loops
+
+The skills above compose into [loops](https://x.com/ClaudeDevs/status/2074208949205881033) — agents repeating cycles of work until a stop condition is met:
+
+| Loop | You hand off | Use it when | Reach for |
+|------|--------------|-------------|-----------|
+| Turn-based | The check | You're exploring or deciding | `verify-frontend-change`, `verify-backend-change`, `e2e-testing-framework` |
+| Goal-based | The stop condition | You know what done looks like | `/goal get Lighthouse to 90+, stop after 5 tries` |
+| Time-based | The trigger | Work happens outside your project on a schedule | `/loop 5m check my PR and fix CI`, `/schedule` |
+| Proactive | The prompt | The work is recurring and well-defined | `/schedule` + `/goal` + skills + auto mode |
+
+Two rules keep loops accurate: every cycle ends with a real verification (the `verify-*` skills give the agent eyes — a browser and live database access), and every loop has a deterministic stop condition with an attempt cap. See `.claude/skills/agentic-loops/SKILL.md` for the full guidance; `.codex/skills/agentic-loops/` has the Codex equivalent (goals + scheduled `codex exec`).
 
 ## How It Works
 
@@ -183,44 +204,7 @@ The checker targets common code extensions (`.ts`, `.tsx`, `.js`, `.jsx`, `.py`,
 - Shared with your team via git
 - No additional setup required
 
-**Global hooks** (`~/.claude/settings.json`) - For all your projects:
-```bash
-# Create user settings if it doesn't exist
-mkdir -p ~/.claude
-
-# Add hooks to your global settings
-cat >> ~/.claude/settings.json << 'EOF'
-{
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "npx tsx ~/.claude/hooks/user-prompt-submit.ts"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "npx tsx ~/.claude/hooks/stop.ts"
-          }
-        ]
-      }
-    ]
-  }
-}
-EOF
-
-# Copy hook scripts
-mkdir -p ~/.claude/hooks
-cp .claude/hooks-global/* ~/.claude/hooks/
-```
+**Global hooks** (`~/.claude/settings.json`) - To reuse these hooks across all your projects, copy the scripts from `.claude/hooks/` into `~/.claude/hooks/` and register them in `~/.claude/settings.json` with the same hook configuration shown above (swap `$CLAUDE_PROJECT_DIR` for `~/.claude`).
 
 ## Project Structure
 
@@ -237,6 +221,13 @@ your-project/
 │   │   └── convex-backend-dev.md    # Convex backend specialist (Sonnet)
 │   ├── skills/
 │   │   ├── skill-rules.json         # Activation triggers for all skills
+│   │   ├── usage-guide/             # Agent-facing map of the whole kit
+│   │   ├── fable-mindset/           # Agentic operating principles
+│   │   ├── agentic-loops/           # Loop design (/goal, /loop, /schedule)
+│   │   ├── verify-frontend-change/  # Browser verification (Chrome DevTools MCP)
+│   │   ├── verify-backend-change/   # Live-data verification (Convex MCP)
+│   │   ├── e2e-testing-framework/   # E2E browser testing framework
+│   │   ├── make-interfaces-feel-better/ # UI polish micro-details
 │   │   ├── frontend-dev/
 │   │   │   ├── SKILL.md
 │   │   │   └── resources/
@@ -251,16 +242,22 @@ your-project/
 │   ├── hooks/                       # Project-level hooks
 │   │   ├── user-prompt-submit.ts    # Skill activation hook
 │   │   └── typescript-check.py      # TypeScript error checking (Python - fast)
-│   ├── hooks-global/                # Legacy - kept for global hook installation
-│   │   ├── user-prompt-submit.ts
-│   │   └── stop.ts
 │   └── commands/
 │       ├── create-dev-docs.md
 │       ├── update-dev-docs.md
 │       └── dev-docs-status.md
 ├── .codex/                          # OpenAI Codex configuration
-│   ├── config.toml                  # Codex settings (model, approval, sandbox)
+│   ├── config.toml                  # Codex settings (model, approval, sandbox, hooks, MCP)
+│   ├── hooks/                       # Codex hooks
+│   │   ├── bash-guard.py            # Blocks destructive commands (PreToolUse)
+│   │   ├── typecheck.py             # tsc --noEmit after TS edits (PostToolUse)
+│   │   └── line-limit.py            # 500-line app-code warning (PostToolUse)
 │   └── skills/                      # Skills with Codex-style frontmatter
+│       ├── fable-mindset/
+│       ├── agentic-loops/
+│       ├── verify-frontend-change/
+│       ├── verify-backend-change/
+│       ├── e2e-testing-framework/
 │       ├── convex-backend-dev/
 │       ├── frontend-dev/
 │       ├── task-management-dev/
@@ -359,37 +356,15 @@ claude
 
 ## Customization Examples
 
-### Python Projects
+The shipped PostToolUse check (`.claude/hooks/typescript-check.py`) targets TypeScript. For other languages, add a similar hook script and register it in `.claude/settings.json` with an `Edit|Write` matcher:
 
-Create `.claude/skills/python-dev/SKILL.md` and modify the stop hook to run `mypy`:
+| Language | Detect project by | Check command |
+|----------|-------------------|---------------|
+| Python | `pyproject.toml` | `mypy .` or `ruff check` |
+| Go | `go.mod` | `go vet ./...` |
+| Rust | `Cargo.toml` | `cargo check` |
 
-```typescript
-// In stop.ts, add:
-const hasPython = fs.existsSync(path.join(cwd, "pyproject.toml"));
-if (hasPython) {
-  execSync("mypy .", { ... });
-}
-```
-
-### Go Projects
-
-```typescript
-// In stop.ts:
-const hasGo = fs.existsSync(path.join(cwd, "go.mod"));
-if (hasGo) {
-  execSync("go vet ./...", { ... });
-}
-```
-
-### Rust Projects
-
-```typescript
-// In stop.ts:
-const hasRust = fs.existsSync(path.join(cwd, "Cargo.toml"));
-if (hasRust) {
-  execSync("cargo check", { ... });
-}
-```
+Pair it with a `.claude/skills/<language>-dev/SKILL.md` for language-specific patterns (see [Creating Your Own Skills](#creating-your-own-skills)).
 
 ## Troubleshooting
 
@@ -628,12 +603,23 @@ Codex uses the `description` field for implicit skill matching - write clear sco
 
 ### Codex Configuration
 
-The `.codex/config.toml` uses the official TOML format:
+The `.codex/config.toml` uses the official TOML format and wires up hooks and MCP servers so Codex gets the same guardrails and verification tools as Claude Code:
 
 ```toml
 model = "gpt-5.5"
+model_reasoning_effort = "high"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
+
+[features]
+goals = true
+hooks = true
+
+[[hooks.PreToolUse]]        # bash-guard.py: blocks destructive commands
+[[hooks.PostToolUse]]       # typecheck.py + line-limit.py after edits
+
+[mcp_servers.chrome-devtools]  # browser verification
+[mcp_servers.convex]           # live backend data
 ```
 
 See the [Codex Configuration Reference](https://developers.openai.com/codex/config-reference/) for all available settings.
@@ -644,7 +630,8 @@ See the [Codex Configuration Reference](https://developers.openai.com/codex/conf
 |---------|-------------|--------------|
 | Project instructions | `CLAUDE.md` | `AGENTS.md` |
 | Config format | `.claude/settings.json` (JSON) | `.codex/config.toml` (TOML) |
-| Hooks | `PostToolUse`, `UserPromptSubmit` | `notify` in config.toml |
+| Hooks | `hooks` in settings.json | `[[hooks.*]]` tables in config.toml |
+| Loops | `/goal`, `/loop`, `/schedule` | goals feature + scheduled `codex exec` |
 | Agents | `.claude/agents/*.md` | Not a Codex concept |
 | Skills | `.claude/skills/` + `skill-rules.json` | `.codex/skills/` + SKILL.md `description` |
 | Commands | `.claude/commands/*.md` | Not a Codex concept |

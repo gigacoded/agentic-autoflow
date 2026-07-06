@@ -2,6 +2,18 @@
 
 Claude Code instructions for this repository.
 
+## Operating Principles
+
+Read `.claude/skills/fable-mindset/SKILL.md` at the start of any non-trivial
+task. Non-negotiables from it:
+
+- Act only on what you observed in this session (file read, command run) —
+  never on "how these things usually work". Never edit code you haven't read.
+- Fix root causes, not symptoms. A null-check, retry, or timeout bump requires
+  first answering "why does this state occur at all?"
+- Minimal diffs in the codebase's own style. No drive-by refactors.
+- Never end a turn on a plan or promise — do the work or report the blocker.
+
 ## Working Agreements
 
 - Inspect existing scripts before running build, lint, typecheck, or test commands.
@@ -9,6 +21,29 @@ Claude Code instructions for this repository.
 - Before committing, run the available lint and test scripts when present.
 - Do not overwrite user changes or local settings.
 - Keep application code files at 500 lines or fewer. If an app code file exceeds 500 lines, refactor it into smaller modules before finishing the task.
+
+## Verification (mandatory before "done")
+
+A successful edit is not verification. Run the strongest available check and
+end every task report with exactly one of
+`Verified: <what you ran and what it showed>` or
+`Unverified: edited but not verified because <reason>`.
+
+- UI change → follow `verify-frontend-change`: open the page with the Chrome
+  DevTools MCP, interact with the change, zero new console errors, screenshot.
+- Backend/Convex change → follow `verify-backend-change`: run the function
+  against the dev deployment with the Convex MCP, read the affected live data,
+  check logs.
+- Full user journeys → follow `e2e-testing-framework` (Step 0 auth,
+  step-by-step, fail-fast, completion report).
+
+## Loops
+
+For work that outlives a single turn, design a loop instead of re-prompting —
+see `agentic-loops`. Defaults: deterministic done-criteria, an explicit
+attempt cap ("stop after 5 tries") with `/goal`, `/loop`/`/schedule` intervals
+matched to how fast the watched thing changes, and a `dev/active/<task>/`
+note file so progress survives compaction.
 
 ## Common Commands
 
@@ -23,11 +58,19 @@ Claude Code instructions for this repository.
 
 Skills in `.claude/skills/` provide focused guidance:
 
+- `usage-guide` - Map of the kit: which skill/tool/loop to use when, where everything lives, how to maintain or install it.
+- `fable-mindset` - Operating principles for agentic coding: evidence, root cause, verification, honest reporting.
+- `agentic-loops` - Loop design for long-running/recurring work: `/goal`, `/loop`, `/schedule`, stop conditions.
+- `verify-frontend-change` - Browser verification of UI changes via Chrome DevTools MCP.
+- `verify-backend-change` - Live-data verification of backend changes via Convex MCP.
+- `e2e-testing-framework` - End-to-end browser testing: Step 0 auth, fail-fast, completion reports.
 - `convex-backend-dev` - Convex queries, mutations, schema, indexes, validators, actions, and MCP checks.
 - `tanstack-start-dev` - TanStack Start server functions, file routes, loaders, middleware, and SSR.
 - `frontend-dev` - React, Tailwind CSS, shadcn/ui, components, forms, layout, and styling.
+- `make-interfaces-feel-better` - UI polish details: micro-interactions, animations, radius, shadows, typography, optical alignment.
 - `task-management-dev` - PBI workflow, task docs, backlog, and dev docs.
 - `code-simplifier` - Code clarity, refactoring, maintainability, and review cleanup.
+- `programmatic-seo` - Data-driven, templated SEO pages at scale.
 
 ## Task Workflow
 
@@ -47,7 +90,7 @@ For small changes, keep documentation lightweight unless the user asks for full 
 ```text
 /
 ├── .claude/          # Claude Code settings, hooks, commands, agents, skills
-├── .codex/           # Codex config and skills
+├── .codex/           # Codex config, hooks, and skills
 ├── docs/delivery/    # Optional PBI/task workflow
 ├── dev/active/       # Optional long-task working notes
 ├── CLAUDE.md         # Claude Code instructions
