@@ -29,6 +29,21 @@ command = "python3 ${CODEX_PROJECT_DIR:-.}/.codex/hooks/bash-guard.py"
 timeout = 5
 statusMessage = "Checking command safety"
 
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = "python3 ${CODEX_PROJECT_DIR:-.}/.codex/hooks/kit-guard.py"
+timeout = 5
+statusMessage = "Kit protection"
+
+[[hooks.PreToolUse]]
+matcher = "Edit|Write|apply_patch|MultiEdit"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = "python3 ${CODEX_PROJECT_DIR:-.}/.codex/hooks/kit-guard.py"
+timeout = 5
+statusMessage = "Kit protection"
+
 [[hooks.PostToolUse]]
 matcher = "Edit|Write|apply_patch|MultiEdit"
 

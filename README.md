@@ -33,6 +33,20 @@ cp /tmp/agentic-autoflow/.claude/CLAUDE.template.md /path/to/your/project/CLAUDE
 cp /tmp/agentic-autoflow/.codex/AGENTS.template.md /path/to/your/project/AGENTS.md
 ```
 
+### Installing over existing agent config
+
+The installer merges with what a project already has, with one deliberate
+exception — **harness config is overridden by the kit** (its hooks,
+protections, and skill suggester only work with its own config in place):
+
+| File | Behavior on conflict |
+|------|---------------------|
+| `.claude/settings.json`, `.codex/config.toml`, `.mcp.json` | Kit version wins; your file is backed up as `<file>.pre-autoflow` and an `OVERRIDDEN` notice is printed. Merge project-specific entries back, keeping the kit's hooks/permissions intact. |
+| `CLAUDE.md`, `AGENTS.md` | Yours is kept; a `KEPT` notice points at the kit template so you can merge in the Skills/Verification/Kit Protection sections. |
+| `.claude/skills/`, `.codex/skills/`, hooks, agents, commands | Merged: same-named kit files are updated to kit versions, everything else of yours is untouched (symlinked/plugin skills included). |
+
+Backups (`*.pre-autoflow`) are gitignored automatically.
+
 ### What Gets Copied
 
 | Required | Path | Purpose |
@@ -73,9 +87,13 @@ Once you copy `.claude/` and `.mcp.json` to your project, Claude Code automatica
 | `make-interfaces-feel-better` | "polish", "feels off", "animation", "hover state" | UI polish details: micro-interactions, animations, radius, shadows, typography ([jakubkrehel/make-interfaces-feel-better](https://github.com/jakubkrehel/make-interfaces-feel-better)) |
 | `convex-backend-dev` | "convex", "query", "mutation", "schema" | Convex backend development |
 | `tanstack-start-dev` | "createServerFn", "createFileRoute", "loader", "router" | TanStack Start routing and server functions |
+| `stripe-payments` | "stripe", "checkout", "subscription", "webhook" | Stripe in the Convex + TanStack stack: server-decided amounts, verified webhooks, idempotency, test-mode verification |
 | `task-management-dev` | "task", "pbi", "backlog", "planning" | Task-driven development workflow |
 | `code-simplifier` | "simplify", "refactor", "clean up", "review" | Code clarity, consistency, maintainability |
 | `programmatic-seo` | "programmatic seo", "pages at scale" | Data-driven, templated SEO pages |
+| `skill-authoring` | "new skill", "write a skill", "skill never fires" | Writing skills that activate reliably and that smaller models can execute: description craft, trigger rules, Codex mirroring, registration |
+| `hook-development` | "new hook", "hook not firing", "PostToolUse" | Writing, registering, and testing Claude Code and Codex hooks: event contract, exit codes, fail-open design |
+| `kit-release-checklist` | "test the kit", "setup.sh", "mirror sync" | Pre-release verification of the kit: static checks, mirror-sync diff, hook smoke tests, scratch-project install test |
 
 ## Designing Loops
 
@@ -139,6 +157,26 @@ The hooks and permissions are configured via `.claude/settings.json` using Claud
 ```json
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/kit-guard.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/kit-guard.py\""
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
@@ -174,7 +212,6 @@ The hooks and permissions are configured via `.claude/settings.json` using Claud
       "Bash(git commit:*)",
       "Bash(npx convex:*)",
       "Read(.claude/**/*)",
-      "Edit(.claude/**/*)",
       "Glob",
       "Grep"
     ],
@@ -183,9 +220,13 @@ The hooks and permissions are configured via `.claude/settings.json` using Claud
 }
 ```
 
-**Pre-configured permissions** reduce approval prompts for common development operations. Modify the `allow` list to suit your workflow.
+The shipped `.claude/settings.json` additionally pre-allows the read-only
+Convex and Chrome DevTools MCP tools and enables both MCP servers — the live
+file is the source of truth.
 
-**Note**: `UserPromptSubmit` does not support matchers (per official docs). `PostToolUse` uses regex matchers to filter by tool name.
+**Pre-configured permissions** reduce approval prompts for common development operations. Modify the `allow` list to suit your workflow. Kit paths are deliberately not pre-allowed for editing — the `kit-guard` hook blocks those writes (see Kit Protection below).
+
+**Note**: `UserPromptSubmit` does not support matchers (per official docs). `PreToolUse`/`PostToolUse` use regex matchers to filter by tool name.
 
 ### Application Code Line Limit
 
@@ -196,6 +237,25 @@ dev/check-line-limits.sh
 ```
 
 The checker targets common code extensions (`.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.go`, `.rs`, and similar) and ignores docs, templates, dependencies, generated output, and local agent state. If it reports a file, split that application code into smaller modules before completing the task.
+
+### Kit Protection
+
+The `kit-guard.py` PreToolUse hook (registered in both `.claude/settings.json`
+and `.codex/config.toml`) blocks models from editing or overwriting the kit's
+own content: `.claude/`, `.codex/`, `CLAUDE.md`, `AGENTS.md`, and
+`dev/check-line-limits.sh` (plus `README.md` and `setup.sh` in the kit source
+repo only — target projects own those names themselves). It covers the edit
+tools and a heuristic scan of shell commands (write indicators combined with
+protected paths; fd-number and `/dev/null` redirects don't count). Local
+state (`.claude/settings.local.json`), working notes (`dev/active/`), task
+docs (`docs/delivery/`), and all application code stay writable.
+
+To perform kit maintenance, the **user** unlocks it by running
+`touch .claude/kit-unlock` themselves (gitignored; delete it when done). The
+guard blocks models from creating that file, so the unlock is a human-only
+decision. The Bash heuristic errs toward blocking: a read-only command that
+mentions a kit path and contains `>` may be denied — use the Read/Grep tools
+instead.
 
 ### Global vs Project Hooks
 
@@ -217,8 +277,10 @@ your-project/
 │   ├── rules/                       # Conditional rules (auto-loaded)
 │   │   └── example-rule.md          # Example conditional rule
 │   ├── agents/                      # Specialist sub-agents
-│   │   ├── code-simplifier.md       # Proactive code simplification (Opus)
-│   │   └── convex-backend-dev.md    # Convex backend specialist (Sonnet)
+│   │   ├── code-simplifier.md       # Proactive code simplification
+│   │   ├── convex-backend-dev.md    # Convex backend specialist
+│   │   ├── tanstack-start-dev.md    # TanStack Start specialist
+│   │   └── stripe-payments.md       # Stripe payments specialist
 │   ├── skills/
 │   │   ├── skill-rules.json         # Activation triggers for all skills
 │   │   ├── usage-guide/             # Agent-facing map of the whole kit
@@ -228,20 +290,20 @@ your-project/
 │   │   ├── verify-backend-change/   # Live-data verification (Convex MCP)
 │   │   ├── e2e-testing-framework/   # E2E browser testing framework
 │   │   ├── make-interfaces-feel-better/ # UI polish micro-details
-│   │   ├── frontend-dev/
-│   │   │   ├── SKILL.md
-│   │   │   └── resources/
-│   │   ├── convex-backend-dev/
-│   │   │   └── SKILL.md
-│   │   ├── task-management-dev/
-│   │   │   └── SKILL.md
-│   │   ├── code-simplifier/
-│   │   │   └── SKILL.md
-│   │   └── tanstack-start-dev/
-│   │       └── SKILL.md
+│   │   ├── frontend-dev/            # React, Tailwind, shadcn/ui (+ resources/)
+│   │   ├── convex-backend-dev/      # Convex queries, mutations, schema
+│   │   ├── tanstack-start-dev/      # Server functions, file routes, SSR
+│   │   ├── stripe-payments/         # Stripe + Convex + TanStack integration
+│   │   ├── task-management-dev/     # PBI workflow, dev docs
+│   │   ├── code-simplifier/         # Post-write cleanup
+│   │   ├── programmatic-seo/        # Templated SEO pages at scale
+│   │   ├── skill-authoring/         # Writing skills for this kit
+│   │   ├── hook-development/        # Writing hooks for both runtimes
+│   │   └── kit-release-checklist/   # Pre-release kit verification
 │   ├── hooks/                       # Project-level hooks
 │   │   ├── user-prompt-submit.ts    # Skill activation hook
-│   │   └── typescript-check.py      # TypeScript error checking (Python - fast)
+│   │   ├── typescript-check.py      # TypeScript error checking (Python - fast)
+│   │   └── kit-guard.py             # Blocks model edits to kit content (PreToolUse)
 │   └── commands/
 │       ├── create-dev-docs.md
 │       ├── update-dev-docs.md
@@ -250,19 +312,11 @@ your-project/
 │   ├── config.toml                  # Codex settings (model, approval, sandbox, hooks, MCP)
 │   ├── hooks/                       # Codex hooks
 │   │   ├── bash-guard.py            # Blocks destructive commands (PreToolUse)
+│   │   ├── kit-guard.py             # Blocks model edits to kit content (PreToolUse)
 │   │   ├── typecheck.py             # tsc --noEmit after TS edits (PostToolUse)
 │   │   └── line-limit.py            # 500-line app-code warning (PostToolUse)
-│   └── skills/                      # Skills with Codex-style frontmatter
-│       ├── fable-mindset/
-│       ├── agentic-loops/
-│       ├── verify-frontend-change/
-│       ├── verify-backend-change/
-│       ├── e2e-testing-framework/
-│       ├── convex-backend-dev/
-│       ├── frontend-dev/
-│       ├── task-management-dev/
-│       ├── code-simplifier/
-│       └── tanstack-start-dev/
+│   └── skills/                      # Mirrors of every .claude skill
+│       └── (same skill folders as .claude/skills/, minus skill-rules.json)
 ├── .mcp.json                        # MCP server configuration
 ├── docs/delivery/                   # (Optional) PBI workflow
 │   ├── backlog.md
@@ -616,6 +670,7 @@ goals = true
 hooks = true
 
 [[hooks.PreToolUse]]        # bash-guard.py: blocks destructive commands
+                            # kit-guard.py: blocks model edits to kit content
 [[hooks.PostToolUse]]       # typecheck.py + line-limit.py after edits
 
 [mcp_servers.chrome-devtools]  # browser verification

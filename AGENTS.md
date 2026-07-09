@@ -66,11 +66,15 @@ Skills in `.codex/skills/` provide focused guidance:
 - `e2e-testing-framework` - End-to-end browser testing: Step 0 auth, fail-fast, completion reports.
 - `convex-backend-dev` - Convex queries, mutations, schema, indexes, validators, actions, and MCP checks.
 - `tanstack-start-dev` - TanStack Start server functions, file routes, loaders, middleware, and SSR.
+- `stripe-payments` - Stripe in this stack: checkout via Convex actions, webhooks in convex/http.ts, idempotency, test-mode verification.
 - `frontend-dev` - React, Tailwind CSS, shadcn/ui, components, forms, layout, and styling.
 - `make-interfaces-feel-better` - UI polish details: micro-interactions, animations, radius, shadows, typography, optical alignment.
 - `task-management-dev` - PBI workflow, task docs, backlog, and dev docs.
 - `code-simplifier` - Code clarity, refactoring, maintainability, and review cleanup.
 - `programmatic-seo` - Data-driven, templated SEO pages at scale.
+- `skill-authoring` - Writing and registering skills: descriptions that activate, bodies smaller models can execute, Codex mirroring.
+- `hook-development` - Writing, registering, and testing Claude Code and Codex hooks: event contract, exit codes, fail-open design.
+- `kit-release-checklist` - Pre-release verification of the kit: static checks, mirror sync, hook smoke tests, install test.
 
 ## Hooks
 
@@ -104,6 +108,17 @@ For small changes, keep documentation lightweight unless the user asks for full 
 ├── CLAUDE.md         # Claude Code instructions
 └── AGENTS.md         # Codex instructions
 ```
+
+## Kit Protection
+
+Kit content (`.claude/`, `.codex/`, `CLAUDE.md`, `AGENTS.md`,
+`dev/check-line-limits.sh`, plus `README.md`/`setup.sh` in the kit source
+repo) is locked by the `kit-guard` hook:
+models cannot edit or overwrite it. Do not attempt to bypass the guard. If
+the user explicitly wants kit maintenance, they unlock it themselves by
+running `touch .claude/kit-unlock` (and delete that file when done).
+`.claude/settings.local.json`, `dev/active/`, `docs/delivery/`, and all
+application code remain writable.
 
 ## Local State
 

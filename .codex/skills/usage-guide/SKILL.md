@@ -20,10 +20,15 @@ skill is the territory.
 | Testing a full user journey (auth → feature → result) | `e2e-testing-framework` — Step 0 auth, fail-fast, completion report |
 | Writing Convex queries/mutations/schema/indexes | `convex-backend-dev` |
 | Server functions, file routes, loaders, SSR | `tanstack-start-dev` |
+| Payments: checkout, subscriptions, Stripe webhooks | `stripe-payments` |
 | React components, Tailwind, shadcn/ui, forms | `frontend-dev` |
+| UI polish: micro-interactions, animation, radius, shadows, typography | `make-interfaces-feel-better` |
 | Planning features, PBIs, backlog, long-task notes | `task-management-dev` |
 | Post-write cleanup, refactoring for clarity | `code-simplifier` |
 | Templated SEO pages at scale | `programmatic-seo` |
+| Adding/editing a skill, or a skill never fires | `skill-authoring` |
+| Adding/editing a hook, or a hook misbehaves | `hook-development` |
+| Changed the kit itself (skills/hooks/setup.sh) — verify before commit | `kit-release-checklist` |
 
 ## Verification ladder (strongest first)
 
@@ -70,6 +75,11 @@ Both servers are configured in `.codex/config.toml` under `[mcp_servers.*]`.
 
 ## Maintaining the kit
 
+The full procedures live in dedicated skills: `skill-authoring` (writing a
+skill that fires and that smaller models can execute), `hook-development`
+(the hook contract and testing), and `kit-release-checklist` (verifying the
+kit before commit/release). Summary of the invariant:
+
 When you add or change a skill, all of these must move together:
 
 1. `.claude/skills/<name>/SKILL.md` — frontmatter `name` + `description`
@@ -94,10 +104,15 @@ a skill, rule, or hook — not just in the one fix. Fix the system.
 ./setup.sh /path/to/project
 ```
 
-Copies both directories, seeds `CLAUDE.md` / `AGENTS.md` / `.mcp.json` only
-if missing, creates `docs/delivery/` and `dev/active/`, and appends local
-state entries to `.gitignore`. After install: customize the Common Commands
-section in `CLAUDE.md`/`AGENTS.md`, review `.mcp.json`, and copy
-`dev/test-credentials.example.json` → `dev/test-credentials.json` if E2E
-testing is wanted. `README.md` at the kit root has the full human-facing
-walkthrough.
+Merge semantics: skills/hooks/agents/commands merge (same-named files update
+to kit versions, the project's own files survive). Harness config
+(`.claude/settings.json`, `.codex/config.toml`, `.mcp.json`) is OVERRIDDEN
+by the kit — existing differing files are backed up as `<file>.pre-autoflow`
+and each override is printed. `CLAUDE.md`/`AGENTS.md` are seeded only if
+missing; when kept, a notice points at the kit template to merge from.
+Creates `docs/delivery/` and `dev/active/`, appends local-state entries to
+`.gitignore`. After install: customize the Common Commands section in
+`CLAUDE.md`/`AGENTS.md`, merge anything needed from the `.pre-autoflow`
+backups, and copy `dev/test-credentials.example.json` →
+`dev/test-credentials.json` if E2E testing is wanted. `README.md` at the kit
+root has the full human-facing walkthrough.

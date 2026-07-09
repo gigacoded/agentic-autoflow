@@ -518,5 +518,138 @@
         "TODO.*?refactor"
       ]
     }
+  },
+  "stripe-payments": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "Stripe payments in the Convex + TanStack Start stack: checkout sessions, webhooks, subscriptions, idempotency, test-mode verification.",
+    "promptTriggers": {
+      "keywords": [
+        "stripe",
+        "payment",
+        "payments",
+        "checkout",
+        "subscription",
+        "billing",
+        "webhook",
+        "invoice",
+        "customer portal",
+        "price id"
+      ],
+      "intentPatterns": [
+        "(add|build|integrate|set up|fix|debug).*?(stripe|payment|checkout|billing|subscription)",
+        "(webhook).*?(stripe|payment|subscription|fail|missing|not firing)",
+        "(payment|subscription|billing).*?(state|status).*?(wrong|stale|mismatch|sync)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "convex/http.ts",
+        "convex/stripe*.ts",
+        "**/stripe/**/*"
+      ],
+      "contentPatterns": [
+        "from ['\"]stripe['\"]",
+        "STRIPE_SECRET_KEY",
+        "checkout\\.session"
+      ]
+    }
+  },
+  "skill-authoring": {
+    "type": "meta",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "Craft of writing skills for this kit: description-first activation, bodies smaller models can execute, trigger rules, Codex mirror, registration, verification.",
+    "promptTriggers": {
+      "keywords": [
+        "new skill",
+        "write a skill",
+        "add a skill",
+        "create a skill",
+        "edit a skill",
+        "port a skill",
+        "skill never fires",
+        "skill description",
+        "skill-rules"
+      ],
+      "intentPatterns": [
+        "(write|add|create|author|port|edit|update).*?(skill)",
+        "(skill).*?(not|never|doesn't|won't).*?(fire|activate|trigger|load)",
+        "(encode|capture).*?(lesson|mistake|pattern).*?(skill|kit)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        ".claude/skills/**/SKILL.md",
+        ".codex/skills/**/SKILL.md"
+      ],
+      "contentPatterns": []
+    }
+  },
+  "hook-development": {
+    "type": "meta",
+    "enforcement": "suggest",
+    "priority": "high",
+    "description": "Write, register, and test harness hooks for Claude Code and Codex: event contract, exit codes, matchers, fail-open design, file-redirect stdin testing.",
+    "promptTriggers": {
+      "keywords": [
+        "new hook",
+        "write a hook",
+        "add a hook",
+        "hook not firing",
+        "hook doesn't fire",
+        "usersubmit hook",
+        "pretooluse",
+        "posttooluse",
+        "userpromptsubmit",
+        "hook timeout"
+      ],
+      "intentPatterns": [
+        "(write|add|create|register|debug|test|port).*?(hook)",
+        "(hook).*?(not|never|doesn't|won't).*?(fire|run|work|trigger)",
+        "(every time|whenever|always).*?(edit|write|prompt|tool).*?(run|check|block)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        ".claude/hooks/**/*",
+        ".codex/hooks/**/*",
+        ".claude/settings.json",
+        ".codex/config.toml"
+      ],
+      "contentPatterns": []
+    }
+  },
+  "kit-release-checklist": {
+    "type": "meta",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "Pre-release verification of the kit itself: static parse checks, mirror-sync diff, hook smoke tests, scratch-project install test of setup.sh.",
+    "promptTriggers": {
+      "keywords": [
+        "release the kit",
+        "test the kit",
+        "verify the kit",
+        "install test",
+        "setup.sh",
+        "mirror sync",
+        "mirror drift",
+        "before committing the kit"
+      ],
+      "intentPatterns": [
+        "(test|verify|check|validate).*?(kit|installer|setup|install)",
+        "(release|ship|publish|tag).*?(kit|autoflow|infrastructure)",
+        "(mirror|sync|drift).*?(claude|codex|skills)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "setup.sh",
+        ".claude/CLAUDE.template.md",
+        ".codex/AGENTS.template.md"
+      ],
+      "contentPatterns": []
+    }
   }
 }

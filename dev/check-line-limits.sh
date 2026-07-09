@@ -14,6 +14,7 @@ find . \
   -path '*/coverage' -prune -o \
   -path '*/.venv*' -prune -o \
   -path './.gemini' -prune -o \
+  -path '*/_generated' -prune -o \
   -type f \( \
     -name '*.ts' -o \
     -name '*.tsx' -o \
@@ -34,6 +35,10 @@ find . \
     -name '*.rb' -o \
     -name '*.php' \
   \) \
+  ! -name '*.gen.ts' \
+  ! -name '*.gen.tsx' \
+  ! -name '*.d.ts' \
+  ! -name '*.generated.*' \
   -print0 |
 while IFS= read -r -d '' file; do
   line_count="$(wc -l < "$file" | tr -d ' ')"

@@ -9,8 +9,15 @@ import sys
 
 LIMIT = 500
 APP_ROOTS = ("src/", "components/", "convex/", "lib/", "hooks/")
-SKIP_PREFIXES = ("convex/_generated/",)
 EDIT_TOOLS = {"Edit", "Write", "apply_patch", "MultiEdit"}
+
+
+def is_generated(rel: str) -> bool:
+    return (
+        "_generated/" in rel
+        or ".generated." in rel
+        or rel.endswith((".gen.ts", ".gen.tsx", ".d.ts"))
+    )
 
 
 def main() -> None:
@@ -28,13 +35,14 @@ def main() -> None:
         sys.exit(0)
 
     rel = os.path.relpath(path, cwd) if os.path.isabs(path) else path
-    if rel.startswith(SKIP_PREFIXES) or not rel.startswith(APP_ROOTS):
+    if is_generated(rel) or not rel.startswith(APP_ROOTS):
         sys.exit(0)
     if not rel.endswith((".ts", ".tsx", ".js", ".jsx")):
         sys.exit(0)
 
+    abs_path = path if os.path.isabs(path) else os.path.join(cwd, path)
     try:
-        with open(path, encoding="utf-8") as f:
+        with open(abs_path, encoding="utf-8") as f:
             n = sum(1 for _ in f)
     except OSError:
         sys.exit(0)
