@@ -2,8 +2,7 @@
 """PreToolUse hook: protect the agent-infrastructure kit from model edits.
 
 Blocks Edit/Write/MultiEdit/NotebookEdit/apply_patch targeting kit content,
-and Bash commands that both mention a protected path and contain a write
-indicator (file redirection, rm, mv, sed -i, tee, touch, git checkout/restore...).
+and Bash commands that write to a protected path.
 
 Protected everywhere: .claude/, .codex/, CLAUDE.md, AGENTS.md,
 dev/check-line-limits.sh. Protected only in the kit source repo (detected by
@@ -16,10 +15,13 @@ Unlock (user decision only): the user creates `.claude/kit-unlock` themselves
 when maintenance is done. Creating that file is itself a write into .claude/,
 so a model asking to run `touch .claude/kit-unlock` is blocked by this guard.
 
-The Bash check is a heuristic and errs toward blocking. Redirects to /dev/*
-and fd-number redirects (2>, 2>&1) do not count as write indicators. A
-blocked read-only command should be reformulated with Read/Grep tools.
-Exit 0 allow, exit 2 deny (stderr to model).
+The Bash check is a heuristic scoped per shell segment (split on ;, |, &&,
+||, newline). A command is denied only when a single segment both mentions a
+protected path and runs a write command, when a redirect targets a protected
+path, or when an earlier segment cd'd into a protected directory and a later
+one writes. Reading kit files, piping their contents elsewhere, and running
+dev/check-line-limits.sh all pass — even inside compound commands that write
+to application files. Exit 0 allow, exit 2 deny (stderr to model).
 """
 import json
 import os
@@ -32,13 +34,16 @@ KIT_SOURCE_ONLY_FILES = {"README.md", "setup.sh"}
 ALLOWED_EXACT = {".claude/settings.local.json"}
 EDIT_TOOLS = {"Edit", "Write", "MultiEdit", "NotebookEdit", "apply_patch"}
 
-# File redirection counts as a write; 2>, >&2, and >/dev/* do not.
-REDIRECT = r"(?<![0-9&<>])>{1,2}(?!&)\s*(?!/dev/)"
-WRITE_INDICATORS = re.compile(
-    REDIRECT + r"|\btee\b|\brm\b|\bmv\b|\bcp\b|\bsed\s+-i|\btouch\b"
+SEGMENTS = re.compile(r"\|\||&&|;|\||\n")
+WRITE_CMDS = re.compile(
+    r"\btee\b|\brm\b|\bmv\b|\bcp\b|\bsed\s+-i|\btouch\b"
     r"|\btruncate\b|\bchmod\b|\bchown\b|\bln\b|\brsync\b|\bdd\b|\bpatch\b"
     r"|\bmkdir\b|\bgit\s+checkout\b|\bgit\s+restore\b|\bgit\s+clean\b"
 )
+# File redirection; 2>, >&2 do not count. Captures the redirect target.
+REDIRECT_TARGETS = re.compile(r"(?<![0-9&<>])>{1,2}(?!&)\s*([^\s;|&<>]*)")
+CD = re.compile(r"\b(?:cd|pushd)\s+(\S+)")
+PROTECTED_DIR = re.compile(r"(^|/)\.(claude|codex)(/|$)")
 MENTION_BASE = (
     r"\.claude/|\.codex/|\bCLAUDE\.md\b|\bAGENTS\.md\b|\bcheck-line-limits\.sh\b"
 )
@@ -70,6 +75,25 @@ def is_protected_path(rel: str, kit_source: bool) -> bool:
     if rel.startswith(PROTECTED_PREFIXES) or rel in PROTECTED_FILES:
         return True
     return kit_source and rel in KIT_SOURCE_ONLY_FILES
+
+
+def bash_writes_protected(cmd: str, mention: re.Pattern) -> bool:
+    protected_cwd = False
+    for seg in SEGMENTS.split(cmd):
+        mentions = bool(mention.search(seg))
+        if WRITE_CMDS.search(seg) and (mentions or protected_cwd):
+            return True
+        for m in REDIRECT_TARGETS.finditer(seg):
+            target = m.group(1)
+            if mention.search(target):
+                return True
+            if protected_cwd and not target.startswith(("/", "~", "$")):
+                return True
+        cd = CD.search(seg)
+        if cd:
+            target = cd.group(1).strip("\"'")
+            protected_cwd = bool(PROTECTED_DIR.search(target))
+    return False
 
 
 def deny(reason: str) -> None:
@@ -115,7 +139,7 @@ def main() -> None:
 
     if tool in ("Bash", "shell"):
         cmd = ti.get("command") or ti.get("cmd") or ""
-        if mention.search(cmd) and WRITE_INDICATORS.search(cmd):
+        if bash_writes_protected(cmd, mention):
             deny("Refusing shell write to protected kit paths")
         sys.exit(0)
 
