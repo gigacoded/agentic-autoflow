@@ -85,6 +85,11 @@ Once you copy `.claude/` and `.mcp.json` to your project, Claude Code automatica
 | `e2e-testing-framework` | "e2e", "browser test", "user flow" | End-to-end browser testing: Step 0 auth, fail-fast, completion reports |
 | `frontend-dev` | "component", "react", "tanstack", "tailwind", "route" | TanStack Start, React, Tailwind CSS, shadcn/ui |
 | `make-interfaces-feel-better` | "polish", "feels off", "animation", "hover state" | UI polish details: micro-interactions, animations, radius, shadows, typography ([jakubkrehel/make-interfaces-feel-better](https://github.com/jakubkrehel/make-interfaces-feel-better)) |
+| `emil-design-eng` | "design engineering", "ui feel", "design philosophy" | Emil Kowalski's design engineering philosophy: polish, component design, animation decisions ([emilkowalski/skills](https://github.com/emilkowalski/skills)) |
+| `apple-design` | "apple design", "spring animation", "gesture", "swipe" | Apple's fluid-interface principles translated for the web ([emilkowalski/skills](https://github.com/emilkowalski/skills)) |
+| `animation-vocabulary` | "what's it called when", "animation term" | Naming motion effects precisely so you can ask for the right thing ([emilkowalski/skills](https://github.com/emilkowalski/skills)) |
+| `improve-animations` | "improve the animations", "audit the motion" | Codebase-wide animation audit with self-contained plans for any agent to execute ([emilkowalski/skills](https://github.com/emilkowalski/skills)) |
+| `review-animations` | user-invoked (`disable-model-invocation`) | Strict animation/motion code review against a high craft bar ([emilkowalski/skills](https://github.com/emilkowalski/skills)) |
 | `convex-backend-dev` | "convex", "query", "mutation", "schema" | Convex backend development |
 | `tanstack-start-dev` | "createServerFn", "createFileRoute", "loader", "router" | TanStack Start routing and server functions |
 | `stripe-payments` | "stripe", "checkout", "subscription", "webhook" | Stripe in the Convex + TanStack stack: server-decided amounts, verified webhooks, idempotency, test-mode verification |
@@ -266,6 +271,14 @@ instead.
 
 **Global hooks** (`~/.claude/settings.json`) - To reuse these hooks across all your projects, copy the scripts from `.claude/hooks/` into `~/.claude/hooks/` and register them in `~/.claude/settings.json` with the same hook configuration shown above (swap `$CLAUDE_PROJECT_DIR` for `~/.claude`).
 
+**Codex global hook cleanup** - If Codex reports `invalid session start JSON output` or `invalid stop hook JSON output`, run:
+
+```bash
+dev/cleanup-codex-hooks.sh
+```
+
+The script replaces the known bad global caveman `SessionStart` `echo` hook with valid Codex hook JSON and disables the incompatible `security-guidance` Codex plugin Stop hook. It leaves project hooks and plugin cache files untouched.
+
 ## Project Structure
 
 ```
@@ -290,6 +303,11 @@ your-project/
 │   │   ├── verify-backend-change/   # Live-data verification (Convex MCP)
 │   │   ├── e2e-testing-framework/   # E2E browser testing framework
 │   │   ├── make-interfaces-feel-better/ # UI polish micro-details
+│   │   ├── emil-design-eng/         # Emil Kowalski design philosophy
+│   │   ├── apple-design/            # Apple fluid-interface principles
+│   │   ├── animation-vocabulary/    # Motion effect naming glossary
+│   │   ├── improve-animations/      # Codebase animation audit + plans
+│   │   ├── review-animations/       # Strict animation code review
 │   │   ├── frontend-dev/            # React, Tailwind, shadcn/ui (+ resources/)
 │   │   ├── convex-backend-dev/      # Convex queries, mutations, schema
 │   │   ├── tanstack-start-dev/      # Server functions, file routes, SSR

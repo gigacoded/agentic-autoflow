@@ -69,6 +69,11 @@ Skills in `.claude/skills/` provide focused guidance:
 - `stripe-payments` - Stripe in this stack: checkout via Convex actions, webhooks in convex/http.ts, idempotency, test-mode verification.
 - `frontend-dev` - React, Tailwind CSS, shadcn/ui, components, forms, layout, and styling.
 - `make-interfaces-feel-better` - UI polish details: micro-interactions, animations, radius, shadows, typography, optical alignment.
+- `emil-design-eng` - Emil Kowalski's design engineering philosophy: UI polish, component design, animation decisions.
+- `apple-design` - Apple-style fluid interfaces for the web: springs, gestures, momentum, interruptibility, depth.
+- `animation-vocabulary` - Reverse-lookup glossary: turn a vague motion description into the exact animation term.
+- `improve-animations` - Codebase-wide animation audit producing prioritized, self-contained improvement plans.
+- `review-animations` - Strict review of animation/motion code against a high craft bar (user-invoked).
 - `task-management-dev` - PBI workflow, task docs, backlog, and dev docs.
 - `code-simplifier` - Code clarity, refactoring, maintainability, and review cleanup.
 - `programmatic-seo` - Data-driven, templated SEO pages at scale.

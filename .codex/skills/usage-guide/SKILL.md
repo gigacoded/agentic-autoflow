@@ -23,6 +23,11 @@ skill is the territory.
 | Payments: checkout, subscriptions, Stripe webhooks | `stripe-payments` |
 | React components, Tailwind, shadcn/ui, forms | `frontend-dev` |
 | UI polish: micro-interactions, animation, radius, shadows, typography | `make-interfaces-feel-better` |
+| Design/animation judgment calls: easing, springs, component feel | `emil-design-eng` |
+| Gesture-driven, spring/momentum, Apple-feel interactions | `apple-design` |
+| Naming a motion effect ("what's it called when…") | `animation-vocabulary` |
+| Codebase-wide animation audit with handoff plans | `improve-animations` |
+| Reviewing animation/motion code in a diff (user-invoked) | `review-animations` |
 | Planning features, PBIs, backlog, long-task notes | `task-management-dev` |
 | Post-write cleanup, refactoring for clarity | `code-simplifier` |
 | Templated SEO pages at scale | `programmatic-seo` |

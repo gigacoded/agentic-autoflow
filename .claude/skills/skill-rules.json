@@ -651,5 +651,139 @@
       ],
       "contentPatterns": []
     }
+  },
+  "emil-design-eng": {
+    "type": "quality",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "Emil Kowalski's design engineering philosophy: UI polish, component design, animation decisions, invisible details.",
+    "promptTriggers": {
+      "keywords": [
+        "design engineering",
+        "design philosophy",
+        "ui feel",
+        "feel great",
+        "invisible details",
+        "feels right"
+      ],
+      "intentPatterns": [
+        "(how|what).*?(should|makes).*?(ui|interface|component|animation).*?(feel|behave)",
+        "(design).*?(advice|philosophy|opinion|decision)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "components/**/*.tsx",
+        "src/components/**/*.tsx"
+      ],
+      "contentPatterns": [
+        "transition",
+        "animate-",
+        "keyframes"
+      ]
+    }
+  },
+  "apple-design": {
+    "type": "quality",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "Apple's fluid-interface principles for the web: springs, gestures, momentum, interruptibility, materials, typography.",
+    "promptTriggers": {
+      "keywords": [
+        "apple design",
+        "fluid interface",
+        "spring animation",
+        "gesture-driven",
+        "rubber band",
+        "swipe gesture",
+        "bottom sheet",
+        "momentum scroll",
+        "interruptible"
+      ],
+      "intentPatterns": [
+        "(build|add|implement|review).*?(gesture|swipe|drag|sheet|spring)",
+        "(apple|ios).*?(design|feel|style|motion)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [
+        "components/**/*.tsx",
+        "src/components/**/*.tsx"
+      ],
+      "contentPatterns": [
+        "useSpring",
+        "framer-motion",
+        "motion/react",
+        "pointermove"
+      ]
+    }
+  },
+  "animation-vocabulary": {
+    "type": "quality",
+    "enforcement": "suggest",
+    "priority": "low",
+    "description": "Reverse-lookup glossary: turn a vague motion description into the exact animation term.",
+    "promptTriggers": {
+      "keywords": [
+        "what's it called",
+        "whats it called",
+        "name of the animation",
+        "animation term",
+        "motion term",
+        "effect called"
+      ],
+      "intentPatterns": [
+        "(what|which).*?(called|name|term).*?(animation|effect|motion|transition)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [],
+      "contentPatterns": []
+    }
+  },
+  "improve-animations": {
+    "type": "quality",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "Codebase-wide animation audit producing prioritized findings and self-contained plans for other agents to execute.",
+    "promptTriggers": {
+      "keywords": [
+        "improve the animations",
+        "improve animations",
+        "animation audit",
+        "audit the motion",
+        "motion audit",
+        "animation roadmap"
+      ],
+      "intentPatterns": [
+        "(improve|audit|upgrade).*?(animation|motion)",
+        "(animation|motion).*?(audit|plan|roadmap)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [],
+      "contentPatterns": []
+    }
+  },
+  "review-animations": {
+    "type": "quality",
+    "enforcement": "suggest",
+    "priority": "medium",
+    "description": "Strict review of animation/motion code against a high craft bar. User-invoked: suggest the user run it.",
+    "promptTriggers": {
+      "keywords": [
+        "review the animations",
+        "review animations",
+        "animation review",
+        "review motion"
+      ],
+      "intentPatterns": [
+        "(review|critique).*?(animation|motion|transition)"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [],
+      "contentPatterns": []
+    }
   }
 }
